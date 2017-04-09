@@ -1,0 +1,104 @@
+$light: #747e95;
+$lightest: #f1f4f9;
+
+@mixin flexbox() {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+@mixin flex($values) {
+  -webkit-box-flex: $values;
+  -moz-box-flex: $values;
+  -webkit-flex: $values;
+  -ms-flex: $values;
+  flex: $values;
+}
+@mixin justifyContent($value) {
+  -webkit-box-pack: $value;
+  -moz-box-pack: $value;
+  -webkit-justify-content: $value;
+  -ms-flex-pack: $value;
+  justify-content: $value;
+}
+@mixin alignItems($value) {
+  -webkit-box-align: $value;
+  -moz-box-align: $value;
+  -webkit-align-items: $value;
+  -ms-flex-align: $value;
+  align-items: $value;
+}
+@mixin flexDirection($value) {
+  -webkit-flex-direction: $value;
+  -ms-flex-direction: $value;
+  flex-direction: $value;
+}
+.flexbox {
+  @include flexbox();
+}
+.flex-wrap {
+  flex-wrap: wrap;
+}
+.flex-wrap-reverse {
+  flex-wrap: wrap-reverse;
+}
+.flex-center {
+  @include alignItems(center);
+}
+.flex0 {
+  @include flex(0 0 auto);
+}
+.flex1 {
+  @include flex(1 1 auto);
+}
+.align-items-center {
+  @include alignItems(center);
+}
+
+button {
+  cursor: pointer;
+}
+.close-x {
+  display: inline-block;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 3px;
+  background: transparent;
+  border: none;
+  outline: 0;
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s;
+  stroke: $light;
+  &:hover {
+    transform: scale(1.05);
+  }
+  &:active {
+    transition: 0;
+    background: rgba(0,0,0,0.1);
+  }
+  svg {
+    stroke: inherit;
+    stroke-width: 1.5px; 
+    stroke-linecap: round;
+    display: block;
+  }
+}
+
+.flow-element {
+  border-radius: 3px;
+  border: 2px solid darken($lightest, 2%);
+  background: $lightest;
+  padding: 10px;
+  margin-bottom: 8px;
+  .close-x {
+    padding: 2px;
+  }
+  .input-group {
+    margin-bottom: 4px;
+  }
+  .input-group-addon {
+    background-color: darken($lightest, 2%);
+  }
+}
