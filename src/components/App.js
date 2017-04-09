@@ -147,8 +147,6 @@ export default class App extends Component {
             { sources.map((source, i) => {
               return (
                 <source.component key={i} style={{
-                  display: 'inline-block',
-                  verticalAlign: 'top',
                   marginRight: '6px'
                 }} onAdd={source.onAdd}/>
               );

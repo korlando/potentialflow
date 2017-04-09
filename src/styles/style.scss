@@ -87,6 +87,8 @@ button {
 }
 
 .flow-element {
+  display: inline-block;
+  vertical-align: top;
   border-radius: 3px;
   border: 2px solid darken($lightest, 2%);
   background: $lightest;

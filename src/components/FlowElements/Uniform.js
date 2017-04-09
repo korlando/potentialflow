@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import CloseButton from '../CloseButton';
+import Flow from './Flow';
 
 export const uniformVP = (U, V) => {
   return (x, y) => {
@@ -12,21 +13,29 @@ export default class Uniform extends Component {
     super(props);
 
     this.state = {
-      U: 1,
-      V: 1
+      U: {
+        name: 'U',
+        value: 1,
+        placeholder: 'U (x-strength)'
+      },
+      V: {
+        name: 'V',
+        value: 1,
+        placeholder: 'V (y-strength)'
+      }
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   };
 
   componentDidMount() {
-    const { U, V } = this.props;
     const update = {};
-    if(U !== undefined) {
-      update.U = U;
-    }
-    if(V !== undefined) {
-      update.V = V;
-    }
+    Object.keys(this.state).forEach((key) => {
+      if(this.props[key] !== undefined) {
+        update[key] = Object.assign({}, this.state[key], {
+          value: this.props[key]
+        });
+      }
+    });
     if(Object.keys(update).length) {
       this.setState(update);
     }
@@ -38,52 +47,22 @@ export default class Uniform extends Component {
     const { U, V } = this.state;
 
     if(onAdd) {
-      onAdd(U, V, uniformVP(U, V));
+      onAdd(U.value, V.value, uniformVP(U.value, V.value));
     }
   };
 
   render() {
-    const { className, style, onAdd, onRemove } = this.props;
-    const { U, V } = this.state;
-
     return (
-      <div className={`flow-element ${className || ''}`}
-        style={style || {}}>
-        <div className="flexbox">
-          <label className="flex1">Uniform</label>
-          { onRemove &&
-            <CloseButton
-              className="flex0"
-              onClick={() => onRemove()}/>
-          }
-        </div>
-        <form onSubmit={this.handleSubmit}>
-          <div className="input-group input-group-sm">
-            <div className="input-group-addon">U</div>
-            <input type="number"
-              className="form-control"
-              placeholder="U (x-strength)"
-              value={U}
-              onChange={(e) => {
-                this.setState({ U: e.target.value });
-              }}/>
-          </div>
-          <div className="input-group input-group-sm">
-            <div className="input-group-addon">V</div>
-            <input type="number"
-              className="form-control"
-              placeholder="V (y-strength)"
-              value={V}
-              onChange={(e) => {
-                this.setState({ V: e.target.value });
-              }}/>
-          </div>
-          { onAdd &&
-            <button type="submit"
-              className="btn btn-primary btn-block">Add</button>
-          }
-        </form>
-      </div>
+      <Flow
+        {...this.props}
+        name="Uniform"
+        inputs={this.state}
+        onSubmit={this.handleSubmit}
+        onChange={(key, value) => {
+          this.setState({
+            [key]: Object.assign({}, this.state[key], { value })
+          })
+        }}/>
     );
   };
 };

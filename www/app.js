@@ -13470,8 +13470,6 @@ var App = function (_Component) {
           } }));
       }))), _react2.default.createElement('div', null, _react2.default.createElement('h4', null, 'Add Flow Source'), sources.map(function (source, i) {
         return _react2.default.createElement(source.component, { key: i, style: {
-            display: 'inline-block',
-            verticalAlign: 'top',
             marginRight: '6px'
           }, onAdd: source.onAdd });
       }))));
@@ -13833,6 +13831,16 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = exports.uniformVP = undefined;
 
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }return target;
+};
+
 var _createClass = function () {
   function defineProperties(target, props) {
     for (var i = 0; i < props.length; i++) {
@@ -13851,8 +13859,20 @@ var _CloseButton = __webpack_require__(74);
 
 var _CloseButton2 = _interopRequireDefault(_CloseButton);
 
+var _Flow = __webpack_require__(200);
+
+var _Flow2 = _interopRequireDefault(_Flow);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
+  } else {
+    obj[key] = value;
+  }return obj;
 }
 
 function _classCallCheck(instance, Constructor) {
@@ -13888,8 +13908,16 @@ var Uniform = function (_Component) {
     var _this = _possibleConstructorReturn(this, (Uniform.__proto__ || Object.getPrototypeOf(Uniform)).call(this, props));
 
     _this.state = {
-      U: 1,
-      V: 1
+      U: {
+        name: 'U',
+        value: 1,
+        placeholder: 'U (x-strength)'
+      },
+      V: {
+        name: 'V',
+        value: 1,
+        placeholder: 'V (y-strength)'
+      }
     };
     _this.handleSubmit = _this.handleSubmit.bind(_this);
     return _this;
@@ -13898,17 +13926,16 @@ var Uniform = function (_Component) {
   _createClass(Uniform, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _props = this.props,
-          U = _props.U,
-          V = _props.V;
+      var _this2 = this;
 
       var update = {};
-      if (U !== undefined) {
-        update.U = U;
-      }
-      if (V !== undefined) {
-        update.V = V;
-      }
+      Object.keys(this.state).forEach(function (key) {
+        if (_this2.props[key] !== undefined) {
+          update[key] = Object.assign({}, _this2.state[key], {
+            value: _this2.props[key]
+          });
+        }
+      });
       if (Object.keys(update).length) {
         this.setState(update);
       }
@@ -13923,42 +13950,21 @@ var Uniform = function (_Component) {
           V = _state.V;
 
       if (onAdd) {
-        onAdd(U, V, uniformVP(U, V));
+        onAdd(U.value, V.value, uniformVP(U.value, V.value));
       }
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
-      var _props2 = this.props,
-          className = _props2.className,
-          style = _props2.style,
-          onAdd = _props2.onAdd,
-          onRemove = _props2.onRemove;
-      var _state2 = this.state,
-          U = _state2.U,
-          V = _state2.V;
-
-      return _react2.default.createElement('div', { className: 'flow-element ' + (className || ''),
-        style: style || {} }, _react2.default.createElement('div', { className: 'flexbox' }, _react2.default.createElement('label', { className: 'flex1' }, 'Uniform'), onRemove && _react2.default.createElement(_CloseButton2.default, {
-        className: 'flex0',
-        onClick: function onClick() {
-          return onRemove();
-        } })), _react2.default.createElement('form', { onSubmit: this.handleSubmit }, _react2.default.createElement('div', { className: 'input-group input-group-sm' }, _react2.default.createElement('div', { className: 'input-group-addon' }, 'U'), _react2.default.createElement('input', { type: 'number',
-        className: 'form-control',
-        placeholder: 'U (x-strength)',
-        value: U,
-        onChange: function onChange(e) {
-          _this2.setState({ U: e.target.value });
-        } })), _react2.default.createElement('div', { className: 'input-group input-group-sm' }, _react2.default.createElement('div', { className: 'input-group-addon' }, 'V'), _react2.default.createElement('input', { type: 'number',
-        className: 'form-control',
-        placeholder: 'V (y-strength)',
-        value: V,
-        onChange: function onChange(e) {
-          _this2.setState({ V: e.target.value });
-        } })), onAdd && _react2.default.createElement('button', { type: 'submit',
-        className: 'btn btn-primary btn-block' }, 'Add')));
+      return _react2.default.createElement(_Flow2.default, _extends({}, this.props, {
+        name: 'Uniform',
+        inputs: this.state,
+        onSubmit: this.handleSubmit,
+        onChange: function onChange(key, value) {
+          _this3.setState(_defineProperty({}, key, Object.assign({}, _this3.state[key], { value: value })));
+        } }));
     }
   }]);
 
@@ -18102,7 +18108,7 @@ exports = module.exports = __webpack_require__(386)();
 
 
 // module
-exports.push([module.i, ".flexbox {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex; }\n\n.flex-wrap {\n  flex-wrap: wrap; }\n\n.flex-wrap-reverse {\n  flex-wrap: wrap-reverse; }\n\n.flex-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.flex0 {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto; }\n\n.flex1 {\n  -webkit-box-flex: 1 1 auto;\n  -moz-box-flex: 1 1 auto;\n  -webkit-flex: 1 1 auto;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto; }\n\n.align-items-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\nbutton {\n  cursor: pointer; }\n\n.close-x {\n  display: inline-block;\n  padding: 0;\n  cursor: pointer;\n  border-radius: 3px;\n  background: transparent;\n  border: none;\n  outline: 0;\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s;\n  stroke: #747e95; }\n  .close-x:hover {\n    transform: scale(1.05); }\n  .close-x:active {\n    transition: 0;\n    background: rgba(0, 0, 0, 0.1); }\n  .close-x svg {\n    stroke: inherit;\n    stroke-width: 1.5px;\n    stroke-linecap: round;\n    display: block; }\n\n.flow-element {\n  border-radius: 3px;\n  border: 2px solid #eaeef6;\n  background: #f1f4f9;\n  padding: 10px;\n  margin-bottom: 8px; }\n  .flow-element .close-x {\n    padding: 2px; }\n  .flow-element .input-group {\n    margin-bottom: 4px; }\n  .flow-element .input-group-addon {\n    background-color: #eaeef6; }\n", ""]);
+exports.push([module.i, ".flexbox {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex; }\n\n.flex-wrap {\n  flex-wrap: wrap; }\n\n.flex-wrap-reverse {\n  flex-wrap: wrap-reverse; }\n\n.flex-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.flex0 {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto; }\n\n.flex1 {\n  -webkit-box-flex: 1 1 auto;\n  -moz-box-flex: 1 1 auto;\n  -webkit-flex: 1 1 auto;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto; }\n\n.align-items-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\nbutton {\n  cursor: pointer; }\n\n.close-x {\n  display: inline-block;\n  padding: 0;\n  cursor: pointer;\n  border-radius: 3px;\n  background: transparent;\n  border: none;\n  outline: 0;\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s;\n  stroke: #747e95; }\n  .close-x:hover {\n    transform: scale(1.05); }\n  .close-x:active {\n    transition: 0;\n    background: rgba(0, 0, 0, 0.1); }\n  .close-x svg {\n    stroke: inherit;\n    stroke-width: 1.5px;\n    stroke-linecap: round;\n    display: block; }\n\n.flow-element {\n  display: inline-block;\n  vertical-align: top;\n  border-radius: 3px;\n  border: 2px solid #eaeef6;\n  background: #f1f4f9;\n  padding: 10px;\n  margin-bottom: 8px; }\n  .flow-element .close-x {\n    padding: 2px; }\n  .flow-element .input-group {\n    margin-bottom: 4px; }\n  .flow-element .input-group-addon {\n    background-color: #eaeef6; }\n", ""]);
 
 // exports
 
