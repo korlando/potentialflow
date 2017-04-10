@@ -107,36 +107,15 @@ export default class App extends Component {
     const { activeFlowIds, activeFlowMap } = this.props;
 
     return (
-      <div>
-        <div className="container-fluid">
-          <div className="flexbox">
-            <div className="flex0">
-              <div ref={div => this.graph = div}
-                style={{
-                  width: '800px',
-                  height: '500px',
-                  margin: 'auto'
-                }}></div>
-            </div>
-            
-            <div className="flex1" style={{paddingTop: '50px'}}>
-              <h4>Current Flows &middot; {activeFlowIds.length}</h4>
-              { activeFlowIds.map((id, i) => {
-                const flow = activeFlowMap[id];
-                switch(flow.type) {
-                  case UNIFORM:
-                    return <Uniform key={i} {...flow}/>;
-                  case POINT_SOURCE:
-                    return <PointSource key={i} {...flow}/>;
-                  case POINT_VORTEX:
-                    return <PointVortex key={i} {...flow}/>;
-                  case DIPOLE:
-                    return <Dipole key={i} {...flow}/>;
-                  default:
-                    return null;
-                }
-              })}
-            </div>
+      <div className="flexbox">
+        <div className="flex1" style={{padding: '0 12px'}}>
+          <div className="flex0">
+            <div ref={div => this.graph = div}
+              style={{
+                width: '800px',
+                height: '500px',
+                margin: 'auto'
+              }}></div>
           </div>
           <div>
             <h4>Add Flow Source</h4>
@@ -145,6 +124,24 @@ export default class App extends Component {
             <PointVortex/>
             <Dipole/>
           </div>
+        </div>
+        <div className="flex0 active-flows">
+          <h4>Current Flows &middot; {activeFlowIds.length}</h4>
+          { activeFlowIds.map((id, i) => {
+            const flow = activeFlowMap[id];
+            switch(flow.type) {
+              case UNIFORM:
+                return <Uniform key={i} {...flow}/>;
+              case POINT_SOURCE:
+                return <PointSource key={i} {...flow}/>;
+              case POINT_VORTEX:
+                return <PointVortex key={i} {...flow}/>;
+              case DIPOLE:
+                return <Dipole key={i} {...flow}/>;
+              default:
+                return null;
+            }
+          })}
         </div>
       </div>
     );

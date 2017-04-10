@@ -1,4 +1,6 @@
+$grey: #51586a;
 $light: #747e95;
+$lighter: #b7bccc;
 $lightest: #f1f4f9;
 
 @mixin flexbox() {
@@ -89,6 +91,8 @@ button {
 .flow-element {
   display: inline-block;
   vertical-align: top;
+  width: 170px;
+  max-width: 100%;
   border-radius: 3px;
   border: 2px solid darken($lightest, 2%);
   background: $lightest;
@@ -103,5 +107,22 @@ button {
   }
   .input-group-addon {
     background-color: darken($lightest, 2%);
+  }
+}
+
+.active-flows {
+  padding: 30px 12px;
+  width: 250px;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: $grey;
+  .flow-element {
+    margin-right: 0;
+    width: 100%;
+  }
+  h4 {
+    color: $lightest;
+    margin-bottom: 20px;
   }
 }
