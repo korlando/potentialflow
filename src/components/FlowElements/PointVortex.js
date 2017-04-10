@@ -1,35 +1,36 @@
 import React, { Component } from 'react';
 import CloseButton from '../CloseButton';
 import Flow from './Flow';
+import Naught from './Naught';
 
-export const pointVP = (m, x0, y0) => {
+export const pointVortexVP = (gamma, x0, y0) => {
   return (x, y) => {
-    return (m / (2 * Math.PI)) * Math.log(
-      Math.sqrt(Math.pow((x - x0), 2)) +
-      Math.sqrt(Math.pow((y - y0), 2))
+    return (gamma / (2 * Math.PI)) * Math.atan2(
+      (y - y0),
+      (x - x0)
     );
   };
 };
 
-export default class Point extends Component {
+export default class PointVortex extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      m: {
-        name: 'm',
+      gamma: {
+        name: <span>&Gamma;</span>,
         value: 100,
-        placeholder: 'm (magnitude)'
+        placeholder: 'magnitude'
       },
       x0: {
-        name: 'x0',
+        name: <Naught symbol="x"/>,
         value: 50,
-        placeholder: 'x0 (x-position)'
+        placeholder: 'x position'
       },
       y0: {
-        name: 'y0',
+        name: <Naught symbol="y"/>,
         value: 50,
-        placeholder: 'y0 (y-position)'
+        placeholder: 'y position'
       }
     };
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -52,11 +53,11 @@ export default class Point extends Component {
   handleSubmit(e) {
     e.preventDefault();
     const { onAdd } = this.props;
-    const { m, x0, y0 } = this.state;
+    const { gamma, x0, y0 } = this.state;
 
     if(onAdd) {
-      onAdd(m.value, x0.value, y0.value,
-        pointVP(m.value, x0.value, y0.value)
+      onAdd(gamma.value, x0.value, y0.value,
+        pointVortexVP(gamma.value, x0.value, y0.value)
       );
     }
   };
@@ -65,7 +66,7 @@ export default class Point extends Component {
     return (
       <Flow
         {...this.props}
-        name="Point Source/Sink"
+        name="Point Vortex"
         inputs={this.state}
         onSubmit={this.handleSubmit}
         onChange={(key, value) => {

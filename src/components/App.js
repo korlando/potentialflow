@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import CloseButton from './CloseButton';
 import Uniform, { uniformVP } from './FlowElements/Uniform';
-import Point from './FlowElements/Point';
+import PointSource from './FlowElements/PointSource';
+import PointVortex from './FlowElements/PointVortex';
 
 function makeVelocityPotential(elements) {
   let velocityPotential = (x, y) => 0;
@@ -58,7 +59,8 @@ export default class App extends Component {
       }
     };
     this.addUniformFlow = this.addUniformFlow.bind(this);
-    this.addPointFlow = this.addPointFlow.bind(this);
+    this.addPointSourceFlow = this.addPointSourceFlow.bind(this);
+    this.addPointVortexFlow = this.addPointVortexFlow.bind(this);
   };
 
   componentDidMount() {
@@ -87,27 +89,42 @@ export default class App extends Component {
     });
   };
 
-  addPointFlow(m, x0, y0, vp) {
+  addPointSourceFlow(m, x0, y0, vp) {
     this.setState({
       flows: [...this.state.flows, {
-        component: Point,
+        component: PointSource,
         m, x0, y0, vp
+      }]
+    });
+  };
+
+  addPointVortexFlow(gamma, x0, y0, vp) {
+    this.setState({
+      flows: [...this.state.flows, {
+        component: PointVortex,
+        gamma, x0, y0, vp
       }]
     });
   };
 
   render() {
     const sources = [{
-      type: 'uniform',
+      type: 'UNIFORM',
       component: Uniform,
       onAdd: (U, V, vp) => {
         this.addUniformFlow(U, V, vp);
       }
     }, {
-      type: 'point',
-      component: Point,
+      type: 'POINT_SOURCE',
+      component: PointSource,
       onAdd: (m, x0, y0, vp) => {
-        this.addPointFlow(m, x0, y0, vp);
+        this.addPointSourceFlow(m, x0, y0, vp);
+      }
+    }, {
+      type: 'POINT_VORTEX',
+      component: PointVortex,
+      onAdd: (gamma, x0, y0, vp) => {
+        this.addPointVortexFlow(gamma, x0, y0, vp);
       }
     }];
     const { flows } = this.state;
