@@ -2,21 +2,24 @@ import React, { Component } from 'react';
 import Flow from './Flow';
 import { DIPOLE } from '../../constants/flowTypes';
 
+const getDenom = (xDiff, yDiff) => {
+  return Math.pow(xDiff, 2) + Math.pow(yDiff, 2);
+};
+
 export const dipoleVP = (mu, x0, y0, alpha) => {
   return (x, y) => {
     const xDiff = x - x0;
     const yDiff = y - y0;
-    const denom = Math.pow(xDiff, 2) + Math.pow(yDiff, 2);
+    const denom = getDenom(xDiff, yDiff);
     if(denom === 0) {
+      // handle divide by 0
       return Infinity;
     }
 
-    return (-mu / (2 * Math.PI)) * (
-      (
-        xDiff * Math.cos(alpha) +
-        yDiff * Math.sin(alpha)
-      ) / denom
-    );
+    return -mu / (2 * Math.PI) * (
+      xDiff * Math.cos(alpha) +
+      yDiff * Math.sin(alpha)
+    ) / denom;
   };
 };
 

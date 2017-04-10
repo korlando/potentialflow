@@ -50,7 +50,8 @@ const makeData = (zData) => {
     //colorscale: 'Greys',
     line: {
       smoothing: 1
-    }
+    },
+    connectgaps: true
   }]
 };
 

@@ -13535,7 +13535,8 @@ var makeData = function makeData(zData) {
     //colorscale: 'Greys',
     line: {
       smoothing: 1
-    }
+    },
+    connectgaps: true
   }];
 };
 
@@ -31239,16 +31240,21 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
+var getDenom = function getDenom(xDiff, yDiff) {
+  return Math.pow(xDiff, 2) + Math.pow(yDiff, 2);
+};
+
 var dipoleVP = exports.dipoleVP = function dipoleVP(mu, x0, y0, alpha) {
   return function (x, y) {
     var xDiff = x - x0;
     var yDiff = y - y0;
-    var denom = Math.pow(xDiff, 2) + Math.pow(yDiff, 2);
+    var denom = getDenom(xDiff, yDiff);
     if (denom === 0) {
+      // handle divide by 0
       return Infinity;
     }
 
-    return -mu / (2 * Math.PI) * ((xDiff * Math.cos(alpha) + yDiff * Math.sin(alpha)) / denom);
+    return -mu / (2 * Math.PI) * (xDiff * Math.cos(alpha) + yDiff * Math.sin(alpha)) / denom;
   };
 };
 
