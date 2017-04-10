@@ -67,7 +67,8 @@ export default class Flow extends Component {
             const variable = variableMeta[key];
             return (
               <div key={i} className="input-group input-group-sm">
-                <div className="input-group-addon">{variable.name}</div>
+                <div className="input-group-addon"
+                  title={variable.placeholder}>{variable.name}</div>
                 <input type="number"
                   className="form-control"
                   placeholder={variable.placeholder}

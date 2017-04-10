@@ -9319,7 +9319,8 @@ var Flow = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = func
           return (0, _util.removeFlow)(flowId);
         } })), _react2.default.createElement('form', { onSubmit: this.handleSubmit }, Object.keys(flow.inputs).map(function (key, i) {
         var variable = _variableMeta2.default[key];
-        return _react2.default.createElement('div', { key: i, className: 'input-group input-group-sm' }, _react2.default.createElement('div', { className: 'input-group-addon' }, variable.name), _react2.default.createElement('input', { type: 'number',
+        return _react2.default.createElement('div', { key: i, className: 'input-group input-group-sm' }, _react2.default.createElement('div', { className: 'input-group-addon',
+          title: variable.placeholder }, variable.name), _react2.default.createElement('input', { type: 'number',
           className: 'form-control',
           placeholder: variable.placeholder,
           value: flow.inputs[key],
