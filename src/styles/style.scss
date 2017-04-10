@@ -94,6 +94,7 @@ button {
   background: $lightest;
   padding: 10px;
   margin-bottom: 8px;
+  margin-right: 6px;
   .close-x {
     padding: 2px;
   }
@@ -103,8 +104,4 @@ button {
   .input-group-addon {
     background-color: darken($lightest, 2%);
   }
-}
-
-.flow-forms .flow-element {
-  margin-right: 6px;
 }

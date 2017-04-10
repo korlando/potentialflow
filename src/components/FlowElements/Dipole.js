@@ -4,12 +4,18 @@ import { DIPOLE } from '../../constants/flowTypes';
 
 export const dipoleVP = (mu, x0, y0, alpha) => {
   return (x, y) => {
+    const xDiff = x - x0;
+    const yDiff = y - y0;
+    const denom = Math.pow(xDiff, 2) + Math.pow(yDiff, 2);
+    if(denom === 0) {
+      return Infinity;
+    }
+
     return (-mu / (2 * Math.PI)) * (
       (
-        (x - x0) * Math.cos(alpha) +
-        (y - y0) * Math.sin(alpha)
-      ) /
-      (Math.pow(x - x0, 2) + Math.pow(y - y0, 2))
+        xDiff * Math.cos(alpha) +
+        yDiff * Math.sin(alpha)
+      ) / denom
     );
   };
 };

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import CloseButton from '../CloseButton';
-import { addFlow, editFlow, editFlowForm } from '../../util';
+import { addFlow, editFlow, editFlowForm, removeFlow } from '../../util';
 import variableMeta from '../../constants/variableMeta';
 
 const mapStateToProps = (state, ownProps) => {
@@ -59,7 +59,7 @@ export default class Flow extends Component {
           { flowId !== undefined &&
             <CloseButton
               className="flex0"
-              onClick={() => onRemove()}/>
+              onClick={() => removeFlow(flowId)}/>
           }
         </div>
         <form onSubmit={this.handleSubmit}>

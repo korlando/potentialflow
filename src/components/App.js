@@ -137,7 +137,7 @@ export default class App extends Component {
               })}
             </div>
           </div>
-          <div className="flow-forms">
+          <div>
             <h4>Add Flow Source</h4>
             <Uniform/>
             <PointSource/>
