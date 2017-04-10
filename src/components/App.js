@@ -1,16 +1,28 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import CloseButton from './CloseButton';
 import Uniform, { uniformVP } from './FlowElements/Uniform';
 import PointSource from './FlowElements/PointSource';
 import PointVortex from './FlowElements/PointVortex';
 import Dipole from './FlowElements/Dipole';
+import { UNIFORM,
+         POINT_SOURCE,
+         POINT_VORTEX,
+         DIPOLE} from '../constants/flowTypes';
 
-function makeVelocityPotential(elements) {
+const typeMap = {
+  [UNIFORM]: Uniform,
+  [POINT_SOURCE]: PointSource,
+  [POINT_VORTEX]: PointVortex,
+  [DIPOLE]: Dipole
+};
+
+function makeVelocityPotential(flowIds, flowMap) {
   let velocityPotential = (x, y) => 0;
-  elements.forEach((element) => {
+  flowIds.forEach((id) => {
     const currentVP = velocityPotential;
     velocityPotential = (x, y) => {
-      return currentVP(x, y) + element.vp(x, y);
+      return currentVP(x, y) + flowMap[id].vp(x, y);
     };
   });
   return velocityPotential;
@@ -44,99 +56,54 @@ const makeData = (zData) => {
 
 const SIZE = 100;
 
+const mapStateToProps = (state) => {
+  return {
+    activeFlowIds: state.flow.activeFlowIds,
+    activeFlowMap: state.flow.activeFlowMap
+  };
+};
+
+@connect(mapStateToProps)
 export default class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      flows: [{
-        component: Uniform,
-        U: 0,
-        V: 1,
-        vp: uniformVP(0, 1)
-      }],
       layout: {
         title: 'Potential Flow'
       }
     };
-    this.addUniformFlow = this.addUniformFlow.bind(this);
-    this.addPointSourceFlow = this.addPointSourceFlow.bind(this);
-    this.addPointVortexFlow = this.addPointVortexFlow.bind(this);
-    this.addDipoleFlow = this.addDipoleFlow.bind(this);
+    this.activeFlowTimer = null;
   };
 
   componentDidMount() {
-    const zData = makeZData(this.state.flows[0].vp, SIZE, SIZE);
+    this.renderNewPlot(this.graph, [], this.state.layout);
+    /*const zData = makeZData(this.state.flows[0].vp, SIZE, SIZE);
     const data = makeData(zData);
-    this.renderNewPlot(this.graph, data, this.state.layout);
+    this.renderNewPlot(this.graph, data, this.state.layout);*/
   };
 
-  componentDidUpdate() {
-    const vp = makeVelocityPotential(this.state.flows);
-    const zData = makeZData(vp, SIZE, SIZE);
-    const newData = makeData(zData);
-    this.renderNewPlot(this.graph, newData, this.state.layout);
+  componentWillReceiveProps(nextProps) {
+    const { activeFlowIds, activeFlowMap } = nextProps;
+    
+    if(activeFlowIds !== this.props.activeFlowIds ||
+      activeFlowMap !== this.props.activeFlowMap) {
+      clearTimeout(this.activeFlowTimer);
+      this.activeFlowTimer = setTimeout(() => {
+        const vp = makeVelocityPotential(activeFlowIds, activeFlowMap);
+        const zData = makeZData(vp, SIZE, SIZE);
+        const newData = makeData(zData);
+        this.renderNewPlot(this.graph, newData, this.state.layout);
+      }, 300);
+    }
   };
 
   renderNewPlot(node, data, layout) {
     Plotly.newPlot(node, data, layout);
   };
 
-  addUniformFlow(U, V, vp) {
-    this.setState({
-      flows: [...this.state.flows, {
-        component: Uniform,
-        U, V, vp
-      }]
-    });
-  };
-
-  addPointSourceFlow(m, x0, y0, vp) {
-    this.setState({
-      flows: [...this.state.flows, {
-        component: PointSource,
-        m, x0, y0, vp
-      }]
-    });
-  };
-
-  addPointVortexFlow(gamma, x0, y0, vp) {
-    this.setState({
-      flows: [...this.state.flows, {
-        component: PointVortex,
-        gamma, x0, y0, vp
-      }]
-    });
-  };
-
-  addDipoleFlow(mu, x0, y0, alpha, vp) {
-    this.setState({
-      flows: [...this.state.flows, {
-        component: Dipole,
-        mu, x0, y0, alpha, vp
-      }]
-    })
-  };
-
   render() {
-    const sources = [{
-      type: 'UNIFORM',
-      component: Uniform,
-      onAdd: this.addUniformFlow
-    }, {
-      type: 'POINT_SOURCE',
-      component: PointSource,
-      onAdd: this.addPointSourceFlow
-    }, {
-      type: 'POINT_VORTEX',
-      component: PointVortex,
-      onAdd: this.addPointVortexFlow
-    }, {
-      type: 'DIPOLE',
-      component: Dipole,
-      onAdd: this.addDipoleFlow
-    }];
-    const { flows } = this.state;
+    const { activeFlowIds, activeFlowMap } = this.props;
 
     return (
       <div>
@@ -152,31 +119,30 @@ export default class App extends Component {
             </div>
             
             <div className="flex1" style={{paddingTop: '50px'}}>
-              <h4>Current Flows &middot; {flows.length}</h4>
-              { flows.map((flow, i) => {
-                return (
-                  <flow.component key={i}
-                    {...flow}
-                    onRemove={() => {
-                      this.setState({
-                        flows: flows.filter((f, j) => {
-                          return j !== i;
-                        })
-                      });
-                    }}/>
-                );
+              <h4>Current Flows &middot; {activeFlowIds.length}</h4>
+              { activeFlowIds.map((id, i) => {
+                const flow = activeFlowMap[id];
+                switch(flow.type) {
+                  case UNIFORM:
+                    return <Uniform key={i} {...flow}/>;
+                  case POINT_SOURCE:
+                    return <PointSource key={i} {...flow}/>;
+                  case POINT_VORTEX:
+                    return <PointVortex key={i} {...flow}/>;
+                  case DIPOLE:
+                    return <Dipole key={i} {...flow}/>;
+                  default:
+                    return null;
+                }
               })}
             </div>
           </div>
-          <div>
+          <div className="flow-forms">
             <h4>Add Flow Source</h4>
-            { sources.map((source, i) => {
-              return (
-                <source.component key={i} style={{
-                  marginRight: '6px'
-                }} onAdd={source.onAdd}/>
-              );
-            })}
+            <Uniform/>
+            <PointSource/>
+            <PointVortex/>
+            <Dipole/>
           </div>
         </div>
       </div>

@@ -1,51 +1,86 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import CloseButton from '../CloseButton';
+import { addFlow, editFlow, editFlowForm } from '../../util';
+import variableMeta from '../../constants/variableMeta';
 
+const mapStateToProps = (state, ownProps) => {
+  return {
+    flow: ownProps.flowId !== undefined ?
+      state.flow.activeFlowMap[ownProps.flowId] :
+      state.flow.flowForms[ownProps.type]
+  };
+};
+
+@connect(mapStateToProps)
 export default class Flow extends Component {
   constructor(props) {
     super(props);
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  };
+
+  handleChange(key, value) {
+    const { flowId, flow, type, makeVP } = this.props;
+    const inputChanges = {
+      [key]: value
+    };
+
+    if(flowId !== undefined) {
+      const newInputs = Object.assign({}, flow.inputs, inputChanges);
+      editFlow(flowId, inputChanges, makeVP(newInputs));
+    } else {
+      editFlowForm(type, inputChanges);
+    }
+  };
+
+  handleSubmit(e) {
+    e.preventDefault();
+
+    const { flowId, flow, makeVP, type } = this.props;
+    if(flowId === undefined) {
+      addFlow(type, flow.inputs, makeVP(flow.inputs));
+    }
   };
 
   render() {
     const { name,
             className,
             style,
-            onAdd,
-            onRemove,
-            onSubmit,
-            onChange,
-            inputs } = this.props;
+            flowId,
+            flow } = this.props;
 
     return (
       <div className={`flow-element ${className || ''}`}
         style={style || {}}>
         <div className="flexbox">
           <label className="flex1">{name}</label>
-          { onRemove &&
+          { flowId !== undefined &&
             <CloseButton
               className="flex0"
               onClick={() => onRemove()}/>
           }
         </div>
-        <form onSubmit={onSubmit}>
-          { Object.keys(inputs).map((key, i) => {
-            const input = inputs[key];
+        <form onSubmit={this.handleSubmit}>
+          { Object.keys(flow.inputs).map((key, i) => {
+            const variable = variableMeta[key];
             return (
               <div key={i} className="input-group input-group-sm">
-                <div className="input-group-addon">{input.name}</div>
+                <div className="input-group-addon">{variable.name}</div>
                 <input type="number"
                   className="form-control"
-                  placeholder={input.placeholder}
-                  value={input.value}
+                  placeholder={variable.placeholder}
+                  value={flow.inputs[key]}
                   onChange={(e) => {
-                    onChange(key, e.target.value);
+                    this.handleChange(key, e.target.value);
                   }}/>
               </div>
             );
           })}
-          { onAdd &&
+          { flowId === undefined &&
             <button type="submit"
-              className="btn btn-primary btn-block">Add</button>
+              className="btn btn-primary btn-block btn-sm">Add</button>
           }
         </form>
       </div>
