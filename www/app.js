@@ -32289,7 +32289,8 @@ exports.default = function () {
       flow = state.activeFlowMap[action.flowId];
       return Object.assign({}, state, {
         activeFlowMap: Object.assign({}, state.activeFlowMap, _defineProperty({}, action.flowId, Object.assign({}, flow, {
-          inputs: Object.assign({}, flow.inputs, action.inputChanges)
+          inputs: Object.assign({}, flow.inputs, action.inputChanges),
+          vp: action.vp
         })))
       });
 
@@ -33661,11 +33662,12 @@ var addFlow = exports.addFlow = function addFlow(flow) {
   };
 };
 
-var editFlow = exports.editFlow = function editFlow(flowId, inputChanges) {
+var editFlow = exports.editFlow = function editFlow(flowId, inputChanges, vp) {
   return {
     type: 'EDIT_FLOW',
     flowId: flowId,
-    inputChanges: inputChanges
+    inputChanges: inputChanges,
+    vp: vp
   };
 };
 
@@ -33724,8 +33726,8 @@ var addFlow = exports.addFlow = function addFlow(type, inputs, vp) {
   _store2.default.dispatch(flowActions.addFlow({ type: type, inputs: inputs, vp: vp }));
 };
 
-var editFlow = exports.editFlow = function editFlow(flowId, inputChanges) {
-  _store2.default.dispatch(flowActions.editFlow(flowId, inputChanges));
+var editFlow = exports.editFlow = function editFlow(flowId, inputChanges, vp) {
+  _store2.default.dispatch(flowActions.editFlow(flowId, inputChanges, vp));
 };
 
 var editFlowForm = exports.editFlowForm = function editFlowForm(flowType, inputChanges) {
