@@ -13399,6 +13399,10 @@ var _PointVortex = __webpack_require__(488);
 
 var _PointVortex2 = _interopRequireDefault(_PointVortex);
 
+var _Dipole = __webpack_require__(491);
+
+var _Dipole2 = _interopRequireDefault(_Dipole);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -13494,6 +13498,7 @@ var App = function (_Component) {
     _this.addUniformFlow = _this.addUniformFlow.bind(_this);
     _this.addPointSourceFlow = _this.addPointSourceFlow.bind(_this);
     _this.addPointVortexFlow = _this.addPointVortexFlow.bind(_this);
+    _this.addDipoleFlow = _this.addDipoleFlow.bind(_this);
     return _this;
   }
 
@@ -13548,6 +13553,16 @@ var App = function (_Component) {
       });
     }
   }, {
+    key: 'addDipoleFlow',
+    value: function addDipoleFlow(mu, x0, y0, alpha, vp) {
+      this.setState({
+        flows: [].concat(_toConsumableArray(this.state.flows), [{
+          component: _Dipole2.default,
+          mu: mu, x0: x0, y0: y0, alpha: alpha, vp: vp
+        }])
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
@@ -13555,21 +13570,19 @@ var App = function (_Component) {
       var sources = [{
         type: 'UNIFORM',
         component: _Uniform2.default,
-        onAdd: function onAdd(U, V, vp) {
-          _this2.addUniformFlow(U, V, vp);
-        }
+        onAdd: this.addUniformFlow
       }, {
         type: 'POINT_SOURCE',
         component: _PointSource2.default,
-        onAdd: function onAdd(m, x0, y0, vp) {
-          _this2.addPointSourceFlow(m, x0, y0, vp);
-        }
+        onAdd: this.addPointSourceFlow
       }, {
         type: 'POINT_VORTEX',
         component: _PointVortex2.default,
-        onAdd: function onAdd(gamma, x0, y0, vp) {
-          _this2.addPointVortexFlow(gamma, x0, y0, vp);
-        }
+        onAdd: this.addPointVortexFlow
+      }, {
+        type: 'DIPOLE',
+        component: _Dipole2.default,
+        onAdd: this.addDipoleFlow
       }];
       var flows = this.state.flows;
 
@@ -31334,6 +31347,179 @@ function _interopRequireDefault(obj) {
 exports.default = function (props) {
   return _react2.default.createElement('span', null, props.symbol, _react2.default.createElement('sub', null, '0'));
 };
+
+/***/ }),
+/* 491 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = exports.dipoleVP = undefined;
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }return target;
+};
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _react = __webpack_require__(57);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _CloseButton = __webpack_require__(74);
+
+var _CloseButton2 = _interopRequireDefault(_CloseButton);
+
+var _Flow = __webpack_require__(137);
+
+var _Flow2 = _interopRequireDefault(_Flow);
+
+var _Naught = __webpack_require__(490);
+
+var _Naught2 = _interopRequireDefault(_Naught);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
+  } else {
+    obj[key] = value;
+  }return obj;
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var dipoleVP = exports.dipoleVP = function dipoleVP(mu, x0, y0, alpha) {
+  return function (x, y) {
+    return -mu / (2 * Math.PI) * (((x - x0) * Math.cos(alpha) + (y - y0) * Math.sin(alpha)) / (Math.pow(x - x0, 2) + Math.pow(y - y0, 2)));
+  };
+};
+
+var Dipole = function (_Component) {
+  _inherits(Dipole, _Component);
+
+  function Dipole(props) {
+    _classCallCheck(this, Dipole);
+
+    var _this = _possibleConstructorReturn(this, (Dipole.__proto__ || Object.getPrototypeOf(Dipole)).call(this, props));
+
+    _this.state = {
+      mu: {
+        name: _react2.default.createElement('span', null, "\u03BC"),
+        value: 100,
+        placeholder: 'magnitude'
+      },
+      x0: {
+        name: _react2.default.createElement(_Naught2.default, { symbol: 'x' }),
+        value: 50,
+        placeholder: 'x position'
+      },
+      y0: {
+        name: _react2.default.createElement(_Naught2.default, { symbol: 'y' }),
+        value: 50,
+        placeholder: 'y position'
+      },
+      alpha: {
+        name: _react2.default.createElement('span', null, "\u03B1"),
+        value: 0,
+        placeholder: 'angle'
+      }
+    };
+    _this.handleSubmit = _this.handleSubmit.bind(_this);
+    return _this;
+  }
+
+  _createClass(Dipole, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      var update = {};
+      Object.keys(this.state).forEach(function (key) {
+        if (_this2.props[key] !== undefined) {
+          update[key] = Object.assign({}, _this2.state[key], {
+            value: _this2.props[key]
+          });
+        }
+      });
+      if (Object.keys(update).length) {
+        this.setState(update);
+      }
+    }
+  }, {
+    key: 'handleSubmit',
+    value: function handleSubmit(e) {
+      e.preventDefault();
+      var onAdd = this.props.onAdd;
+      var _state = this.state,
+          mu = _state.mu,
+          x0 = _state.x0,
+          y0 = _state.y0,
+          alpha = _state.alpha;
+
+      if (onAdd) {
+        onAdd(mu.value, x0.value, y0.value, alpha.value, dipoleVP(mu.value, x0.value, y0.value, alpha.value));
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this3 = this;
+
+      return _react2.default.createElement(_Flow2.default, _extends({}, this.props, {
+        name: 'Dipole',
+        inputs: this.state,
+        onSubmit: this.handleSubmit,
+        onChange: function onChange(key, value) {
+          _this3.setState(_defineProperty({}, key, Object.assign({}, _this3.state[key], { value: value })));
+        } }));
+    }
+  }]);
+
+  return Dipole;
+}(_react.Component);
+
+exports.default = Dipole;
+;
 
 /***/ })
 /******/ ]);

@@ -3,6 +3,7 @@ import CloseButton from './CloseButton';
 import Uniform, { uniformVP } from './FlowElements/Uniform';
 import PointSource from './FlowElements/PointSource';
 import PointVortex from './FlowElements/PointVortex';
+import Dipole from './FlowElements/Dipole';
 
 function makeVelocityPotential(elements) {
   let velocityPotential = (x, y) => 0;
@@ -61,6 +62,7 @@ export default class App extends Component {
     this.addUniformFlow = this.addUniformFlow.bind(this);
     this.addPointSourceFlow = this.addPointSourceFlow.bind(this);
     this.addPointVortexFlow = this.addPointVortexFlow.bind(this);
+    this.addDipoleFlow = this.addDipoleFlow.bind(this);
   };
 
   componentDidMount() {
@@ -107,25 +109,32 @@ export default class App extends Component {
     });
   };
 
+  addDipoleFlow(mu, x0, y0, alpha, vp) {
+    this.setState({
+      flows: [...this.state.flows, {
+        component: Dipole,
+        mu, x0, y0, alpha, vp
+      }]
+    })
+  };
+
   render() {
     const sources = [{
       type: 'UNIFORM',
       component: Uniform,
-      onAdd: (U, V, vp) => {
-        this.addUniformFlow(U, V, vp);
-      }
+      onAdd: this.addUniformFlow
     }, {
       type: 'POINT_SOURCE',
       component: PointSource,
-      onAdd: (m, x0, y0, vp) => {
-        this.addPointSourceFlow(m, x0, y0, vp);
-      }
+      onAdd: this.addPointSourceFlow
     }, {
       type: 'POINT_VORTEX',
       component: PointVortex,
-      onAdd: (gamma, x0, y0, vp) => {
-        this.addPointVortexFlow(gamma, x0, y0, vp);
-      }
+      onAdd: this.addPointVortexFlow
+    }, {
+      type: 'DIPOLE',
+      component: Dipole,
+      onAdd: this.addDipoleFlow
     }];
     const { flows } = this.state;
 
