@@ -6,7 +6,7 @@ const getDenom = (xDiff, yDiff) => {
   return Math.pow(xDiff, 2) + Math.pow(yDiff, 2);
 };
 
-export const dipoleVP = (mu, x0, y0, alpha) => {
+const dipoleVP = (mu, x0, y0, alpha) => {
   return (x, y) => {
     const xDiff = x - x0;
     const yDiff = y - y0;
@@ -23,7 +23,7 @@ export const dipoleVP = (mu, x0, y0, alpha) => {
   };
 };
 
-const makeVP = (inputs) => {
+export const makeDipoleVP = (inputs) => {
   const { mu, x0, y0, alpha } = inputs;
   return dipoleVP(mu, x0, y0, alpha);
 };
@@ -39,7 +39,7 @@ export default class Dipole extends Component {
         {...this.props}
         name="Dipole"
         type={DIPOLE}
-        makeVP={makeVP}/>
+        makeVP={makeDipoleVP}/>
     );
   };
 };

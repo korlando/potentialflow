@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import CloseButton from './CloseButton';
-import Uniform, { uniformVP } from './FlowElements/Uniform';
+import Uniform, { makeUniformVP } from './FlowElements/Uniform';
 import PointSource from './FlowElements/PointSource';
 import PointVortex from './FlowElements/PointVortex';
 import Dipole from './FlowElements/Dipole';
@@ -9,6 +9,7 @@ import { UNIFORM,
          POINT_SOURCE,
          POINT_VORTEX,
          DIPOLE} from '../constants/flowTypes';
+import { addFlow } from '../util';
 
 const typeMap = {
   [UNIFORM]: Uniform,
@@ -79,9 +80,8 @@ export default class App extends Component {
 
   componentDidMount() {
     this.renderNewPlot(this.graph, [], this.state.layout);
-    /*const zData = makeZData(this.state.flows[0].vp, SIZE, SIZE);
-    const data = makeData(zData);
-    this.renderNewPlot(this.graph, data, this.state.layout);*/
+    const inputs = { U: 0, V: 1 };
+    addFlow(UNIFORM, inputs, makeUniformVP(inputs));
   };
 
   componentWillReceiveProps(nextProps) {

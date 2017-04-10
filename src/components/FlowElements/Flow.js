@@ -24,7 +24,7 @@ export default class Flow extends Component {
   handleChange(key, value) {
     const { flowId, flow, type, makeVP } = this.props;
     const inputChanges = {
-      [key]: value
+      [key]: value === '' ? value : Number(value)
     };
 
     if(flowId !== undefined) {

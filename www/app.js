@@ -9276,7 +9276,7 @@ var Flow = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = func
           type = _props.type,
           makeVP = _props.makeVP;
 
-      var inputChanges = _defineProperty({}, key, value);
+      var inputChanges = _defineProperty({}, key, value === '' ? value : Number(value));
 
       if (flowId !== undefined) {
         var newInputs = Object.assign({}, flow.inputs, inputChanges);
@@ -13468,6 +13468,8 @@ var _Dipole2 = _interopRequireDefault(_Dipole);
 
 var _flowTypes = __webpack_require__(534);
 
+var _util = __webpack_require__(536);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -13570,9 +13572,8 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
     key: 'componentDidMount',
     value: function componentDidMount() {
       this.renderNewPlot(this.graph, [], this.state.layout);
-      /*const zData = makeZData(this.state.flows[0].vp, SIZE, SIZE);
-      const data = makeData(zData);
-      this.renderNewPlot(this.graph, data, this.state.layout);*/
+      var inputs = { U: 0, V: 1 };
+      (0, _util.addFlow)(_flowTypes.UNIFORM, inputs, (0, _Uniform.makeUniformVP)(inputs));
     }
   }, {
     key: 'componentWillReceiveProps',
@@ -13719,7 +13720,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.pointSourceVP = undefined;
+exports.default = exports.makePointSourceVP = undefined;
 
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
@@ -13773,13 +13774,17 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var pointSourceVP = exports.pointSourceVP = function pointSourceVP(m, x0, y0) {
+var pointSourceVP = function pointSourceVP(m, x0, y0) {
   return function (x, y) {
-    return m / (2 * Math.PI) * Math.log(Math.sqrt(Math.pow(x - x0, 2)) + Math.sqrt(Math.pow(y - y0, 2)));
+    var val = Math.sqrt(Math.pow(x - x0, 2)) + Math.sqrt(Math.pow(y - y0, 2));
+    if (val === 0) {
+      return -Infinity;
+    }
+    return m / (2 * Math.PI) * Math.log(val);
   };
 };
 
-var makeVP = function makeVP(inputs) {
+var makePointSourceVP = exports.makePointSourceVP = function makePointSourceVP(inputs) {
   var m = inputs.m,
       x0 = inputs.x0,
       y0 = inputs.y0;
@@ -13802,7 +13807,7 @@ var PointSource = function (_Component) {
       return _react2.default.createElement(_Flow2.default, _extends({}, this.props, {
         name: 'Point Source/Sink',
         type: _flowTypes.POINT_SOURCE,
-        makeVP: makeVP }));
+        makeVP: makePointSourceVP }));
     }
   }]);
 
@@ -13824,7 +13829,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.uniformVP = undefined;
+exports.default = exports.makeUniformVP = undefined;
 
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
@@ -13878,13 +13883,13 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var uniformVP = exports.uniformVP = function uniformVP(U, V) {
+var uniformVP = function uniformVP(U, V) {
   return function (x, y) {
     return U * x + V * y;
   };
 };
 
-var makeVP = function makeVP(inputs) {
+var makeUniformVP = exports.makeUniformVP = function makeUniformVP(inputs) {
   var U = inputs.U,
       V = inputs.V;
 
@@ -13906,7 +13911,7 @@ var Uniform = function (_Component) {
       return _react2.default.createElement(_Flow2.default, _extends({}, this.props, {
         name: 'Uniform',
         type: _flowTypes.UNIFORM,
-        makeVP: makeVP }));
+        makeVP: makeUniformVP }));
     }
   }]);
 
@@ -31079,7 +31084,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.pointVortexVP = undefined;
+exports.default = exports.makePointVortexVP = undefined;
 
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
@@ -31133,13 +31138,13 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var pointVortexVP = exports.pointVortexVP = function pointVortexVP(gamma, x0, y0) {
+var pointVortexVP = function pointVortexVP(gamma, x0, y0) {
   return function (x, y) {
     return gamma / (2 * Math.PI) * Math.atan2(y - y0, x - x0);
   };
 };
 
-var makeVP = function makeVP(inputs) {
+var makePointVortexVP = exports.makePointVortexVP = function makePointVortexVP(inputs) {
   var gamma = inputs.gamma,
       x0 = inputs.x0,
       y0 = inputs.y0;
@@ -31162,7 +31167,7 @@ var PointVortex = function (_Component) {
       return _react2.default.createElement(_Flow2.default, _extends({}, this.props, {
         name: 'Point Vortex',
         type: _flowTypes.POINT_VORTEX,
-        makeVP: makeVP }));
+        makeVP: makePointVortexVP }));
     }
   }]);
 
@@ -31186,7 +31191,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.dipoleVP = undefined;
+exports.default = exports.makeDipoleVP = undefined;
 
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
@@ -31244,7 +31249,7 @@ var getDenom = function getDenom(xDiff, yDiff) {
   return Math.pow(xDiff, 2) + Math.pow(yDiff, 2);
 };
 
-var dipoleVP = exports.dipoleVP = function dipoleVP(mu, x0, y0, alpha) {
+var dipoleVP = function dipoleVP(mu, x0, y0, alpha) {
   return function (x, y) {
     var xDiff = x - x0;
     var yDiff = y - y0;
@@ -31258,7 +31263,7 @@ var dipoleVP = exports.dipoleVP = function dipoleVP(mu, x0, y0, alpha) {
   };
 };
 
-var makeVP = function makeVP(inputs) {
+var makeDipoleVP = exports.makeDipoleVP = function makeDipoleVP(inputs) {
   var mu = inputs.mu,
       x0 = inputs.x0,
       y0 = inputs.y0,
@@ -31282,7 +31287,7 @@ var Dipole = function (_Component) {
       return _react2.default.createElement(_Flow2.default, _extends({}, this.props, {
         name: 'Dipole',
         type: _flowTypes.DIPOLE,
-        makeVP: makeVP }));
+        makeVP: makeDipoleVP }));
     }
   }]);
 
