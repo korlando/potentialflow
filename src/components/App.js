@@ -11,6 +11,38 @@ import { UNIFORM,
          DIPOLE} from '../constants/flowTypes';
 import { addFlow } from '../util';
 
+const SIZE = 100;
+
+/**
+ * Generate custom X and Y array scales
+ * centered around the origin.
+ * @param {Number} xSize the number of x points
+ * @param {Number} ySize the number of y points
+ * @return {Object} map from xCoords and yCoords 
+ *         to their respective coordinate arrays
+ */
+const generateXY = (xSize, ySize) => {
+  const x = [],
+        y = [];
+  const xOffset = Math.round(xSize / 2),
+        yOffset = Math.round(ySize / 2);
+
+  for(let i = 0; i < xSize; i++) {
+    x.push(i - xOffset);
+  }
+  for(let i = 0; i < ySize; i++) {
+    y.push(i - yOffset);
+  }
+
+  return {
+    xCoords: x,
+    yCoords: y
+  };
+};
+
+const coordinates = generateXY(SIZE, SIZE);
+const { xCoords, yCoords } = coordinates;
+
 const typeMap = {
   [UNIFORM]: Uniform,
   [POINT_SOURCE]: PointSource,
@@ -29,24 +61,38 @@ function makeVelocityPotential(flowIds, flowMap) {
   return velocityPotential;
 };
 
-function makeZData(velocityPotential, xSize, ySize) {
+/**
+ * Generate the z data for a contour plot.
+ * @param {function} zFcn a function of (x, y)
+ *        to get the z data
+ * @param xCoords the x coordinates to plot
+ * @param yCoords the y coordinates to plot
+ * @return {Array} the z data, an array of arrays
+ *         where zData[j][i] corresponds to the z
+ *         value of (xCoords[i], yCoords[j])
+ */
+function makeZData(zFcn, xCoords, yCoords) {
   const zData = [];
-  for(let i = 0; i < ySize; i++) {
+  
+  yCoords.forEach((y, j) => {
     zData.push([]);
-    for(let j = 0; j < xSize; j++) {
-      zData[i][j] = velocityPotential(j, i);
-    }
-  }
+    
+    xCoords.forEach((x, i) => {
+      zData[j][i] = zFcn(x, y);
+    });
+  });
   return zData;
 };
 
 const makeData = (zData) => {
   return [{
     z: zData,
+    x: xCoords,
+    y: yCoords,
     type: 'contour',
-    /*contours: {
+    contours: {
       coloring: 'lines'
-    },*/
+    },
     ncontours: 100,
     //colorscale: 'Greys',
     line: {
@@ -55,8 +101,6 @@ const makeData = (zData) => {
     connectgaps: true
   }]
 };
-
-const SIZE = 100;
 
 const mapStateToProps = (state) => {
   return {
@@ -92,7 +136,7 @@ export default class App extends Component {
       clearTimeout(this.activeFlowTimer);
       this.activeFlowTimer = setTimeout(() => {
         const vp = makeVelocityPotential(activeFlowIds, activeFlowMap);
-        const zData = makeZData(vp, SIZE, SIZE);
+        const zData = makeZData(vp, xCoords, yCoords);
         const newData = makeData(zData);
         this.renderNewPlot(this.graph, newData, this.state.layout);
       }, 300);
