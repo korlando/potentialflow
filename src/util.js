@@ -1,12 +1,12 @@
 import * as flowActions from './actions/flowActions';
 import store from './store/store';
 
-export const addFlow = (type, inputs, vp) => {
-  store.dispatch(flowActions.addFlow({ type, inputs, vp }));
+export const addFlow = (type, inputs, flowFcns) => {
+  store.dispatch(flowActions.addFlow({ type, inputs, flowFcns }));
 };
 
-export const editFlow = (flowId, inputChanges, vp) => {
-  store.dispatch(flowActions.editFlow(flowId, inputChanges, vp));
+export const editFlow = (flowId, inputChanges, flowFcns) => {
+  store.dispatch(flowActions.editFlow(flowId, inputChanges, flowFcns));
 };
 
 export const editFlowForm = (flowType, inputChanges) => {

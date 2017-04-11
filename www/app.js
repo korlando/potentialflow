@@ -4914,13 +4914,13 @@ var Flow = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = func
           flowId = _props.flowId,
           flow = _props.flow,
           type = _props.type,
-          makeVP = _props.makeVP;
+          makeFlowFcns = _props.makeFlowFcns;
 
       var inputChanges = _defineProperty({}, key, value === '' ? value : Number(value));
 
       if (flowId !== undefined) {
         var newInputs = Object.assign({}, flow.inputs, inputChanges);
-        (0, _util.editFlow)(flowId, inputChanges, makeVP(newInputs));
+        (0, _util.editFlow)(flowId, inputChanges, makeFlowFcns(newInputs));
       } else {
         (0, _util.editFlowForm)(type, inputChanges);
       }
@@ -4933,11 +4933,11 @@ var Flow = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = func
       var _props2 = this.props,
           flowId = _props2.flowId,
           flow = _props2.flow,
-          makeVP = _props2.makeVP,
+          makeFlowFcns = _props2.makeFlowFcns,
           type = _props2.type;
 
       if (flowId === undefined) {
-        (0, _util.addFlow)(type, flow.inputs, makeVP(flow.inputs));
+        (0, _util.addFlow)(type, flow.inputs, makeFlowFcns(flow.inputs));
       }
     }
   }, {
@@ -9591,12 +9591,12 @@ function _interopRequireWildcard(obj) {
   }
 }
 
-var addFlow = exports.addFlow = function addFlow(type, inputs, vp) {
-  _store2.default.dispatch(flowActions.addFlow({ type: type, inputs: inputs, vp: vp }));
+var addFlow = exports.addFlow = function addFlow(type, inputs, flowFcns) {
+  _store2.default.dispatch(flowActions.addFlow({ type: type, inputs: inputs, flowFcns: flowFcns }));
 };
 
-var editFlow = exports.editFlow = function editFlow(flowId, inputChanges, vp) {
-  _store2.default.dispatch(flowActions.editFlow(flowId, inputChanges, vp));
+var editFlow = exports.editFlow = function editFlow(flowId, inputChanges, flowFcns) {
+  _store2.default.dispatch(flowActions.editFlow(flowId, inputChanges, flowFcns));
 };
 
 var editFlowForm = exports.editFlowForm = function editFlowForm(flowType, inputChanges) {
@@ -14535,7 +14535,7 @@ function makeVelocityPotential(flowIds, flowMap) {
   flowIds.forEach(function (id) {
     var currentVP = velocityPotential;
     velocityPotential = function velocityPotential(x, y) {
-      return currentVP(x, y) + flowMap[id].vp(x, y);
+      return currentVP(x, y) + flowMap[id].flowFcns.vp(x, y);
     };
   });
   return velocityPotential;
@@ -14611,7 +14611,7 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
     value: function componentDidMount() {
       this.renderNewPlot(this.graph, [], this.state.layout);
       var inputs = { U: 0, V: 1 };
-      (0, _util.addFlow)(_flowTypes.UNIFORM, inputs, (0, _Uniform.makeUniformVP)(inputs));
+      (0, _util.addFlow)(_flowTypes.UNIFORM, inputs, (0, _Uniform.makeUniformFlowFcns)(inputs));
     }
   }, {
     key: 'componentWillReceiveProps',
@@ -14763,12 +14763,12 @@ var addFlow = exports.addFlow = function addFlow(flow) {
   };
 };
 
-var editFlow = exports.editFlow = function editFlow(flowId, inputChanges, vp) {
+var editFlow = exports.editFlow = function editFlow(flowId, inputChanges, flowFcns) {
   return {
     type: 'EDIT_FLOW',
     flowId: flowId,
     inputChanges: inputChanges,
-    vp: vp
+    flowFcns: flowFcns
   };
 };
 
@@ -14799,7 +14799,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.makeDipoleVP = undefined;
+exports.default = exports.makeDipoleFlowFcns = undefined;
 
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
@@ -14871,13 +14871,61 @@ var dipoleVP = function dipoleVP(mu, x0, y0, alpha) {
   };
 };
 
-var makeDipoleVP = exports.makeDipoleVP = function makeDipoleVP(inputs) {
+var dipoleStream = function dipoleStream(mu, x0, y0, alpha) {
+  return function (x, y) {
+    var xDiff = x - x0;
+    var yDiff = y - v0;
+    var denom = getDenom(xDiff, yDiff);
+    if (denom === 0) {
+      return Infinity;
+    }
+
+    return mu / (2 * Math.PI) * (xDiff * Math.sin(alpha) + yDiff * Math.cos(alpha)) / denom;
+  };
+};
+
+var dipoleXVel = function dipoleXVel(mu, x0, y0, alpha) {
+  return function (x, y) {
+    var xDiff = x - x0;
+    var yDiff = y - y0;
+    var denom = getDenom(xDiff, yDiff);
+    if (denom === 0) {
+      return Infinity;
+    }
+
+    var sinA = Math.sin(alpha);
+    var cosA = Math.cos(alpha);
+    return (denom * cosA - 2 * xDiff * (xDiff * cosA + yDiff * sinA)) / Math.pow(denom, 2);
+  };
+};
+
+var dipoleYVel = function dipoleYVel(mu, x0, y0, alpha) {
+  return function (x, y) {
+    var xDiff = x - x0;
+    var yDiff = y - y0;
+    var denom = getDenom(xDiff, yDiff);
+    if (denom === 0) {
+      return Infinity;
+    }
+
+    var sinA = Math.sin(alpha);
+    var cosA = Math.cos(alpha);
+    return (denom * sinA - 2 * yDiff * (xDiff * cosA + yDiff * sinA)) / Math.pow(denom, 2);
+  };
+};
+
+var makeDipoleFlowFcns = exports.makeDipoleFlowFcns = function makeDipoleFlowFcns(inputs) {
   var mu = inputs.mu,
       x0 = inputs.x0,
       y0 = inputs.y0,
       alpha = inputs.alpha;
 
-  return dipoleVP(mu, x0, y0, alpha);
+  return {
+    vp: dipoleVP(mu, x0, y0, alpha),
+    stream: dipoleStream(mu, x0, y0, alpha),
+    xVel: dipoleXVel(mu, x0, y0, alpha),
+    yVel: dipoleYVel(mu, x0, y0, alpha)
+  };
 };
 
 var Dipole = function (_Component) {
@@ -14895,7 +14943,7 @@ var Dipole = function (_Component) {
       return _react2.default.createElement(_Flow2.default, _extends({}, this.props, {
         name: 'Dipole',
         type: _flowTypes.DIPOLE,
-        makeVP: makeDipoleVP }));
+        makeFlowFcns: makeDipoleFlowFcns }));
     }
   }]);
 
@@ -14917,7 +14965,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.makePointSourceVP = undefined;
+exports.default = exports.makePointSourceFlowFcns = undefined;
 
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
@@ -14981,12 +15029,45 @@ var pointSourceVP = function pointSourceVP(m, x0, y0) {
   };
 };
 
-var makePointSourceVP = exports.makePointSourceVP = function makePointSourceVP(inputs) {
+var pointSourceStream = function pointSourceStream(m, x0, y0) {
+  return function (x, y) {
+    return m / (2 * Math.PI) * Math.atan2(y - y0, x - x0);
+  };
+};
+
+var pointSourceXVel = function pointSourceXVel(m, x0, y0) {
+  return function (x, y) {
+    var val = Math.sqrt(Math.pow(x - x0, 2) + Math.pow(y - y0, 2));
+    if (val === 0) {
+      return Infinity;
+    }
+
+    return m / (2 * Math.PI * val) * ((x - x0) / val);
+  };
+};
+
+var pointSourceYVel = function pointSourceYVel(m, x0, y0) {
+  return function (x, y) {
+    var val = Math.sqrt(Math.pow(x - x0, 2) + Math.pow(y - y0, 2));
+    if (val === 0) {
+      return Infinity;
+    }
+
+    return m / (2 * Math.PI * val) * ((y - y0) / val);
+  };
+};
+
+var makePointSourceFlowFcns = exports.makePointSourceFlowFcns = function makePointSourceFlowFcns(inputs) {
   var m = inputs.m,
       x0 = inputs.x0,
       y0 = inputs.y0;
 
-  return pointSourceVP(m, x0, y0);
+  return {
+    vp: pointSourceVP(m, x0, y0),
+    stream: pointSourceStream(m, x0, y0),
+    xVel: pointSourceXVel(m, x0, y0),
+    yVel: pointSourceYVel(m, x0, y0)
+  };
 };
 
 var PointSource = function (_Component) {
@@ -15004,7 +15085,7 @@ var PointSource = function (_Component) {
       return _react2.default.createElement(_Flow2.default, _extends({}, this.props, {
         name: 'Point Source/Sink',
         type: _flowTypes.POINT_SOURCE,
-        makeVP: makePointSourceVP }));
+        makeFlowFcns: makePointSourceFlowFcns }));
     }
   }]);
 
@@ -15026,7 +15107,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.makePointVortexVP = undefined;
+exports.default = exports.makePointVortexFlowFcns = undefined;
 
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
@@ -15086,12 +15167,49 @@ var pointVortexVP = function pointVortexVP(gamma, x0, y0) {
   };
 };
 
-var makePointVortexVP = exports.makePointVortexVP = function makePointVortexVP(inputs) {
+var pointVortexStream = function pointVortexStream(gamma, x0, y0) {
+  return function (x, y) {
+    return gamma / (2 * Math.PI) * Math.log(Math.sqrt(Math.pow(x - x0, 2) + Math.pow(y - y0, 2)));
+  };
+};
+
+var pointVortexXVel = function pointVortexXVel(gamma, x0, y0) {
+  return function (x, y) {
+    var xDiff = x - x0;
+    var yDiff = y - y0;
+    var val = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+    if (val === 0) {
+      return Infinity;
+    }
+
+    return gamma / (2 * Math.PI * val) * (-yDiff / val);
+  };
+};
+
+var pointVortexYVel = function pointVortexYVel(gamma, x0, y0) {
+  return function (x, y) {
+    var xDiff = x - x0;
+    var yDiff = y - y0;
+    var val = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+    if (val === 0) {
+      return Infinity;
+    }
+
+    return gamma / (2 * Math.PI * val) * (xDiff / val);
+  };
+};
+
+var makePointVortexFlowFcns = exports.makePointVortexFlowFcns = function makePointVortexFlowFcns(inputs) {
   var gamma = inputs.gamma,
       x0 = inputs.x0,
       y0 = inputs.y0;
 
-  return pointVortexVP(gamma, x0, y0);
+  return {
+    vp: pointVortexVP(gamma, x0, y0),
+    stream: pointVortexStream(gamma, x0, y0),
+    xVel: pointVortexXVel(gamma, x0, y0),
+    yVel: pointVortexYVel(gamma, x0, y0)
+  };
 };
 
 var PointVortex = function (_Component) {
@@ -15109,7 +15227,7 @@ var PointVortex = function (_Component) {
       return _react2.default.createElement(_Flow2.default, _extends({}, this.props, {
         name: 'Point Vortex',
         type: _flowTypes.POINT_VORTEX,
-        makeVP: makePointVortexVP }));
+        makeFlowFcns: makePointVortexFlowFcns }));
     }
   }]);
 
@@ -15131,7 +15249,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.makeUniformVP = undefined;
+exports.default = exports.makeUniformFlowFcns = undefined;
 
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
@@ -15191,11 +15309,34 @@ var uniformVP = function uniformVP(U, V) {
   };
 };
 
-var makeUniformVP = exports.makeUniformVP = function makeUniformVP(inputs) {
+var uniformStream = function uniformStream(U, V) {
+  return function (x, y) {
+    return -V * x + U * y;
+  };
+};
+
+var uniformXVel = function uniformXVel(U, V) {
+  return function (x, y) {
+    return U;
+  };
+};
+
+var uniformYVel = function uniformYVel(U, V) {
+  return function (x, y) {
+    return V;
+  };
+};
+
+var makeUniformFlowFcns = exports.makeUniformFlowFcns = function makeUniformFlowFcns(inputs) {
   var U = inputs.U,
       V = inputs.V;
 
-  return uniformVP(U, V);
+  return {
+    vp: uniformVP(U, V),
+    stream: uniformStream(U, V),
+    xVel: uniformXVel(U, V),
+    yVel: uniformYVel(U, V)
+  };
 };
 
 var Uniform = function (_Component) {
@@ -15213,7 +15354,7 @@ var Uniform = function (_Component) {
       return _react2.default.createElement(_Flow2.default, _extends({}, this.props, {
         name: 'Uniform',
         type: _flowTypes.UNIFORM,
-        makeVP: makeUniformVP }));
+        makeFlowFcns: makeUniformFlowFcns }));
     }
   }]);
 
@@ -15425,7 +15566,7 @@ exports.default = function () {
       return Object.assign({}, state, {
         activeFlowMap: Object.assign({}, state.activeFlowMap, _defineProperty({}, action.flowId, Object.assign({}, flow, {
           inputs: Object.assign({}, flow.inputs, action.inputChanges),
-          vp: action.vp
+          flowFcns: action.flowFcns
         })))
       });
 

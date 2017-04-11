@@ -61,7 +61,7 @@ export default (state = defaultState, action) => {
         activeFlowMap: Object.assign({}, state.activeFlowMap, {
           [action.flowId]: Object.assign({}, flow, {
             inputs: Object.assign({}, flow.inputs, action.inputChanges),
-            vp: action.vp
+            flowFcns: action.flowFcns
           })
         })
       });

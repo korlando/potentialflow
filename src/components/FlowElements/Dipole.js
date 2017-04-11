@@ -16,16 +16,71 @@ const dipoleVP = (mu, x0, y0, alpha) => {
       return Infinity;
     }
 
-    return -mu / (2 * Math.PI) * (
+    return (-mu / (2 * Math.PI)) * (
       xDiff * Math.cos(alpha) +
       yDiff * Math.sin(alpha)
     ) / denom;
   };
 };
 
-export const makeDipoleVP = (inputs) => {
+const dipoleStream = (mu, x0, y0, alpha) => {
+  return (x, y) => {
+    const xDiff = x - x0;
+    const yDiff = y - v0;
+    const denom = getDenom(xDiff, yDiff);
+    if(denom === 0) {
+      return Infinity;
+    }
+
+    return (mu / (2 * Math.PI)) * (
+      xDiff * Math.sin(alpha) +
+      yDiff * Math.cos(alpha)
+    ) / denom;
+  };
+};
+
+const dipoleXVel = (mu, x0, y0, alpha) => {
+  return (x, y) => {
+    const xDiff = x - x0;
+    const yDiff = y - y0;
+    const denom = getDenom(xDiff, yDiff);
+    if(denom === 0) {
+      return Infinity;
+    }
+
+    const sinA = Math.sin(alpha);
+    const cosA = Math.cos(alpha);
+    return (denom * cosA - 2 * xDiff * (
+      xDiff * cosA + yDiff * sinA
+    )) / Math.pow(denom, 2);
+  };
+};
+
+const dipoleYVel = (mu, x0, y0, alpha) => {
+  return (x, y) => {
+    const xDiff = x - x0;
+    const yDiff = y - y0;
+    const denom = getDenom(xDiff, yDiff);
+    if(denom === 0) {
+      return Infinity;
+    }
+
+    const sinA = Math.sin(alpha);
+    const cosA = Math.cos(alpha);
+    return (denom * sinA - 2 * yDiff * (
+      xDiff * cosA + yDiff * sinA
+    )) / Math.pow(denom, 2);
+  };
+};
+
+export const makeDipoleFlowFcns = (inputs) => {
   const { mu, x0, y0, alpha } = inputs;
-  return dipoleVP(mu, x0, y0, alpha);
+  return {
+    vp: dipoleVP(mu, x0, y0, alpha),
+    stream: dipoleStream(mu, x0, y0, alpha),
+    xVel: dipoleXVel(mu, x0, y0, alpha),
+    yVel: dipoleYVel(mu, x0, y0, alpha)
+  };
 };
 
 export default class Dipole extends Component {
@@ -39,7 +94,7 @@ export default class Dipole extends Component {
         {...this.props}
         name="Dipole"
         type={DIPOLE}
-        makeVP={makeDipoleVP}/>
+        makeFlowFcns={makeDipoleFlowFcns}/>
     );
   };
 };

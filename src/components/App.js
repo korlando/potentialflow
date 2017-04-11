@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import CloseButton from './CloseButton';
-import Uniform, { makeUniformVP } from './FlowElements/Uniform';
+import Uniform, { makeUniformFlowFcns } from './FlowElements/Uniform';
 import PointSource from './FlowElements/PointSource';
 import PointVortex from './FlowElements/PointVortex';
 import Dipole from './FlowElements/Dipole';
@@ -55,7 +55,7 @@ function makeVelocityPotential(flowIds, flowMap) {
   flowIds.forEach((id) => {
     const currentVP = velocityPotential;
     velocityPotential = (x, y) => {
-      return currentVP(x, y) + flowMap[id].vp(x, y);
+      return currentVP(x, y) + flowMap[id].flowFcns.vp(x, y);
     };
   });
   return velocityPotential;
@@ -125,7 +125,7 @@ export default class App extends Component {
   componentDidMount() {
     this.renderNewPlot(this.graph, [], this.state.layout);
     const inputs = { U: 0, V: 1 };
-    addFlow(UNIFORM, inputs, makeUniformVP(inputs));
+    addFlow(UNIFORM, inputs, makeUniformFlowFcns(inputs));
   };
 
   componentWillReceiveProps(nextProps) {

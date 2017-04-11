@@ -8,9 +8,32 @@ const uniformVP = (U, V) => {
   };
 };
 
-export const makeUniformVP = (inputs) => {
+const uniformStream = (U, V) => {
+  return (x, y) => {
+    return -V * x + U * y;
+  };
+};
+
+const uniformXVel = (U, V) => {
+  return (x, y) => {
+    return U;
+  };
+};
+
+const uniformYVel = (U, V) => {
+  return (x, y) => {
+    return V;
+  };
+};
+
+export const makeUniformFlowFcns = (inputs) => {
   const { U, V } = inputs;
-  return uniformVP(U, V);
+  return {
+    vp: uniformVP(U, V),
+    stream: uniformStream(U, V),
+    xVel: uniformXVel(U, V),
+    yVel: uniformYVel(U, V)
+  };
 };
 
 export default class Uniform extends Component {
@@ -24,7 +47,7 @@ export default class Uniform extends Component {
         {...this.props}
         name="Uniform"
         type={UNIFORM}
-        makeVP={makeUniformVP}/>
+        makeFlowFcns={makeUniformFlowFcns}/>
     );
   };
 };
