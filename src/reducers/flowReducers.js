@@ -16,22 +16,22 @@ const defaultState = {
     [POINT_SOURCE]: {
       inputs: {
         m: 100,
-        x0: 50,
-        y0: 50
+        x0: 0,
+        y0: 0
       }
     },
     [POINT_VORTEX]: {
       inputs: {
         gamma: 100,
-        x0: 50,
-        y0: 50
+        x0: 0,
+        y0: 0
       }
     },
     [DIPOLE]: {
       inputs: {
         mu: 100,
-        x0: 50,
-        y0: 50,
+        x0: 0,
+        y0: 0,
         alpha: 0
       }
     }
