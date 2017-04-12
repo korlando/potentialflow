@@ -26,7 +26,7 @@ const dipoleVP = (mu, x0, y0, alpha) => {
 const dipoleStream = (mu, x0, y0, alpha) => {
   return (x, y) => {
     const xDiff = x - x0;
-    const yDiff = y - v0;
+    const yDiff = y - y0;
     const denom = getDenom(xDiff, yDiff);
     if(denom === 0) {
       return Infinity;

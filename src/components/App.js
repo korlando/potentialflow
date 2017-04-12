@@ -61,6 +61,17 @@ function makeVelocityPotential(flowIds, flowMap) {
   return velocityPotential;
 };
 
+function makeFlowFcn(name, flowIds, flowMap) {
+  let fcn = (x, y) => 0;
+  flowIds.forEach((id) => {
+    const currentFcn = fcn;
+    fcn = (x, y) => {
+      return currentFcn(x, y) + flowMap[id].flowFcns[name](x, y);
+    };
+  });
+  return fcn;
+};
+
 /**
  * Generate the z data for a contour plot.
  * @param {function} zFcn a function of (x, y)
@@ -93,10 +104,11 @@ const makeData = (zData) => {
     contours: {
       coloring: 'lines'
     },
-    ncontours: 100,
-    //colorscale: 'Greys',
+    ncontours: 80,
+    colorscale: 'YIOrRd',
     line: {
-      smoothing: 1
+      smoothing: 1.3,
+      width: 1.5
     },
     connectgaps: true
   }]
@@ -115,6 +127,7 @@ export default class App extends Component {
     super(props);
 
     this.state = {
+      flowFcnName: 'vp',
       layout: {
         title: 'Potential Flow'
       }
@@ -135,10 +148,11 @@ export default class App extends Component {
       activeFlowMap !== this.props.activeFlowMap) {
       clearTimeout(this.activeFlowTimer);
       this.activeFlowTimer = setTimeout(() => {
-        const vp = makeVelocityPotential(activeFlowIds, activeFlowMap);
-        const zData = makeZData(vp, xCoords, yCoords);
+        const flowFcn = makeFlowFcn(this.state.flowFcnName, activeFlowIds, activeFlowMap);
+        const zData = makeZData(flowFcn, xCoords, yCoords);
         const newData = makeData(zData);
         this.renderNewPlot(this.graph, newData, this.state.layout);
+        //Plotly.addTraces(this.graph, { z: streamZData });
       }, 300);
     }
   };

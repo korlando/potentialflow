@@ -14541,6 +14541,19 @@ function makeVelocityPotential(flowIds, flowMap) {
   return velocityPotential;
 };
 
+function makeFlowFcn(name, flowIds, flowMap) {
+  var fcn = function fcn(x, y) {
+    return 0;
+  };
+  flowIds.forEach(function (id) {
+    var currentFcn = fcn;
+    fcn = function fcn(x, y) {
+      return currentFcn(x, y) + flowMap[id].flowFcns[name](x, y);
+    };
+  });
+  return fcn;
+};
+
 /**
  * Generate the z data for a contour plot.
  * @param {function} zFcn a function of (x, y)
@@ -14573,10 +14586,11 @@ var makeData = function makeData(zData) {
     contours: {
       coloring: 'lines'
     },
-    ncontours: 100,
-    //colorscale: 'Greys',
+    ncontours: 80,
+    colorscale: 'YIOrRd',
     line: {
-      smoothing: 1
+      smoothing: 1.3,
+      width: 1.5
     },
     connectgaps: true
   }];
@@ -14598,6 +14612,7 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
     var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
     _this.state = {
+      flowFcnName: 'vp',
       layout: {
         title: 'Potential Flow'
       }
@@ -14624,10 +14639,11 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
       if (activeFlowIds !== this.props.activeFlowIds || activeFlowMap !== this.props.activeFlowMap) {
         clearTimeout(this.activeFlowTimer);
         this.activeFlowTimer = setTimeout(function () {
-          var vp = makeVelocityPotential(activeFlowIds, activeFlowMap);
-          var zData = makeZData(vp, xCoords, yCoords);
+          var flowFcn = makeFlowFcn(_this2.state.flowFcnName, activeFlowIds, activeFlowMap);
+          var zData = makeZData(flowFcn, xCoords, yCoords);
           var newData = makeData(zData);
           _this2.renderNewPlot(_this2.graph, newData, _this2.state.layout);
+          //Plotly.addTraces(this.graph, { z: streamZData });
         }, 300);
       }
     }
@@ -14874,7 +14890,7 @@ var dipoleVP = function dipoleVP(mu, x0, y0, alpha) {
 var dipoleStream = function dipoleStream(mu, x0, y0, alpha) {
   return function (x, y) {
     var xDiff = x - x0;
-    var yDiff = y - v0;
+    var yDiff = y - y0;
     var denom = getDenom(xDiff, yDiff);
     if (denom === 0) {
       return Infinity;
