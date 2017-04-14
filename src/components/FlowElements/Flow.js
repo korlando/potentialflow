@@ -22,14 +22,18 @@ export default class Flow extends Component {
   };
 
   handleChange(key, value) {
-    const { flowId, flow, type, makeFlowFcns } = this.props;
+    const { flowId,
+            flow,
+            type,
+            makeFlowFcns,
+            makeFlowStrs } = this.props;
     const inputChanges = {
-      [key]: value === '' ? value : Number(value)
+      [key]: value === '' ? value : Number.parseFloat(value)
     };
 
     if(flowId !== undefined) {
       const newInputs = Object.assign({}, flow.inputs, inputChanges);
-      editFlow(flowId, inputChanges, makeFlowFcns(newInputs));
+      editFlow(flowId, inputChanges, makeFlowFcns(newInputs), makeFlowStrs(newInputs));
     } else {
       editFlowForm(type, inputChanges);
     }
@@ -38,9 +42,14 @@ export default class Flow extends Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    const { flowId, flow, makeFlowFcns, type } = this.props;
+    const { flowId,
+            flow,
+            makeFlowFcns,
+            makeFlowStrs,
+            type } = this.props;
+    const { inputs } = flow;
     if(flowId === undefined) {
-      addFlow(type, flow.inputs, makeFlowFcns(flow.inputs));
+      addFlow(type, inputs, makeFlowFcns(inputs), makeFlowStrs(inputs));
     }
   };
 

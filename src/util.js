@@ -1,12 +1,12 @@
 import * as flowActions from './actions/flowActions';
 import store from './store/store';
 
-export const addFlow = (type, inputs, flowFcns) => {
-  store.dispatch(flowActions.addFlow({ type, inputs, flowFcns }));
+export const addFlow = (type, inputs, flowFcns, flowStrs) => {
+  store.dispatch(flowActions.addFlow({ type, inputs, flowFcns, flowStrs }));
 };
 
-export const editFlow = (flowId, inputChanges, flowFcns) => {
-  store.dispatch(flowActions.editFlow(flowId, inputChanges, flowFcns));
+export const editFlow = (flowId, inputChanges, flowFcns, flowStrs) => {
+  store.dispatch(flowActions.editFlow(flowId, inputChanges, flowFcns, flowStrs));
 };
 
 export const editFlowForm = (flowType, inputChanges) => {
@@ -24,16 +24,18 @@ export const editFlowView = (view) => {
 export const diffTeX = (first, second) => {
   if(second < 0) {
     return `${first} + ${-second}`;
+  } else if(second === 0) {
+    return first;
   }
   return `${first} - ${second}`;
 };
 
 export const fracTeX = (numerator, denominator) => {
-  return `\\frac{numerator}{denominator}`;
+  return `\\frac{${numerator}}{${denominator}}`;
 };
 
 export const sqrtTeX = (x) => {
-  return `\\sqrt[](x)`;
+  return `\\sqrt[]{${x}}`;
 };
 
 export const radiusSqTeX = (x0, y0) => {

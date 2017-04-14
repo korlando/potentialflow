@@ -5,12 +5,13 @@ export const addFlow = (flow) => {
   };
 };
 
-export const editFlow = (flowId, inputChanges, flowFcns) => {
+export const editFlow = (flowId, inputChanges, flowFcns, flowStrs) => {
   return {
     type: 'EDIT_FLOW',
     flowId,
     inputChanges,
-    flowFcns
+    flowFcns,
+    flowStrs
   };
 };
 

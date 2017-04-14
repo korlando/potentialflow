@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import CloseButton from './CloseButton';
-import Uniform, { makeUniformFlowFcns } from './FlowElements/Uniform';
+import Uniform, { makeUniformFlowFcns,
+                  uniformFlowStrs } from './FlowElements/Uniform';
 import PointSource from './FlowElements/PointSource';
 import PointVortex from './FlowElements/PointVortex';
 import Dipole from './FlowElements/Dipole';
@@ -73,6 +74,17 @@ function makeFlowFcn(name, flowIds, flowMap) {
   return fcn;
 };
 
+function makeFlowStr(name, flowIds, flowMap) {
+  let str = '';
+  flowIds.forEach((id, i) => {
+    str += flowMap[id].flowStrs[name];
+    if(i !== flowIds.length - 1) {
+      str += ' + ';
+    }
+  });
+  return str;
+};
+
 /**
  * Generate the z data for a contour plot.
  * @param {function} zFcn a function of (x, y)
@@ -118,9 +130,9 @@ const makeData = (zData) => {
 const layout = {
   margin: {
     t: 40,
-    l: 10,
-    r: 10,
-    b: 10
+    l: 20,
+    r: 20,
+    b: 20
   }
 };
 
@@ -138,7 +150,8 @@ export default class App extends Component {
     super(props);
 
     this.state = {
-      flowFcnName: 'vp'
+      flowFcnName: 'vp',
+      flowStr: ''
     };
     this.activeFlowTimer = null;
   };
@@ -146,7 +159,7 @@ export default class App extends Component {
   componentDidMount() {
     this.renderNewPlot(this.graph, [], layout);
     const inputs = { U: 0, V: 1 };
-    addFlow(UNIFORM, inputs, makeUniformFlowFcns(inputs));
+    addFlow(UNIFORM, inputs, makeUniformFlowFcns(inputs), uniformFlowStrs(inputs));
   };
 
   componentWillReceiveProps(nextProps) {
@@ -162,7 +175,9 @@ export default class App extends Component {
         const zData = makeZData(flowFcn, xCoords, yCoords);
         const newData = makeData(zData);
         this.renderNewPlot(this.graph, newData, layout);
-        //Plotly.addTraces(this.graph, { z: streamZData });
+
+        const flowStr = makeFlowStr(flowView, activeFlowIds, activeFlowMap);
+        this.setState({ flowStr });
       }, 300);
     }
   };
@@ -175,7 +190,7 @@ export default class App extends Component {
     const { activeFlowIds,
             activeFlowMap,
             flowView } = this.props;
-    const { flowFcnStr } = this.state;
+    const { flowStr } = this.state;
 
     return (
       <div className="flexbox">
@@ -188,9 +203,9 @@ export default class App extends Component {
                 margin: 'auto'
               }}></div>
               <div className="flexbox" style={{ minHeight: '40px' }}>
-                <div className="flex1">
-                  { flowFcnStr &&
-                    <TeX value={flowFcnStr}/>
+                <div className="flex1 text-center">
+                  { flowStr &&
+                    <TeX value={flowStr}/>
                   }
                 </div>
                 <div className="flex0">
