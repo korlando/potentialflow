@@ -197,6 +197,7 @@ export default class App extends Component {
       <div className="flexbox">
         <div className="flex1 view-container">
           <div className="flex0">
+            <h1>Potential Flow</h1>
             <div ref={div => this.graph = div}
               style={{
                 width: '800px',
