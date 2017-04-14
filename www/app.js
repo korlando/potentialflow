@@ -15298,7 +15298,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.makePointVortexFlowFcns = undefined;
+exports.default = exports.pointVortexFlowStrs = exports.makePointVortexFlowFcns = undefined;
 
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
@@ -15354,18 +15354,33 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
+// velocity potential
 var vp = function vp(gamma, x0, y0) {
   return function (x, y) {
     return (0, _util.over2Pi)(gamma) * Math.atan2(y - y0, x - x0);
   };
 };
 
+var vpTeX = function vpTeX(gamma, x0, y0) {
+  return (0, _util.over2PiTeX)(gamma) + 'atan2(' + (0, _util.diffTeX)('y', y0) + ', ' + (0, _util.diffTeX)('x', x0) + ')';
+};
+
+var vpTeXEq = ('\\Gamma', 'x_0', 'y_0');
+
+// stream function
 var stream = function stream(gamma, x0, y0) {
   return function (x, y) {
     return (0, _util.over2Pi)(gamma) * Math.log((0, _util.getRadius)(x - x0, y - y0));
   };
 };
 
+var streamTeX = function streamTeX(gamma, x0, y0) {
+  return (0, _util.over2PiTeX)(gamma) + 'ln(' + (0, _util.radiusTeX)(x0, y0) + ')';
+};
+
+var streamTeXEq = streamTeX('\\Gamma', 'x_0', 'y_0');
+
+// x velocity
 var xVel = function xVel(gamma, x0, y0) {
   return function (x, y) {
     var xDiff = x - x0;
@@ -15379,6 +15394,13 @@ var xVel = function xVel(gamma, x0, y0) {
   };
 };
 
+var xVelTeX = function xVelTeX(gamma, x0, y0) {
+  return (0, _util.over2PiTeX)(gamma) + (0, _util.fracTeX)('-(' + (0, _util.diffTeX)('y', y0) + ')', (0, _util.radiusSqTeX)(x0, y0));
+};
+
+var xVelTeXEq = ('\\Gamma', 'x_0', 'y_0');
+
+// y velocity
 var yVel = function yVel(gamma, x0, y0) {
   return function (x, y) {
     var xDiff = x - x0;
@@ -15392,6 +15414,12 @@ var yVel = function yVel(gamma, x0, y0) {
   };
 };
 
+var yVelTeX = function yVelTeX(gamma, x0, y0) {
+  return (0, _util.over2PiTeX)(gamma) + (0, _util.fracTeX)((0, _util.diffTeX)('x', x0), (0, _util.radiusSqTeX)(x0, y0));
+};
+
+var yVelTeXEq = ('\\Gamma', 'x_0', 'y_0');
+
 var makePointVortexFlowFcns = exports.makePointVortexFlowFcns = function makePointVortexFlowFcns(inputs) {
   var gamma = inputs.gamma,
       x0 = inputs.x0,
@@ -15402,6 +15430,19 @@ var makePointVortexFlowFcns = exports.makePointVortexFlowFcns = function makePoi
     stream: stream(gamma, x0, y0),
     xVel: xVel(gamma, x0, y0),
     yVel: yVel(gamma, x0, y0)
+  };
+};
+
+var pointVortexFlowStrs = exports.pointVortexFlowStrs = function pointVortexFlowStrs(inputs) {
+  var gamma = inputs.gamma,
+      x0 = inputs.x0,
+      y0 = inputs.y0;
+
+  return {
+    vp: vpTeX(gamma, x0, y0),
+    stream: streamTeX(gamma, x0, y0),
+    xVel: xVelTeX(gamma, x0, y0),
+    yVel: yVelTeX(gamma, x0, y0)
   };
 };
 
@@ -15420,7 +15461,8 @@ var PointVortex = function (_Component) {
       return _react2.default.createElement(_Flow2.default, _extends({}, this.props, {
         name: 'Point Vortex',
         type: _flowTypes.POINT_VORTEX,
-        makeFlowFcns: makePointVortexFlowFcns }));
+        makeFlowFcns: makePointVortexFlowFcns,
+        makeFlowStrs: pointVortexFlowStrs }));
     }
   }]);
 

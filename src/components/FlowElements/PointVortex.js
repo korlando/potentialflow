@@ -10,18 +10,33 @@ import { getRadius,
          diffTeX,
          fracTeX } from '../../util';
 
+// velocity potential
 const vp = (gamma, x0, y0) => {
   return (x, y) => {
     return over2Pi(gamma) * Math.atan2(y - y0, x - x0);
   };
 };
 
+const vpTeX = (gamma, x0, y0) => {
+  return `${over2PiTeX(gamma)}atan2(${diffTeX('y', y0)}, ${diffTeX('x', x0)})`;
+};
+
+const vpTeXEq = ('\\Gamma', 'x_0', 'y_0');
+
+// stream function
 const stream = (gamma, x0, y0) => {
   return (x, y) => {
     return over2Pi(gamma) * Math.log(getRadius(x - x0, y - y0));
   };
 };
 
+const streamTeX = (gamma, x0, y0) => {
+  return `${over2PiTeX(gamma)}ln(${radiusTeX(x0, y0)})`;
+};
+
+const streamTeXEq = streamTeX('\\Gamma', 'x_0', 'y_0');
+
+// x velocity
 const xVel = (gamma, x0, y0) => {
   return (x, y) => {
     const xDiff = x - x0;
@@ -35,6 +50,13 @@ const xVel = (gamma, x0, y0) => {
   };
 };
 
+const xVelTeX = (gamma, x0, y0) => {
+  return over2PiTeX(gamma) + fracTeX(`-(${diffTeX('y', y0)})`, radiusSqTeX(x0, y0));
+};
+
+const xVelTeXEq = ('\\Gamma', 'x_0', 'y_0');
+
+// y velocity
 const yVel = (gamma, x0, y0) => {
   return (x, y) => {
     const xDiff = x - x0;
@@ -48,6 +70,12 @@ const yVel = (gamma, x0, y0) => {
   };
 };
 
+const yVelTeX = (gamma, x0, y0) => {
+  return over2PiTeX(gamma) + fracTeX(diffTeX('x', x0), radiusSqTeX(x0, y0));
+};
+
+const yVelTeXEq = ('\\Gamma', 'x_0', 'y_0');
+
 export const makePointVortexFlowFcns = (inputs) => {
   const { gamma, x0, y0 } = inputs;
   return {
@@ -55,6 +83,16 @@ export const makePointVortexFlowFcns = (inputs) => {
     stream: stream(gamma, x0, y0),
     xVel: xVel(gamma, x0, y0),
     yVel: yVel(gamma, x0, y0)
+  };
+};
+
+export const pointVortexFlowStrs = (inputs) => {
+  const { gamma, x0, y0 } = inputs;
+  return {
+    vp: vpTeX(gamma, x0, y0),
+    stream: streamTeX(gamma, x0, y0),
+    xVel: xVelTeX(gamma, x0, y0),
+    yVel: yVelTeX(gamma, x0, y0)
   };
 };
 
@@ -69,7 +107,8 @@ export default class PointVortex extends Component {
         {...this.props}
         name="Point Vortex"
         type={POINT_VORTEX}
-        makeFlowFcns={makePointVortexFlowFcns}/>
+        makeFlowFcns={makePointVortexFlowFcns}
+        makeFlowStrs={pointVortexFlowStrs}/>
     );
   };
 };
