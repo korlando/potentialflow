@@ -2,6 +2,7 @@ $grey: #51586a;
 $light: #747e95;
 $lighter: #b7bccc;
 $lightest: #f1f4f9;
+$blue: #69f;
 
 @mixin flexbox() {
   display: -webkit-box;
@@ -121,6 +122,13 @@ button {
   }
 }
 
+.view-container {
+  padding: 0 12px;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 .active-flows {
   padding: 30px 12px;
   width: 250px;
@@ -136,4 +144,13 @@ button {
     color: $lightest;
     margin-bottom: 20px;
   }
+}
+
+.main-flow-eq {
+  display: inline-block;
+  border: 2px solid lighten($blue, 15%);
+  background: lighten($blue, 25%);
+  border-radius: 3px;
+  padding: 4px 10px;
+  margin-right: 10px;
 }

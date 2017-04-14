@@ -195,7 +195,7 @@ export default class App extends Component {
 
     return (
       <div className="flexbox">
-        <div className="flex1" style={{padding: '0 12px'}}>
+        <div className="flex1 view-container">
           <div className="flex0">
             <div ref={div => this.graph = div}
               style={{
@@ -203,10 +203,16 @@ export default class App extends Component {
                 height: '500px',
                 margin: 'auto'
               }}></div>
-              <div className="flexbox align-items-center" style={{ minHeight: '40px' }}>
-                <div className="flex1 text-center">
+              <div className="flexbox align-items-center" style={{
+                minHeight: '40px',
+                padding: '5px 0'
+              }}>
+                <div className="flex1"></div>
+                <div className="flex0">
                   { flowStr &&
-                    <TeX value={flowStr}/>
+                    <div className="main-flow-eq">
+                      <TeX value={flowStr}/>
+                    </div>
                   }
                 </div>
                 <div className="flex0">
