@@ -3,12 +3,15 @@ import { connect } from 'react-redux';
 import CloseButton from '../CloseButton';
 import { addFlow, editFlow, editFlowForm, removeFlow } from '../../util';
 import variableMeta from '../../constants/variableMeta';
+import flowToTeX from '../../constants/flowToTeX';
+import TeX from '../TeX';
 
 const mapStateToProps = (state, ownProps) => {
   return {
     flow: ownProps.flowId !== undefined ?
       state.flow.activeFlowMap[ownProps.flowId] :
-      state.flow.flowForms[ownProps.type]
+      state.flow.flowForms[ownProps.type],
+    flowView: state.flow.flowView
   };
 };
 
@@ -58,7 +61,9 @@ export default class Flow extends Component {
             className,
             style,
             flowId,
-            flow } = this.props;
+            flow,
+            flowView,
+            eqs } = this.props;
 
     return (
       <div className={`flow-element ${className || ''}`}
@@ -71,6 +76,18 @@ export default class Flow extends Component {
               onClick={() => removeFlow(flowId)}/>
           }
         </div>
+
+        <div className="flow-eq text-center">
+          { Object.keys(eqs).map((key) => {
+            return (
+              <div key={key}
+                className={flowView === key ? '' : 'display-none'}>
+                <TeX value={flowToTeX[key] + ' = ' + eqs[key]}/>
+              </div>
+            );
+          })}
+        </div>
+
         <form onSubmit={this.handleSubmit}>
           { Object.keys(flow.inputs).map((key, i) => {
             const variable = variableMeta[key];

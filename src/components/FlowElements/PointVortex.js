@@ -21,7 +21,7 @@ const vpTeX = (gamma, x0, y0) => {
   return `${over2PiTeX(gamma)}atan2(${diffTeX('y', y0)}, ${diffTeX('x', x0)})`;
 };
 
-const vpTeXEq = ('\\Gamma', 'x_0', 'y_0');
+const vpTeXEq = vpTeX('\\Gamma', 'x_0', 'y_0');
 
 // stream function
 const stream = (gamma, x0, y0) => {
@@ -54,7 +54,7 @@ const xVelTeX = (gamma, x0, y0) => {
   return over2PiTeX(gamma) + fracTeX(`-(${diffTeX('y', y0)})`, radiusSqTeX(x0, y0));
 };
 
-const xVelTeXEq = ('\\Gamma', 'x_0', 'y_0');
+const xVelTeXEq = xVelTeX('\\Gamma', 'x_0', 'y_0');
 
 // y velocity
 const yVel = (gamma, x0, y0) => {
@@ -74,7 +74,7 @@ const yVelTeX = (gamma, x0, y0) => {
   return over2PiTeX(gamma) + fracTeX(diffTeX('x', x0), radiusSqTeX(x0, y0));
 };
 
-const yVelTeXEq = ('\\Gamma', 'x_0', 'y_0');
+const yVelTeXEq = yVelTeX('\\Gamma', 'x_0', 'y_0');
 
 export const makePointVortexFlowFcns = (inputs) => {
   const { gamma, x0, y0 } = inputs;
@@ -96,6 +96,14 @@ export const pointVortexFlowStrs = (inputs) => {
   };
 };
 
+export const pointVortexEqs = {
+  vp: vpTeXEq,
+  stream: streamTeXEq,
+  xVel: xVelTeXEq,
+  yVel: yVelTeXEq
+};
+
+
 export default class PointVortex extends Component {
   constructor(props) {
     super(props);
@@ -108,7 +116,8 @@ export default class PointVortex extends Component {
         name="Point Vortex"
         type={POINT_VORTEX}
         makeFlowFcns={makePointVortexFlowFcns}
-        makeFlowStrs={pointVortexFlowStrs}/>
+        makeFlowStrs={pointVortexFlowStrs}
+        eqs={pointVortexEqs}/>
     );
   };
 };

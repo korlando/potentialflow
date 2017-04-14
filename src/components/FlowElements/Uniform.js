@@ -77,6 +77,13 @@ export const uniformFlowStrs = (inputs) => {
   };
 };
 
+export const uniformEqs = {
+  vp: vpTeXEq,
+  stream: streamTeXEq,
+  xVel: xVelTeXEq,
+  yVel: yVelTeXEq
+};
+
 export default class Uniform extends Component {
   constructor(props) {
     super(props);
@@ -89,7 +96,8 @@ export default class Uniform extends Component {
         name="Uniform"
         type={UNIFORM}
         makeFlowFcns={makeUniformFlowFcns}
-        makeFlowStrs={uniformFlowStrs}/>
+        makeFlowStrs={uniformFlowStrs}
+        eqs={uniformEqs}/>
     );
   };
 };

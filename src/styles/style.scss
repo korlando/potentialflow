@@ -58,6 +58,10 @@ $lightest: #f1f4f9;
   @include alignItems(center);
 }
 
+.display-none {
+  display: none;
+}
+
 button {
   cursor: pointer;
 }
@@ -91,7 +95,6 @@ button {
 .flow-element {
   display: inline-block;
   vertical-align: top;
-  width: 170px;
   max-width: 100%;
   border-radius: 3px;
   border: 2px solid darken($lightest, 2%);
@@ -107,6 +110,14 @@ button {
   }
   .input-group-addon {
     background-color: darken($lightest, 2%);
+  }
+  label {
+    margin-bottom: 0;
+  }
+  .flow-eq {
+    color: $grey;
+    margin-bottom: 5px;
+    font-size: 12px;
   }
 }
 

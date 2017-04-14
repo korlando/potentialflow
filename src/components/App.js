@@ -11,15 +11,10 @@ import { UNIFORM,
          POINT_VORTEX,
          DIPOLE} from '../constants/flowTypes';
 import { addFlow, editFlowView } from '../util';
-import TeX from 'react-formula-beautifier';
+import flowToTeX from '../constants/flowToTeX';
+import TeX from './TeX';
 
 const SIZE = 100;
-const flowToTeX = {
-  vp: '\\phi',
-  stream: '\\psi',
-  xVel: 'v_x',
-  yVel: 'v_y'
-};
 
 /**
  * Generate custom X and Y array scales
@@ -81,7 +76,7 @@ function makeFlowFcn(name, flowIds, flowMap) {
 };
 
 function makeFlowStr(name, flowIds, flowMap) {
-  let str = `${flowToTeX[name]}(x, y) = `;
+  let str = `${flowToTeX[name]} = `;
   flowIds.forEach((id, i) => {
     str += flowMap[id].flowStrs[name];
     if(i !== flowIds.length - 1) {
@@ -208,14 +203,16 @@ export default class App extends Component {
                 height: '500px',
                 margin: 'auto'
               }}></div>
-              <div className="flexbox" style={{ minHeight: '40px' }}>
+              <div className="flexbox align-items-center" style={{ minHeight: '40px' }}>
                 <div className="flex1 text-center">
                   { flowStr &&
                     <TeX value={flowStr}/>
                   }
                 </div>
                 <div className="flex0">
-                  <select value={flowView}
+                  <select
+                    className="form-control"
+                    value={flowView}
                     onChange={e => editFlowView(e.target.value)}>
                     <option value="vp">Velocity Potential</option>
                     <option value="stream">Stream Function</option>
@@ -226,7 +223,7 @@ export default class App extends Component {
               </div>
           </div>
           <div>
-            <h4>Add Flow Source</h4>
+            <h4>Add Flow Element</h4>
             <Uniform/>
             <PointSource/>
             <PointVortex/>

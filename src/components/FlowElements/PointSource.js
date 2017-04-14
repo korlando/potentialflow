@@ -25,7 +25,7 @@ const vpTeX = (m, x0, y0) => {
   return `${over2PiTeX(m)}ln(${radiusTeX(x0, y0)})`;
 };
 
-const vpTeXEq = ('m', 'x_0', 'y_0');
+const vpTeXEq = vpTeX('m', 'x_0', 'y_0');
 
 // stream function
 const stream = (m, x0, y0) => {
@@ -38,7 +38,7 @@ const streamTeX = (m, x0, y0) => {
   return `${over2PiTeX(m)}atan2(${diffTeX('y', y0)}, ${diffTeX('x', x0)})`;
 };
 
-const streamTeXEq = ('m', 'x_0', 'y_0');
+const streamTeXEq = streamTeX('m', 'x_0', 'y_0');
 
 // x velocity
 const xVel = (m, x0, y0) => {
@@ -58,7 +58,7 @@ const xVelTeX = (m, x0, y0) => {
   return over2PiTeX(m) + fracTeX(diffTeX('x', x0), radiusSqTeX(x0, y0));
 };
 
-const xVelTeXEq = ('m', 'x_0', 'y_0');
+const xVelTeXEq = xVelTeX('m', 'x_0', 'y_0');
 
 // y velocity
 const yVel = (m, x0, y0) => {
@@ -100,6 +100,14 @@ export const pointSourceFlowStrs = (inputs) => {
   }
 };
 
+export const pointSourceEqs = {
+  vp: vpTeXEq,
+  stream: streamTeXEq,
+  xVel: xVelTeXEq,
+  yVel: yVelTeXEq
+};
+
+
 export default class PointSource extends Component {
   constructor(props) {
     super(props);
@@ -112,7 +120,8 @@ export default class PointSource extends Component {
         name="Point Source/Sink"
         type={POINT_SOURCE}
         makeFlowFcns={makePointSourceFlowFcns}
-        makeFlowStrs={pointSourceFlowStrs}/>
+        makeFlowStrs={pointSourceFlowStrs}
+        eqs={pointSourceEqs}/>
     );
   };
 };

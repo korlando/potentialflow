@@ -134,6 +134,14 @@ export const dipoleFlowStrs = (inputs) => {
   };
 };
 
+export const dipoleEqs = {
+  vp: vpTeXEq,
+  stream: streamTeXEq,
+  xVel: xVelTeXEq,
+  yVel: yVelTeXEq
+};
+
+
 export default class Dipole extends Component {
   constructor(props) {
     super(props);
@@ -146,7 +154,8 @@ export default class Dipole extends Component {
         name="Dipole"
         type={DIPOLE}
         makeFlowFcns={makeDipoleFlowFcns}
-        makeFlowStrs={dipoleFlowStrs}/>
+        makeFlowStrs={dipoleFlowStrs}
+        eqs={dipoleEqs}/>
     );
   };
 };
