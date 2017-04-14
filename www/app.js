@@ -14974,6 +14974,8 @@ var _Flow2 = _interopRequireDefault(_Flow);
 
 var _flowTypes = __webpack_require__(58);
 
+var _util = __webpack_require__(145);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -14996,64 +14998,60 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var getDenom = function getDenom(xDiff, yDiff) {
-  return Math.pow(xDiff, 2) + Math.pow(yDiff, 2);
-};
-
-var dipoleVP = function dipoleVP(mu, x0, y0, alpha) {
+var vp = function vp(mu, x0, y0, alpha) {
   return function (x, y) {
     var xDiff = x - x0;
     var yDiff = y - y0;
-    var denom = getDenom(xDiff, yDiff);
-    if (denom === 0) {
+    var radiusSq = (0, _util.getRadiusSq)(xDiff, yDiff);
+    if (radiusSq === 0) {
       // handle divide by 0
       return Infinity;
     }
 
-    return -mu / (2 * Math.PI) * (xDiff * Math.cos(alpha) + yDiff * Math.sin(alpha)) / denom;
+    return (0, _util.over2Pi)(-mu) * (xDiff * Math.cos(alpha) + yDiff * Math.sin(alpha)) / radiusSq;
   };
 };
 
-var dipoleStream = function dipoleStream(mu, x0, y0, alpha) {
+var stream = function stream(mu, x0, y0, alpha) {
   return function (x, y) {
     var xDiff = x - x0;
     var yDiff = y - y0;
-    var denom = getDenom(xDiff, yDiff);
-    if (denom === 0) {
+    var radiusSq = (0, _util.getRadiusSq)(xDiff, yDiff);
+    if (radiusSq === 0) {
       return Infinity;
     }
 
-    return mu / (2 * Math.PI) * (xDiff * Math.sin(alpha) + yDiff * Math.cos(alpha)) / denom;
+    return (0, _util.over2Pi)(mu) * (xDiff * Math.sin(alpha) + yDiff * Math.cos(alpha)) / radiusSq;
   };
 };
 
-var dipoleXVel = function dipoleXVel(mu, x0, y0, alpha) {
+var xVel = function xVel(mu, x0, y0, alpha) {
   return function (x, y) {
     var xDiff = x - x0;
     var yDiff = y - y0;
-    var denom = getDenom(xDiff, yDiff);
-    if (denom === 0) {
-      return Infinity;
-    }
-
-    var sinA = Math.sin(alpha);
-    var cosA = Math.cos(alpha);
-    return (denom * cosA - 2 * xDiff * (xDiff * cosA + yDiff * sinA)) / Math.pow(denom, 2);
-  };
-};
-
-var dipoleYVel = function dipoleYVel(mu, x0, y0, alpha) {
-  return function (x, y) {
-    var xDiff = x - x0;
-    var yDiff = y - y0;
-    var denom = getDenom(xDiff, yDiff);
-    if (denom === 0) {
+    var radiusSq = (0, _util.getRadiusSq)(xDiff, yDiff);
+    if (radiusSq === 0) {
       return Infinity;
     }
 
     var sinA = Math.sin(alpha);
     var cosA = Math.cos(alpha);
-    return (denom * sinA - 2 * yDiff * (xDiff * cosA + yDiff * sinA)) / Math.pow(denom, 2);
+    return (radiusSq * cosA - 2 * xDiff * (xDiff * cosA + yDiff * sinA)) / Math.pow(radiusSq, 2);
+  };
+};
+
+var yVel = function yVel(mu, x0, y0, alpha) {
+  return function (x, y) {
+    var xDiff = x - x0;
+    var yDiff = y - y0;
+    var radiusSq = (0, _util.getRadiusSq)(xDiff, yDiff);
+    if (radiusSq === 0) {
+      return Infinity;
+    }
+
+    var sinA = Math.sin(alpha);
+    var cosA = Math.cos(alpha);
+    return (radiusSq * sinA - 2 * yDiff * (xDiff * cosA + yDiff * sinA)) / Math.pow(radiusSq, 2);
   };
 };
 
@@ -15064,10 +15062,10 @@ var makeDipoleFlowFcns = exports.makeDipoleFlowFcns = function makeDipoleFlowFcn
       alpha = inputs.alpha;
 
   return {
-    vp: dipoleVP(mu, x0, y0, alpha),
-    stream: dipoleStream(mu, x0, y0, alpha),
-    xVel: dipoleXVel(mu, x0, y0, alpha),
-    yVel: dipoleYVel(mu, x0, y0, alpha)
+    vp: vp(mu, x0, y0, alpha),
+    stream: stream(mu, x0, y0, alpha),
+    xVel: xVel(mu, x0, y0, alpha),
+    yVel: yVel(mu, x0, y0, alpha)
   };
 };
 
