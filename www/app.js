@@ -9565,7 +9565,7 @@ exports.default = CloseButton;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getRadius = exports.getRadiusSq = exports.radiusTeX = exports.radiusSqTeX = exports.sqrtTeX = exports.fracTeX = exports.editFlowView = exports.removeFlow = exports.editFlowForm = exports.editFlow = exports.addFlow = undefined;
+exports.over2Pi = exports.getRadius = exports.getRadiusSq = exports.radiusTeX = exports.radiusSqTeX = exports.sqrtTeX = exports.fracTeX = exports.editFlowView = exports.removeFlow = exports.editFlowForm = exports.editFlow = exports.addFlow = undefined;
 
 var _flowActions = __webpack_require__(218);
 
@@ -9635,6 +9635,10 @@ var getRadiusSq = exports.getRadiusSq = function getRadiusSq(xDiff, yDiff) {
 
 var getRadius = exports.getRadius = function getRadius(xDiff, yDiff) {
   return Math.sqrt(getRadiusSq(xDiff, yDiff));
+};
+
+var over2Pi = exports.over2Pi = function over2Pi(x) {
+  return x / (2 * Math.PI);
 };
 
 /***/ }),
@@ -15127,6 +15131,8 @@ var _Flow2 = _interopRequireDefault(_Flow);
 
 var _flowTypes = __webpack_require__(58);
 
+var _util = __webpack_require__(145);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -15149,41 +15155,45 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var pointSourceVP = function pointSourceVP(m, x0, y0) {
+var vp = function vp(m, x0, y0) {
   return function (x, y) {
-    var val = Math.sqrt(Math.pow(x - x0, 2) + Math.pow(y - y0, 2));
-    if (val === 0) {
+    var radius = (0, _util.getRadius)(x - x0, y - y0);
+    if (radius === 0) {
       return -Infinity;
     }
-    return m / (2 * Math.PI) * Math.log(val);
+    return (0, _util.over2Pi)(m) * Math.log(radius);
   };
 };
 
-var pointSourceStream = function pointSourceStream(m, x0, y0) {
+var stream = function stream(m, x0, y0) {
   return function (x, y) {
-    return m / (2 * Math.PI) * Math.atan2(y - y0, x - x0);
+    return (0, _util.over2Pi)(m) * Math.atan2(y - y0, x - x0);
   };
 };
 
-var pointSourceXVel = function pointSourceXVel(m, x0, y0) {
+var xVel = function xVel(m, x0, y0) {
   return function (x, y) {
-    var val = Math.sqrt(Math.pow(x - x0, 2) + Math.pow(y - y0, 2));
-    if (val === 0) {
+    var xDiff = x - x0;
+    var yDiff = y - y0;
+    var radiusSq = (0, _util.getRadiusSq)(xDiff, yDiff);
+    if (radiusSq === 0) {
       return Infinity;
     }
 
-    return m / (2 * Math.PI * val) * ((x - x0) / val);
+    return (0, _util.over2Pi)(m) * xDiff / radiusSq;
   };
 };
 
-var pointSourceYVel = function pointSourceYVel(m, x0, y0) {
+var yVel = function yVel(m, x0, y0) {
   return function (x, y) {
-    var val = Math.sqrt(Math.pow(x - x0, 2) + Math.pow(y - y0, 2));
-    if (val === 0) {
+    var xDiff = x - x0;
+    var yDiff = y - y0;
+    var radiusSq = (0, _util.getRadiusSq)(xDiff, yDiff);
+    if (radiusSq === 0) {
       return Infinity;
     }
 
-    return m / (2 * Math.PI * val) * ((y - y0) / val);
+    return (0, _util.over2Pi)(m) * yDiff / radiusSq;
   };
 };
 
@@ -15193,10 +15203,10 @@ var makePointSourceFlowFcns = exports.makePointSourceFlowFcns = function makePoi
       y0 = inputs.y0;
 
   return {
-    vp: pointSourceVP(m, x0, y0),
-    stream: pointSourceStream(m, x0, y0),
-    xVel: pointSourceXVel(m, x0, y0),
-    yVel: pointSourceYVel(m, x0, y0)
+    vp: vp(m, x0, y0),
+    stream: stream(m, x0, y0),
+    xVel: xVel(m, x0, y0),
+    yVel: yVel(m, x0, y0)
   };
 };
 
@@ -15369,10 +15379,174 @@ exports.default = PointVortex;
 
 /***/ }),
 /* 222 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-throw new Error("Module build failed: SyntaxError: C:/Users/Korlando/Documents/www/potentialflow/src/components/FlowElements/Uniform.js: Unexpected token, expected , (73:19)\n\n\u001b[0m \u001b[90m 71 | \u001b[39m  \u001b[36mconst\u001b[39m { \u001b[33mU\u001b[39m\u001b[33m,\u001b[39m \u001b[33mV\u001b[39m } \u001b[33m=\u001b[39m inputs\u001b[33m;\u001b[39m\n \u001b[90m 72 | \u001b[39m  \u001b[36mreturn\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 73 | \u001b[39m    vp\u001b[33m:\u001b[39m vpTeX(\u001b[33mU\u001b[39m\u001b[33m,\u001b[39m \u001b[33mV\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    | \u001b[39m                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 74 | \u001b[39m    stream\u001b[33m:\u001b[39m streamTeX(\u001b[33mU\u001b[39m\u001b[33m,\u001b[39m \u001b[33mV\u001b[39m)\u001b[33m,\u001b[39m\n \u001b[90m 75 | \u001b[39m    xVel\u001b[33m:\u001b[39m xVelTeX(\u001b[33mU\u001b[39m\u001b[33m,\u001b[39m \u001b[33mV\u001b[39m)\u001b[33m,\u001b[39m\n \u001b[90m 76 | \u001b[39m    yVel\u001b[33m:\u001b[39m yVelTeX(\u001b[33mU\u001b[39m\u001b[33m,\u001b[39m \u001b[33mV\u001b[39m)\u001b[0m\n");
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = exports.uniformFlowStrs = exports.makeUniformFlowFcns = undefined;
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }return target;
+};
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _react = __webpack_require__(24);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _Flow = __webpack_require__(75);
+
+var _Flow2 = _interopRequireDefault(_Flow);
+
+var _flowTypes = __webpack_require__(58);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+// velocity potential
+var vp = function vp(U, V) {
+  return function (x, y) {
+    return U * x + V * y;
+  };
+};
+
+var vpTeX = function vpTeX(U, V) {
+  var VStr = V < 0 ? '- ' + -V : '+ ' + V;
+  return U + 'x ' + VStr + 'y';
+};
+
+var vpTeXEq = vpTeX('U', 'V');
+
+// stream function
+var stream = function stream(U, V) {
+  return function (x, y) {
+    return -V * x + U * y;
+  };
+};
+
+var streamTeX = function streamTeX(U, V) {
+  var VStr = V < 0 ? V : '-' + V;
+  var UStr = U < 0 ? ' - ' + -U : '+ ' + U;
+  return VStr + 'x + ' + UStr + 'y';
+};
+
+var streamTeXEq = streamTeX('U', 'V');
+
+// x velocity
+var xVel = function xVel(U, V) {
+  return function (x, y) {
+    return U;
+  };
+};
+
+var xVelTeX = function xVelTeX(U, V) {
+  return U;
+};
+
+var xVelTeXEq = xVelTeX('U', 'V');
+
+// y velocity
+var yVel = function yVel(U, V) {
+  return function (x, y) {
+    return V;
+  };
+};
+
+var yVelTeX = function yVelTeX(U, V) {
+  return V;
+};
+
+var yVelTeXEq = yVelTeX('U', 'V');
+
+var makeUniformFlowFcns = exports.makeUniformFlowFcns = function makeUniformFlowFcns(inputs) {
+  var U = inputs.U,
+      V = inputs.V;
+
+  return {
+    vp: vp(U, V),
+    stream: stream(U, V),
+    xVel: xVel(U, V),
+    yVel: yVel(U, V)
+  };
+};
+
+var uniformFlowStrs = exports.uniformFlowStrs = function uniformFlowStrs(inputs) {
+  var U = inputs.U,
+      V = inputs.V;
+
+  return {
+    vp: vpTeX(U, V),
+    stream: streamTeX(U, V),
+    xVel: xVelTeX(U, V),
+    yVel: yVelTeX(U, V)
+  };
+};
+
+var Uniform = function (_Component) {
+  _inherits(Uniform, _Component);
+
+  function Uniform(props) {
+    _classCallCheck(this, Uniform);
+
+    return _possibleConstructorReturn(this, (Uniform.__proto__ || Object.getPrototypeOf(Uniform)).call(this, props));
+  }
+
+  _createClass(Uniform, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(_Flow2.default, _extends({}, this.props, {
+        name: 'Uniform',
+        type: _flowTypes.UNIFORM,
+        makeFlowFcns: makeUniformFlowFcns,
+        makeFlowStrs: uniformFlowStrs }));
+    }
+  }]);
+
+  return Uniform;
+}(_react.Component);
+
+exports.default = Uniform;
+;
 
 /***/ }),
 /* 223 */

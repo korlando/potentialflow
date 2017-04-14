@@ -46,3 +46,7 @@ export const getRadiusSq = (xDiff, yDiff) => {
 export const getRadius = (xDiff, yDiff) => {
   return Math.sqrt(getRadiusSq(xDiff, yDiff));
 };
+
+export const over2Pi = (x) => {
+  return x / (2 * Math.PI);
+};

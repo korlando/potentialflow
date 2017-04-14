@@ -1,54 +1,59 @@
 import React, { Component } from 'react';
 import Flow from './Flow';
 import { POINT_SOURCE } from '../../constants/flowTypes';
+import { getRadius,
+         getRadiusSq,
+         over2Pi } from '../../util';
 
-const pointSourceVP = (m, x0, y0) => {
+const vp = (m, x0, y0) => {
   return (x, y) => {
-    const val = Math.sqrt(Math.pow((x - x0), 2) + Math.pow((y - y0), 2));
-    if(val === 0) {
+    const radius = getRadius(x - x0, y - y0);
+    if(radius === 0) {
       return -Infinity;
     }
-    return (m / (2 * Math.PI)) * Math.log(val);
+    return over2Pi(m) * Math.log(radius);
   };
 };
 
-const pointSourceStream = (m, x0, y0) => {
+const stream = (m, x0, y0) => {
   return (x, y) => {
-    return (m / (2 * Math.PI) * Math.atan2(
-      (y - y0), (x - x0)
-    ));
+    return over2Pi(m) * Math.atan2(y - y0, x - x0);
   };
 };
 
-const pointSourceXVel = (m, x0, y0) => {
+const xVel = (m, x0, y0) => {
   return (x, y) => {
-    const val = Math.sqrt(Math.pow(x - x0, 2) + Math.pow(y - y0, 2));
-    if(val === 0) {
+    const xDiff = x - x0;
+    const yDiff = y - y0;
+    const radiusSq = getRadiusSq(xDiff, yDiff);
+    if(radiusSq === 0) {
       return Infinity;
     }
 
-    return (m / (2 * Math.PI * val)) * ((x - x0) / val);
+    return over2Pi(m) * xDiff / radiusSq;
   };
 };
 
-const pointSourceYVel = (m, x0, y0) => {
+const yVel = (m, x0, y0) => {
   return (x, y) => {
-    const val = Math.sqrt(Math.pow(x - x0, 2) + Math.pow(y - y0, 2));
-    if(val === 0) {
+    const xDiff = x - x0;
+    const yDiff = y - y0;
+    const radiusSq = getRadiusSq(xDiff, yDiff);
+    if(radiusSq === 0) {
       return Infinity;
     }
 
-    return (m / (2 * Math.PI * val)) * ((y - y0) / val);
+    return over2Pi(m) * yDiff / radiusSq;
   };
 };
 
 export const makePointSourceFlowFcns = (inputs) => {
   const { m, x0, y0 } = inputs;
   return {
-    vp: pointSourceVP(m, x0, y0),
-    stream: pointSourceStream(m, x0, y0),
-    xVel: pointSourceXVel(m, x0, y0),
-    yVel: pointSourceYVel(m, x0, y0)
+    vp: vp(m, x0, y0),
+    stream: stream(m, x0, y0),
+    xVel: xVel(m, x0, y0),
+    yVel: yVel(m, x0, y0)
   };
 };
 

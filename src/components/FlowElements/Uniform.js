@@ -70,7 +70,7 @@ export const makeUniformFlowFcns = (inputs) => {
 export const uniformFlowStrs = (inputs) => {
   const { U, V } = inputs;
   return {
-    vp: vpTeX(U, V);
+    vp: vpTeX(U, V),
     stream: streamTeX(U, V),
     xVel: xVelTeX(U, V),
     yVel: yVelTeX(U, V)
