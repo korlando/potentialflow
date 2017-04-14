@@ -15640,7 +15640,7 @@ var stream = function stream(U, V) {
 var streamTeX = function streamTeX(U, V) {
   var VStr = V < 0 ? V : '-' + V;
   var UStr = U < 0 ? ' - ' + -U : '+ ' + U;
-  return VStr + 'x + ' + UStr + 'y';
+  return VStr + 'x ' + UStr + 'y';
 };
 
 var streamTeXEq = streamTeX('U', 'V');
