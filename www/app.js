@@ -15330,6 +15330,8 @@ var _Flow2 = _interopRequireDefault(_Flow);
 
 var _flowTypes = __webpack_require__(58);
 
+var _util = __webpack_require__(145);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -15352,41 +15354,41 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var pointVortexVP = function pointVortexVP(gamma, x0, y0) {
+var vp = function vp(gamma, x0, y0) {
   return function (x, y) {
-    return gamma / (2 * Math.PI) * Math.atan2(y - y0, x - x0);
+    return (0, _util.over2Pi)(gamma) * Math.atan2(y - y0, x - x0);
   };
 };
 
-var pointVortexStream = function pointVortexStream(gamma, x0, y0) {
+var stream = function stream(gamma, x0, y0) {
   return function (x, y) {
-    return gamma / (2 * Math.PI) * Math.log(Math.sqrt(Math.pow(x - x0, 2) + Math.pow(y - y0, 2)));
+    return (0, _util.over2Pi)(gamma) * Math.log((0, _util.getRadius)(x - x0, y - y0));
   };
 };
 
-var pointVortexXVel = function pointVortexXVel(gamma, x0, y0) {
+var xVel = function xVel(gamma, x0, y0) {
   return function (x, y) {
     var xDiff = x - x0;
     var yDiff = y - y0;
-    var val = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
-    if (val === 0) {
+    var radiusSq = (0, _util.getRadiusSq)(xDiff, yDiff);
+    if (radiusSq === 0) {
       return Infinity;
     }
 
-    return gamma / (2 * Math.PI * val) * (-yDiff / val);
+    return (0, _util.over2Pi)(gamma) * -yDiff / radiusSq;
   };
 };
 
-var pointVortexYVel = function pointVortexYVel(gamma, x0, y0) {
+var yVel = function yVel(gamma, x0, y0) {
   return function (x, y) {
     var xDiff = x - x0;
     var yDiff = y - y0;
-    var val = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
-    if (val === 0) {
+    var radiusSq = (0, _util.getRadiusSq)(xDiff, yDiff);
+    if (radiusSq === 0) {
       return Infinity;
     }
 
-    return gamma / (2 * Math.PI * val) * (xDiff / val);
+    return (0, _util.over2Pi)(gamma) * xDiff / radiusSq;
   };
 };
 
@@ -15396,10 +15398,10 @@ var makePointVortexFlowFcns = exports.makePointVortexFlowFcns = function makePoi
       y0 = inputs.y0;
 
   return {
-    vp: pointVortexVP(gamma, x0, y0),
-    stream: pointVortexStream(gamma, x0, y0),
-    xVel: pointVortexXVel(gamma, x0, y0),
-    yVel: pointVortexYVel(gamma, x0, y0)
+    vp: vp(gamma, x0, y0),
+    stream: stream(gamma, x0, y0),
+    xVel: xVel(gamma, x0, y0),
+    yVel: yVel(gamma, x0, y0)
   };
 };
 
