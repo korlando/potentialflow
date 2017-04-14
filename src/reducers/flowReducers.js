@@ -6,6 +6,7 @@ import { UNIFORM,
 const defaultState = {
   activeFlowIds: [],
   activeFlowMap: {},
+  flowView: 'vp',
   flowForms: {
     [UNIFORM]: {
       inputs: {
@@ -82,6 +83,11 @@ export default (state = defaultState, action) => {
         activeFlowMap: Object.assign({}, state.activeFlowMap, {
           [action.flowId]: undefined
         })
+      });
+
+    case 'EDIT_FLOW_VIEW':
+      return Object.assign({}, state, {
+        flowView: action.view
       });
 
     default:

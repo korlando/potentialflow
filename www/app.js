@@ -9565,7 +9565,7 @@ exports.default = CloseButton;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.removeFlow = exports.editFlowForm = exports.editFlow = exports.addFlow = undefined;
+exports.getRadius = exports.getRadiusSq = exports.radiusTeX = exports.radiusSqTeX = exports.sqrtTeX = exports.fracTeX = exports.editFlowView = exports.removeFlow = exports.editFlowForm = exports.editFlow = exports.addFlow = undefined;
 
 var _flowActions = __webpack_require__(218);
 
@@ -9605,6 +9605,36 @@ var editFlowForm = exports.editFlowForm = function editFlowForm(flowType, inputC
 
 var removeFlow = exports.removeFlow = function removeFlow(flowId) {
   _store2.default.dispatch(flowActions.removeFlow(flowId));
+};
+
+var editFlowView = exports.editFlowView = function editFlowView(view) {
+  _store2.default.dispatch(flowActions.editFlowView(view));
+};
+
+var fracTeX = exports.fracTeX = function fracTeX(numerator, denominator) {
+  return '\\frac{numerator}{denominator}';
+};
+
+var sqrtTeX = exports.sqrtTeX = function sqrtTeX(x) {
+  return '\\sqrt[](x)';
+};
+
+var radiusSqTeX = exports.radiusSqTeX = function radiusSqTeX(x0, y0) {
+  var xDiff = x0 < 0 ? 'x + ' + -x0 : 'x - ' + x0;
+  var yDiff = y0 < 0 ? 'y + ' + -y0 : 'y - ' + y0;
+  return '(' + xDiff + ')^2 + (' + yDiff + ')^2';
+};
+
+var radiusTeX = exports.radiusTeX = function radiusTeX(x0, y0) {
+  return sqrtTeX(radiusSqTeX(x0, y0));
+};
+
+var getRadiusSq = exports.getRadiusSq = function getRadiusSq(xDiff, yDiff) {
+  return Math.pow(xDiff, 2) + Math.pow(yDiff, 2);
+};
+
+var getRadius = exports.getRadius = function getRadius(xDiff, yDiff) {
+  return Math.sqrt(getRadiusSq(xDiff, yDiff));
 };
 
 /***/ }),
@@ -14522,6 +14552,10 @@ var _flowTypes = __webpack_require__(58);
 
 var _util = __webpack_require__(145);
 
+var _reactFormulaBeautifier = __webpack_require__(540);
+
+var _reactFormulaBeautifier2 = _interopRequireDefault(_reactFormulaBeautifier);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -14655,10 +14689,20 @@ var makeData = function makeData(zData) {
   }];
 };
 
+var layout = {
+  margin: {
+    t: 40,
+    l: 10,
+    r: 10,
+    b: 10
+  }
+};
+
 var mapStateToProps = function mapStateToProps(state) {
   return {
     activeFlowIds: state.flow.activeFlowIds,
-    activeFlowMap: state.flow.activeFlowMap
+    activeFlowMap: state.flow.activeFlowMap,
+    flowView: state.flow.flowView
   };
 };
 
@@ -14671,10 +14715,7 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
     var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
     _this.state = {
-      flowFcnName: 'vp',
-      layout: {
-        title: 'Potential Flow'
-      }
+      flowFcnName: 'vp'
     };
     _this.activeFlowTimer = null;
     return _this;
@@ -14683,7 +14724,7 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
   _createClass(App, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      this.renderNewPlot(this.graph, [], this.state.layout);
+      this.renderNewPlot(this.graph, [], layout);
       var inputs = { U: 0, V: 1 };
       (0, _util.addFlow)(_flowTypes.UNIFORM, inputs, (0, _Uniform.makeUniformFlowFcns)(inputs));
     }
@@ -14693,15 +14734,17 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
       var _this2 = this;
 
       var activeFlowIds = nextProps.activeFlowIds,
-          activeFlowMap = nextProps.activeFlowMap;
+          activeFlowMap = nextProps.activeFlowMap,
+          flowView = nextProps.flowView;
 
-      if (activeFlowIds !== this.props.activeFlowIds || activeFlowMap !== this.props.activeFlowMap) {
+      if (activeFlowIds !== this.props.activeFlowIds || activeFlowMap !== this.props.activeFlowMap || flowView !== this.props.flowView) {
         clearTimeout(this.activeFlowTimer);
+
         this.activeFlowTimer = setTimeout(function () {
-          var flowFcn = makeFlowFcn(_this2.state.flowFcnName, activeFlowIds, activeFlowMap);
+          var flowFcn = makeFlowFcn(flowView, activeFlowIds, activeFlowMap);
           var zData = makeZData(flowFcn, xCoords, yCoords);
           var newData = makeData(zData);
-          _this2.renderNewPlot(_this2.graph, newData, _this2.state.layout);
+          _this2.renderNewPlot(_this2.graph, newData, layout);
           //Plotly.addTraces(this.graph, { z: streamZData });
         }, 300);
       }
@@ -14718,7 +14761,9 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
 
       var _props = this.props,
           activeFlowIds = _props.activeFlowIds,
-          activeFlowMap = _props.activeFlowMap;
+          activeFlowMap = _props.activeFlowMap,
+          flowView = _props.flowView;
+      var flowFcnStr = this.state.flowFcnStr;
 
       return _react2.default.createElement('div', { className: 'flexbox' }, _react2.default.createElement('div', { className: 'flex1', style: { padding: '0 12px' } }, _react2.default.createElement('div', { className: 'flex0' }, _react2.default.createElement('div', { ref: function ref(div) {
           return _this3.graph = div;
@@ -14727,7 +14772,10 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
           width: '800px',
           height: '500px',
           margin: 'auto'
-        } })), _react2.default.createElement('div', null, _react2.default.createElement('h4', null, 'Add Flow Source'), _react2.default.createElement(_Uniform2.default, null), _react2.default.createElement(_PointSource2.default, null), _react2.default.createElement(_PointVortex2.default, null), _react2.default.createElement(_Dipole2.default, null))), _react2.default.createElement('div', { className: 'flex0 active-flows' }, _react2.default.createElement('h4', null, 'Current Flows \xB7 ', activeFlowIds.length), activeFlowIds.map(function (id, i) {
+        } }), _react2.default.createElement('div', { className: 'flexbox', style: { minHeight: '40px' } }, _react2.default.createElement('div', { className: 'flex1' }, flowFcnStr && _react2.default.createElement(_reactFormulaBeautifier2.default, { value: flowFcnStr })), _react2.default.createElement('div', { className: 'flex0' }, _react2.default.createElement('select', { value: flowView,
+        onChange: function onChange(e) {
+          return (0, _util.editFlowView)(e.target.value);
+        } }, _react2.default.createElement('option', { value: 'vp' }, 'Velocity Potential'), _react2.default.createElement('option', { value: 'stream' }, 'Stream Function'), _react2.default.createElement('option', { value: 'xVel' }, 'X Velocity'), _react2.default.createElement('option', { value: 'yVel' }, 'Y Velocity'))))), _react2.default.createElement('div', null, _react2.default.createElement('h4', null, 'Add Flow Source'), _react2.default.createElement(_Uniform2.default, null), _react2.default.createElement(_PointSource2.default, null), _react2.default.createElement(_PointVortex2.default, null), _react2.default.createElement(_Dipole2.default, null))), _react2.default.createElement('div', { className: 'flex0 active-flows' }, _react2.default.createElement('h4', null, 'Current Flows \xB7 ', activeFlowIds.length), activeFlowIds.map(function (id, i) {
         var flow = activeFlowMap[id];
         switch (flow.type) {
           case _flowTypes.UNIFORM:
@@ -14859,6 +14907,13 @@ var removeFlow = exports.removeFlow = function removeFlow(flowId) {
   return {
     type: 'REMOVE_FLOW',
     flowId: flowId
+  };
+};
+
+var editFlowView = exports.editFlowView = function editFlowView(view) {
+  return {
+    type: 'EDIT_FLOW_VIEW',
+    view: view
   };
 };
 
@@ -15591,6 +15646,7 @@ function _defineProperty(obj, key, value) {
 var defaultState = {
   activeFlowIds: [],
   activeFlowMap: {},
+  flowView: 'vp',
   flowForms: (_flowForms = {}, _defineProperty(_flowForms, _flowTypes.UNIFORM, {
     inputs: {
       U: 1,
@@ -15659,6 +15715,11 @@ exports.default = function () {
           return id !== action.flowId;
         }),
         activeFlowMap: Object.assign({}, state.activeFlowMap, _defineProperty({}, action.flowId, undefined))
+      });
+
+    case 'EDIT_FLOW_VIEW':
+      return Object.assign({}, state, {
+        flowView: action.view
       });
 
     default:
@@ -34158,6 +34219,20 @@ module.exports = function(module) {
 	}
 	return module;
 };
+
+
+/***/ }),
+/* 539 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports,"__esModule",{value:true});var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value"in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor)}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor}}();var _react=__webpack_require__(24);var _react2=_interopRequireDefault(_react);function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj}}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function")}}function _possibleConstructorReturn(self,call){if(!self){throw new ReferenceError("this hasn't been initialised - super() hasn't been called")}return call&&(typeof call==="object"||typeof call==="function")?call:self}function _inherits(subClass,superClass){if(typeof superClass!=="function"&&superClass!==null){throw new TypeError("Super expression must either be null or a function, not "+typeof superClass)}subClass.prototype=Object.create(superClass&&superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__=superClass}var Component=_react2.default.Component,PropTypes=_react2.default.PropTypes;var TeX=function(_Component){_inherits(TeX,_Component);function TeX(props){_classCallCheck(this,TeX);var _this=_possibleConstructorReturn(this,(TeX.__proto__||Object.getPrototypeOf(TeX)).call(this,props));_this.setNode=function(node){_this.node=node};MathJax.Hub.Config({tex2jax:props.tex2jax,showMathMenu:props.showMathMenu,showMathMenuMSIE:props.showMathMenuMSIE});return _this}_createClass(TeX,[{key:"componentDidMount",value:function componentDidMount(){MathJax.Hub.Queue(["Typeset",MathJax.Hub,this.node])}},{key:"componentDidUpdate",value:function componentDidUpdate(){MathJax.Hub.Queue(["Typeset",MathJax.Hub,this.node])}},{key:"render",value:function render(){return _react2.default.createElement("div",{className:this.props.className,id:"MathJax-TeX",ref:this.setNode,style:this.props.style},"$"+this.props.value+"$")}}]);return TeX}(Component);TeX.propTypes={className:PropTypes.string,showMathMenu:PropTypes.bool,showMathMenuMSIE:PropTypes.bool,style:PropTypes.object,tex2jax:PropTypes.object,value:PropTypes.string};TeX.defaultProps={showMathMenu:false,showMathMenuMSIE:false,tex2jax:{inlineMath:[["$","$"],["\\(","\\)"]]}};exports.default=TeX;
+
+/***/ }),
+/* 540 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(539); // eslint-disable-line
 
 
 /***/ })

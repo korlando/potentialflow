@@ -9,7 +9,8 @@ import { UNIFORM,
          POINT_SOURCE,
          POINT_VORTEX,
          DIPOLE} from '../constants/flowTypes';
-import { addFlow } from '../util';
+import { addFlow, editFlowView } from '../util';
+import TeX from 'react-formula-beautifier';
 
 const SIZE = 100;
 
@@ -114,10 +115,20 @@ const makeData = (zData) => {
   }]
 };
 
+const layout = {
+  margin: {
+    t: 40,
+    l: 10,
+    r: 10,
+    b: 10
+  }
+};
+
 const mapStateToProps = (state) => {
   return {
     activeFlowIds: state.flow.activeFlowIds,
-    activeFlowMap: state.flow.activeFlowMap
+    activeFlowMap: state.flow.activeFlowMap,
+    flowView: state.flow.flowView
   };
 };
 
@@ -127,31 +138,30 @@ export default class App extends Component {
     super(props);
 
     this.state = {
-      flowFcnName: 'vp',
-      layout: {
-        title: 'Potential Flow'
-      }
+      flowFcnName: 'vp'
     };
     this.activeFlowTimer = null;
   };
 
   componentDidMount() {
-    this.renderNewPlot(this.graph, [], this.state.layout);
+    this.renderNewPlot(this.graph, [], layout);
     const inputs = { U: 0, V: 1 };
     addFlow(UNIFORM, inputs, makeUniformFlowFcns(inputs));
   };
 
   componentWillReceiveProps(nextProps) {
-    const { activeFlowIds, activeFlowMap } = nextProps;
+    const { activeFlowIds, activeFlowMap, flowView } = nextProps;
     
     if(activeFlowIds !== this.props.activeFlowIds ||
-      activeFlowMap !== this.props.activeFlowMap) {
+      activeFlowMap !== this.props.activeFlowMap ||
+      flowView !== this.props.flowView) {
       clearTimeout(this.activeFlowTimer);
+      
       this.activeFlowTimer = setTimeout(() => {
-        const flowFcn = makeFlowFcn(this.state.flowFcnName, activeFlowIds, activeFlowMap);
+        const flowFcn = makeFlowFcn(flowView, activeFlowIds, activeFlowMap);
         const zData = makeZData(flowFcn, xCoords, yCoords);
         const newData = makeData(zData);
-        this.renderNewPlot(this.graph, newData, this.state.layout);
+        this.renderNewPlot(this.graph, newData, layout);
         //Plotly.addTraces(this.graph, { z: streamZData });
       }, 300);
     }
@@ -162,7 +172,10 @@ export default class App extends Component {
   };
 
   render() {
-    const { activeFlowIds, activeFlowMap } = this.props;
+    const { activeFlowIds,
+            activeFlowMap,
+            flowView } = this.props;
+    const { flowFcnStr } = this.state;
 
     return (
       <div className="flexbox">
@@ -174,6 +187,22 @@ export default class App extends Component {
                 height: '500px',
                 margin: 'auto'
               }}></div>
+              <div className="flexbox" style={{ minHeight: '40px' }}>
+                <div className="flex1">
+                  { flowFcnStr &&
+                    <TeX value={flowFcnStr}/>
+                  }
+                </div>
+                <div className="flex0">
+                  <select value={flowView}
+                    onChange={e => editFlowView(e.target.value)}>
+                    <option value="vp">Velocity Potential</option>
+                    <option value="stream">Stream Function</option>
+                    <option value="xVel">X Velocity</option>
+                    <option value="yVel">Y Velocity</option>
+                  </select>
+                </div>
+              </div>
           </div>
           <div>
             <h4>Add Flow Source</h4>

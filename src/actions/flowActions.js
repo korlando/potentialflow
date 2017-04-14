@@ -28,3 +28,10 @@ export const removeFlow = (flowId) => {
     flowId
   };
 };
+
+export const editFlowView = (view) => {
+  return {
+    type: 'EDIT_FLOW_VIEW',
+    view
+  };
+};
