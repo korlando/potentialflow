@@ -14605,6 +14605,12 @@ function _defineProperty(obj, key, value) {
 }
 
 var SIZE = 100;
+var flowToTeX = {
+  vp: '\\phi',
+  stream: '\\psi',
+  xVel: 'v_x',
+  yVel: 'v_y'
+};
 
 /**
  * Generate custom X and Y array scales
@@ -14666,7 +14672,7 @@ function makeFlowFcn(name, flowIds, flowMap) {
 };
 
 function makeFlowStr(name, flowIds, flowMap) {
-  var str = '';
+  var str = flowToTeX[name] + '(x, y) = ';
   flowIds.forEach(function (id, i) {
     str += flowMap[id].flowStrs[name];
     if (i !== flowIds.length - 1) {

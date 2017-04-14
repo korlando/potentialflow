@@ -14,6 +14,12 @@ import { addFlow, editFlowView } from '../util';
 import TeX from 'react-formula-beautifier';
 
 const SIZE = 100;
+const flowToTeX = {
+  vp: '\\phi',
+  stream: '\\psi',
+  xVel: 'v_x',
+  yVel: 'v_y'
+};
 
 /**
  * Generate custom X and Y array scales
@@ -75,7 +81,7 @@ function makeFlowFcn(name, flowIds, flowMap) {
 };
 
 function makeFlowStr(name, flowIds, flowMap) {
-  let str = '';
+  let str = `${flowToTeX[name]}(x, y) = `;
   flowIds.forEach((id, i) => {
     str += flowMap[id].flowStrs[name];
     if(i !== flowIds.length - 1) {
