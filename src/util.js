@@ -21,6 +21,13 @@ export const editFlowView = (view) => {
   store.dispatch(flowActions.editFlowView(view));
 };
 
+export const diffTeX = (first, second) => {
+  if(second < 0) {
+    return `${first} + ${-second}`;
+  }
+  return `${first} - ${second}`;
+};
+
 export const fracTeX = (numerator, denominator) => {
   return `\\frac{numerator}{denominator}`;
 };
@@ -30,13 +37,15 @@ export const sqrtTeX = (x) => {
 };
 
 export const radiusSqTeX = (x0, y0) => {
-  const xDiff = x0 < 0 ? `x + ${-x0}` : `x - ${x0}`;
-  const yDiff = y0 < 0 ? `y + ${-y0}` : `y - ${y0}`;
-  return `(${xDiff})^2 + (${yDiff})^2`;
+  return `(${diffTeX('x', x0)})^2 + (${diffTeX('y', y0)})^2`;
 };
 
 export const radiusTeX = (x0, y0) => {
   return sqrtTeX(radiusSqTeX(x0, y0));
+};
+
+export const over2PiTeX = (x) => {
+  return fracTeX(x, '2\\pi');
 };
 
 export const getRadiusSq = (xDiff, yDiff) => {

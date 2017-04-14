@@ -9565,7 +9565,7 @@ exports.default = CloseButton;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.over2Pi = exports.getRadius = exports.getRadiusSq = exports.radiusTeX = exports.radiusSqTeX = exports.sqrtTeX = exports.fracTeX = exports.editFlowView = exports.removeFlow = exports.editFlowForm = exports.editFlow = exports.addFlow = undefined;
+exports.over2Pi = exports.getRadius = exports.getRadiusSq = exports.over2PiTeX = exports.radiusTeX = exports.radiusSqTeX = exports.sqrtTeX = exports.fracTeX = exports.diffTeX = exports.editFlowView = exports.removeFlow = exports.editFlowForm = exports.editFlow = exports.addFlow = undefined;
 
 var _flowActions = __webpack_require__(218);
 
@@ -9611,6 +9611,13 @@ var editFlowView = exports.editFlowView = function editFlowView(view) {
   _store2.default.dispatch(flowActions.editFlowView(view));
 };
 
+var diffTeX = exports.diffTeX = function diffTeX(first, second) {
+  if (second < 0) {
+    return first + ' + ' + -second;
+  }
+  return first + ' - ' + second;
+};
+
 var fracTeX = exports.fracTeX = function fracTeX(numerator, denominator) {
   return '\\frac{numerator}{denominator}';
 };
@@ -9620,13 +9627,15 @@ var sqrtTeX = exports.sqrtTeX = function sqrtTeX(x) {
 };
 
 var radiusSqTeX = exports.radiusSqTeX = function radiusSqTeX(x0, y0) {
-  var xDiff = x0 < 0 ? 'x + ' + -x0 : 'x - ' + x0;
-  var yDiff = y0 < 0 ? 'y + ' + -y0 : 'y - ' + y0;
-  return '(' + xDiff + ')^2 + (' + yDiff + ')^2';
+  return '(' + diffTeX('x', x0) + ')^2 + (' + diffTeX('y', y0) + ')^2';
 };
 
 var radiusTeX = exports.radiusTeX = function radiusTeX(x0, y0) {
   return sqrtTeX(radiusSqTeX(x0, y0));
+};
+
+var over2PiTeX = exports.over2PiTeX = function over2PiTeX(x) {
+  return fracTeX(x, '2\\pi');
 };
 
 var getRadiusSq = exports.getRadiusSq = function getRadiusSq(xDiff, yDiff) {
@@ -15099,7 +15108,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.makePointSourceFlowFcns = undefined;
+exports.default = exports.pointSourceFlowStrs = exports.makePointSourceFlowFcns = undefined;
 
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
@@ -15155,6 +15164,7 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
+// velocity potential
 var vp = function vp(m, x0, y0) {
   return function (x, y) {
     var radius = (0, _util.getRadius)(x - x0, y - y0);
@@ -15165,12 +15175,26 @@ var vp = function vp(m, x0, y0) {
   };
 };
 
+var vpTeX = function vpTeX(m, x0, y0) {
+  return (0, _util.over2PiTeX)(m) + 'ln(' + (0, _util.radiusTeX)(x0, y0) + ')';
+};
+
+var vpTeXEq = ('m', 'x_0', 'y_0');
+
+// stream function
 var stream = function stream(m, x0, y0) {
   return function (x, y) {
     return (0, _util.over2Pi)(m) * Math.atan2(y - y0, x - x0);
   };
 };
 
+var streamTeX = function streamTeX(m, x0, y0) {
+  return (0, _util.over2PiTeX)(m) + 'atan2(' + (0, _util.diffTeX)('y', y0) + ', ' + (0, _util.diffTeX)('x', x0) + ')';
+};
+
+var streamTeXEq = ('m', 'x_0', 'y_0');
+
+// x velocity
 var xVel = function xVel(m, x0, y0) {
   return function (x, y) {
     var xDiff = x - x0;
@@ -15184,6 +15208,13 @@ var xVel = function xVel(m, x0, y0) {
   };
 };
 
+var xVelTeX = function xVelTeX(m, x0, y0) {
+  return (0, _util.over2PiTeX)(m) + (0, _util.fracTeX)((0, _util.diffTeX)('x', x0), (0, _util.radiusSqTeX)(x0, y0));
+};
+
+var xVelTeXEq = ('m', 'x_0', 'y_0');
+
+// y velocity
 var yVel = function yVel(m, x0, y0) {
   return function (x, y) {
     var xDiff = x - x0;
@@ -15197,6 +15228,12 @@ var yVel = function yVel(m, x0, y0) {
   };
 };
 
+var yVelTeX = function yVelTeX(m, x0, y0) {
+  return (0, _util.over2PiTeX)(m) + (0, _util.fracTeX)((0, _util.diffTeX)('y', y0), (0, _util.radiusSqTeX)(x0, y0));
+};
+
+var yVelTeXEq = yVelTeX('m', 'x_0', 'y_0');
+
 var makePointSourceFlowFcns = exports.makePointSourceFlowFcns = function makePointSourceFlowFcns(inputs) {
   var m = inputs.m,
       x0 = inputs.x0,
@@ -15207,6 +15244,19 @@ var makePointSourceFlowFcns = exports.makePointSourceFlowFcns = function makePoi
     stream: stream(m, x0, y0),
     xVel: xVel(m, x0, y0),
     yVel: yVel(m, x0, y0)
+  };
+};
+
+var pointSourceFlowStrs = exports.pointSourceFlowStrs = function pointSourceFlowStrs(inputs) {
+  var m = inputs.m,
+      x0 = inputs.x0,
+      y0 = inputs.y0;
+
+  return {
+    vp: vpTeX(m, x0, y0),
+    stream: streamTeX(m, x0, y0),
+    xVel: xVelTeX(m, x0, y0),
+    yVel: yVelTeX(m, x0, y0)
   };
 };
 
@@ -15225,7 +15275,8 @@ var PointSource = function (_Component) {
       return _react2.default.createElement(_Flow2.default, _extends({}, this.props, {
         name: 'Point Source/Sink',
         type: _flowTypes.POINT_SOURCE,
-        makeFlowFcns: makePointSourceFlowFcns }));
+        makeFlowFcns: makePointSourceFlowFcns,
+        makeFlowStrs: pointSourceFlowStrs }));
     }
   }]);
 
