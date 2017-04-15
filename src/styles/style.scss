@@ -59,6 +59,10 @@ $blue: #69f;
   @include alignItems(center);
 }
 
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
 .display-none {
   display: none;
 }
@@ -93,6 +97,11 @@ button {
   }
 }
 
+.flow-eq {
+  border: 2px solid lighten($blue, 15%);
+  background: lighten($blue, 25%);
+}
+
 .flow-element {
   display: inline-block;
   vertical-align: top;
@@ -114,12 +123,14 @@ button {
     width: 30px;
   }
   label {
-    margin-bottom: 0;
+    margin-bottom: 5px;
   }
   .flow-eq {
     color: $grey;
     margin-bottom: 5px;
     font-size: 12px;
+    border-radius: 3px;
+    padding: 5px 5px;
   }
 }
 
@@ -127,7 +138,7 @@ button {
   padding: 0 12px;
   height: 100vh;
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: auto;
 }
 
 .active-flows {
@@ -149,8 +160,6 @@ button {
 
 .main-flow-eq {
   display: inline-block;
-  border: 2px solid lighten($blue, 15%);
-  background: lighten($blue, 25%);
   border-radius: 3px;
   padding: 4px 10px;
   margin-right: 10px;

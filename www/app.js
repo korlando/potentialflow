@@ -14729,6 +14729,10 @@ function _defineProperty(obj, key, value) {
 }
 
 var SIZE = 100;
+var flowViewColorScales = {
+  vp: 'YIOrRd',
+  stream: 'YIGnBu'
+};
 
 /**
  * Generate custom X and Y array scales
@@ -14823,7 +14827,7 @@ function makeZData(zFcn, xCoords, yCoords) {
   return zData;
 };
 
-var makeData = function makeData(zData) {
+var makeData = function makeData(zData, flowView) {
   return [{
     z: zData,
     x: xCoords,
@@ -14833,7 +14837,7 @@ var makeData = function makeData(zData) {
       coloring: 'lines'
     },
     ncontours: 80,
-    colorscale: 'YIOrRd',
+    colorscale: flowViewColorScales[flowView],
     line: {
       smoothing: 1.3,
       width: 1.5
@@ -14845,7 +14849,7 @@ var makeData = function makeData(zData) {
 var layout = {
   margin: {
     t: 40,
-    l: 20,
+    l: 30,
     r: 20,
     b: 20
   }
@@ -14897,7 +14901,7 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
         this.activeFlowTimer = setTimeout(function () {
           var flowFcn = makeFlowFcn(flowView, activeFlowIds, activeFlowMap);
           var zData = makeZData(flowFcn, xCoords, yCoords);
-          var newData = makeData(zData);
+          var newData = makeData(zData, flowView);
           _this2.renderNewPlot(_this2.graph, newData, layout);
 
           var flowStr = makeFlowStr(flowView, activeFlowIds, activeFlowMap);
@@ -14931,7 +14935,7 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
         } }), _react2.default.createElement('div', { className: 'flexbox align-items-center', style: {
           minHeight: '40px',
           padding: '5px 0'
-        } }, _react2.default.createElement('div', { className: 'flex1' }), _react2.default.createElement('div', { className: 'flex0' }, flowStr && _react2.default.createElement('div', { className: 'main-flow-eq' }, _react2.default.createElement(_TeX2.default, { value: flowStr }))), _react2.default.createElement('div', { className: 'flex0' }, _react2.default.createElement('select', {
+        } }, _react2.default.createElement('div', { className: 'flex1' }), _react2.default.createElement('div', { className: 'flex0' }, flowStr && _react2.default.createElement('div', { className: 'flow-eq main-flow-eq' }, _react2.default.createElement(_TeX2.default, { value: flowStr }))), _react2.default.createElement('div', { className: 'flex0' }, _react2.default.createElement('select', {
         className: 'form-control',
         value: flowView,
         onChange: function onChange(e) {
@@ -20266,7 +20270,7 @@ exports = module.exports = __webpack_require__(413)();
 
 
 // module
-exports.push([module.i, ".flexbox {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex; }\n\n.flex-wrap {\n  flex-wrap: wrap; }\n\n.flex-wrap-reverse {\n  flex-wrap: wrap-reverse; }\n\n.flex-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.flex0 {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto; }\n\n.flex1 {\n  -webkit-box-flex: 1 1 auto;\n  -moz-box-flex: 1 1 auto;\n  -webkit-flex: 1 1 auto;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto; }\n\n.align-items-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.display-none {\n  display: none; }\n\nbutton {\n  cursor: pointer; }\n\n.close-x {\n  display: inline-block;\n  padding: 0;\n  cursor: pointer;\n  border-radius: 3px;\n  background: transparent;\n  border: none;\n  outline: 0;\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s;\n  stroke: #747e95; }\n  .close-x:hover {\n    transform: scale(1.05); }\n  .close-x:active {\n    transition: 0;\n    background: rgba(0, 0, 0, 0.1); }\n  .close-x svg {\n    stroke: inherit;\n    stroke-width: 1.5px;\n    stroke-linecap: round;\n    display: block; }\n\n.flow-element {\n  display: inline-block;\n  vertical-align: top;\n  max-width: 100%;\n  border-radius: 3px;\n  border: 2px solid #eaeef6;\n  background: #f1f4f9;\n  padding: 10px;\n  margin-bottom: 8px;\n  margin-right: 6px; }\n  .flow-element .close-x {\n    padding: 2px; }\n  .flow-element .input-group {\n    margin-bottom: 4px; }\n  .flow-element .input-group-addon {\n    background-color: #eaeef6;\n    width: 30px; }\n  .flow-element label {\n    margin-bottom: 0; }\n  .flow-element .flow-eq {\n    color: #51586a;\n    margin-bottom: 5px;\n    font-size: 12px; }\n\n.view-container {\n  padding: 0 12px;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden; }\n\n.active-flows {\n  padding: 30px 12px;\n  width: 250px;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  background: #51586a; }\n  .active-flows .flow-element {\n    margin-right: 0;\n    width: 100%; }\n  .active-flows h4 {\n    color: #f1f4f9;\n    margin-bottom: 20px; }\n\n.main-flow-eq {\n  display: inline-block;\n  border: 2px solid #b3ccff;\n  background: #e6eeff;\n  border-radius: 3px;\n  padding: 4px 10px;\n  margin-right: 10px; }\n", ""]);
+exports.push([module.i, ".flexbox {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex; }\n\n.flex-wrap {\n  flex-wrap: wrap; }\n\n.flex-wrap-reverse {\n  flex-wrap: wrap-reverse; }\n\n.flex-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.flex0 {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto; }\n\n.flex1 {\n  -webkit-box-flex: 1 1 auto;\n  -moz-box-flex: 1 1 auto;\n  -webkit-flex: 1 1 auto;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto; }\n\n.align-items-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\nbody {\n  font-family: 'Open Sans', sans-serif; }\n\n.display-none {\n  display: none; }\n\nbutton {\n  cursor: pointer; }\n\n.close-x {\n  display: inline-block;\n  padding: 0;\n  cursor: pointer;\n  border-radius: 3px;\n  background: transparent;\n  border: none;\n  outline: 0;\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s;\n  stroke: #747e95; }\n  .close-x:hover {\n    transform: scale(1.05); }\n  .close-x:active {\n    transition: 0;\n    background: rgba(0, 0, 0, 0.1); }\n  .close-x svg {\n    stroke: inherit;\n    stroke-width: 1.5px;\n    stroke-linecap: round;\n    display: block; }\n\n.flow-eq {\n  border: 2px solid #b3ccff;\n  background: #e6eeff; }\n\n.flow-element {\n  display: inline-block;\n  vertical-align: top;\n  max-width: 100%;\n  border-radius: 3px;\n  border: 2px solid #eaeef6;\n  background: #f1f4f9;\n  padding: 10px;\n  margin-bottom: 8px;\n  margin-right: 6px; }\n  .flow-element .close-x {\n    padding: 2px; }\n  .flow-element .input-group {\n    margin-bottom: 4px; }\n  .flow-element .input-group-addon {\n    background-color: #eaeef6;\n    width: 30px; }\n  .flow-element label {\n    margin-bottom: 5px; }\n  .flow-element .flow-eq {\n    color: #51586a;\n    margin-bottom: 5px;\n    font-size: 12px;\n    border-radius: 3px;\n    padding: 5px 5px; }\n\n.view-container {\n  padding: 0 12px;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: auto; }\n\n.active-flows {\n  padding: 30px 12px;\n  width: 250px;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  background: #51586a; }\n  .active-flows .flow-element {\n    margin-right: 0;\n    width: 100%; }\n  .active-flows h4 {\n    color: #f1f4f9;\n    margin-bottom: 20px; }\n\n.main-flow-eq {\n  display: inline-block;\n  border-radius: 3px;\n  padding: 4px 10px;\n  margin-right: 10px; }\n", ""]);
 
 // exports
 

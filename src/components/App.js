@@ -15,6 +15,10 @@ import flowToTeX from '../constants/flowToTeX';
 import TeX from './TeX';
 
 const SIZE = 100;
+const flowViewColorScales = {
+  vp: 'YIOrRd',
+  stream: 'YIGnBu'
+};
 
 /**
  * Generate custom X and Y array scales
@@ -109,7 +113,7 @@ function makeZData(zFcn, xCoords, yCoords) {
   return zData;
 };
 
-const makeData = (zData) => {
+const makeData = (zData, flowView) => {
   return [{
     z: zData,
     x: xCoords,
@@ -119,7 +123,7 @@ const makeData = (zData) => {
       coloring: 'lines'
     },
     ncontours: 80,
-    colorscale: 'YIOrRd',
+    colorscale: flowViewColorScales[flowView],
     line: {
       smoothing: 1.3,
       width: 1.5
@@ -131,7 +135,7 @@ const makeData = (zData) => {
 const layout = {
   margin: {
     t: 40,
-    l: 20,
+    l: 30,
     r: 20,
     b: 20
   }
@@ -174,7 +178,7 @@ export default class App extends Component {
       this.activeFlowTimer = setTimeout(() => {
         const flowFcn = makeFlowFcn(flowView, activeFlowIds, activeFlowMap);
         const zData = makeZData(flowFcn, xCoords, yCoords);
-        const newData = makeData(zData);
+        const newData = makeData(zData, flowView);
         this.renderNewPlot(this.graph, newData, layout);
 
         const flowStr = makeFlowStr(flowView, activeFlowIds, activeFlowMap);
@@ -211,7 +215,7 @@ export default class App extends Component {
                 <div className="flex1"></div>
                 <div className="flex0">
                   { flowStr &&
-                    <div className="main-flow-eq">
+                    <div className="flow-eq main-flow-eq">
                       <TeX value={flowStr}/>
                     </div>
                   }
