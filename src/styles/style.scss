@@ -100,6 +100,7 @@ button {
 .flow-eq {
   border: 2px solid lighten($blue, 15%);
   background: lighten($blue, 25%);
+  overflow-x: auto;
 }
 
 .flow-element {
@@ -143,7 +144,7 @@ button {
 
 .active-flows {
   padding: 30px 12px;
-  width: 250px;
+  width: 270px;
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;

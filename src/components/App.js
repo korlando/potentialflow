@@ -210,16 +210,14 @@ export default class App extends Component {
               }}></div>
               <div className="flexbox align-items-center" style={{
                 minHeight: '40px',
-                padding: '5px 0'
+                padding: '10px 0'
               }}>
                 <div className="flex1"></div>
-                <div className="flex0">
-                  { flowStr &&
-                    <div className="flow-eq main-flow-eq">
-                      <TeX value={flowStr}/>
-                    </div>
-                  }
-                </div>
+                { flowStr &&
+                  <div className="flex0 flow-eq main-flow-eq">
+                    <TeX value={flowStr}/>
+                  </div>
+                }
                 <div className="flex0">
                   <select
                     className="form-control"
