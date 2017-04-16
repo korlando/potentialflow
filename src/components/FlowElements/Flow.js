@@ -58,6 +58,7 @@ export default class Flow extends Component {
 
   render() {
     const { name,
+            type,
             className,
             style,
             flowId,
@@ -69,7 +70,11 @@ export default class Flow extends Component {
       <div className={`flow-element ${className || ''}`}
         style={style || {}}>
         <div className="flexbox">
-          <label className="flex1">{name}</label>
+          <label className="flex0">{name}</label>
+          <div className="flex0">
+            <img src={`images/${type}.svg`} width="25"/>
+          </div>
+          <div className="flex1"></div>
           { flowId !== undefined &&
             <CloseButton
               className="flex0"

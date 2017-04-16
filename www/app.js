@@ -5056,6 +5056,7 @@ var Flow = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = func
 
       var _props3 = this.props,
           name = _props3.name,
+          type = _props3.type,
           className = _props3.className,
           style = _props3.style,
           flowId = _props3.flowId,
@@ -5064,7 +5065,7 @@ var Flow = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = func
           eqs = _props3.eqs;
 
       return _react2.default.createElement('div', { className: 'flow-element ' + (className || ''),
-        style: style || {} }, _react2.default.createElement('div', { className: 'flexbox' }, _react2.default.createElement('label', { className: 'flex1' }, name), flowId !== undefined && _react2.default.createElement(_CloseButton2.default, {
+        style: style || {} }, _react2.default.createElement('div', { className: 'flexbox' }, _react2.default.createElement('label', { className: 'flex0' }, name), _react2.default.createElement('div', { className: 'flex0' }, _react2.default.createElement('img', { src: 'images/' + type + '.svg', width: '25' })), _react2.default.createElement('div', { className: 'flex1' }), flowId !== undefined && _react2.default.createElement(_CloseButton2.default, {
         className: 'flex0',
         onClick: function onClick() {
           return (0, _util.removeFlow)(flowId);
