@@ -69,10 +69,11 @@ export default class Flow extends Component {
     return (
       <div className={`flow-element ${className || ''}`}
         style={style || {}}>
-        <div className="flexbox">
+        <div className="flexbox align-items-center"
+          style={{ marginBottom: '10px' }}>
           <label className="flex0">{name}</label>
           <div className="flex0">
-            <img src={`images/${type}.svg`} width="25"/>
+            <img src={`images/${type}.svg`} width="40" height="40"/>
           </div>
           <div className="flex1"></div>
           { flowId !== undefined &&

@@ -124,7 +124,9 @@ button {
     width: 30px;
   }
   label {
-    margin-bottom: 5px;
+    margin: 0;
+    font-size: 18px;
+    margin-right: 5px;
   }
   .flow-eq {
     color: $grey;
