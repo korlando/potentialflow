@@ -28,7 +28,7 @@ export const editFlowView = (view) => {
 export const diffTeX = (first, second) => {
   if(second < 0) {
     return `${first} + ${-second}`;
-  } else if(second === 0) {
+  } else if(!second) {
     return first;
   }
   return `${first} - ${second}`;

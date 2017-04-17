@@ -24,7 +24,7 @@ const stream = (U, V) => {
 };
 
 const streamTeX = (U, V) => {
-  const VStr = V < 0 ? V : `-${V}`;
+  const VStr = V < 0 ? -V : `-${V}`;
   const UStr = U < 0 ? ` - ${-U}` : `+ ${U}`;
   return `${VStr}x ${UStr}y`;
 };

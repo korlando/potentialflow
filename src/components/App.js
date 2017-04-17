@@ -94,17 +94,23 @@ function makeFlowStr(name, flowIds, flowMap, noLeftSide) {
   if(flowIds.length === 0) {
     return str + '0';
   }
+
+  const strs = [];
   flowIds.forEach((id, i) => {
     const flow = flowMap[id];
     if(flow.group) {
-      str += makeFlowStr(name, flow.flowIds, flowMap, true);
+      strs.push(makeFlowStr(name, flow.flowIds, flowMap, true));
     } else {
-      str += flow.flowStrs[name];
-    }
-    if(i !== flowIds.length - 1) {
-      str += ' + ';
+      strs.push(flow.flowStrs[name]);
     }
   });
+
+  for(let i = 0; i < strs.length; i++) {
+    str += strs[i];
+    if(i !== strs.length - 1) {
+      str += (strs[i + 1][0] === '-') ? ' ' : ' + ';
+    }
+  }
   return str;
 };
 
