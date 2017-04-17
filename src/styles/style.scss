@@ -120,7 +120,7 @@ button {
       text-decoration: underline;
     }
     &:first-child {
-      margin-left: 10px;
+      margin-left: 12px;
     }
     &.active {
       border-top: 2px solid darken($lightest, 2%);
@@ -179,7 +179,6 @@ button {
 }
 
 .view-container {
-  padding: 0 12px;
   height: 100vh;
   overflow-y: auto;
   overflow-x: auto;

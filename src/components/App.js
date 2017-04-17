@@ -206,7 +206,7 @@ export default class App extends Component {
     return (
       <div className="flexbox">
         <div className="flex1 view-container">
-          <div className="flex0">
+          <div style={{ padding: '0 12px' }}>
             <h1>Potential Flow</h1>
             <div ref={div => this.graph = div}
               style={{
@@ -214,31 +214,31 @@ export default class App extends Component {
                 height: '500px',
                 margin: 'auto'
               }}></div>
-              <div className="flexbox align-items-center" style={{
-                minHeight: '40px',
-                padding: '10px 0'
-              }}>
-                <div className="flex1"></div>
-                { flowStr &&
-                  <div className="flex0 flow-eq main-flow-eq">
-                    <TeX value={flowStr}/>
-                  </div>
-                }
-                <div className="flex0">
-                  <select
-                    className="form-control"
-                    value={flowView}
-                    onChange={e => editFlowView(e.target.value)}>
-                    <option value="vp">Velocity Potential</option>
-                    <option value="stream">Stream Function</option>
-                    <option value="xVel">X Velocity</option>
-                    <option value="yVel">Y Velocity</option>
-                  </select>
+            <div className="flexbox align-items-center" style={{
+              minHeight: '40px',
+              padding: '10px 0'
+            }}>
+              <div className="flex1"></div>
+              { flowStr &&
+                <div className="flex0 flow-eq main-flow-eq">
+                  <TeX value={flowStr}/>
                 </div>
+              }
+              <div className="flex0">
+                <select
+                  className="form-control"
+                  value={flowView}
+                  onChange={e => editFlowView(e.target.value)}>
+                  <option value="vp">Velocity Potential</option>
+                  <option value="stream">Stream Function</option>
+                  <option value="xVel">X Velocity</option>
+                  <option value="yVel">Y Velocity</option>
+                </select>
               </div>
+            </div>
+            <h4>Flow Elements</h4>
           </div>
           
-          <h4>Flow Elements</h4>
           <div className="flow-nav flexbox">
             { flowNavOptions.map((o, i) => {
               return (
@@ -252,19 +252,24 @@ export default class App extends Component {
               );
             })}
           </div>
-          <div className={addMode !== 'preset' && 'display-none'}>
-            <RankineHalfbody/>
-            <RankineOval/>
-            <Cylinder/>
-            <RotatingCylinder/>
-          </div>
-          <div className={addMode !== 'custom' && 'display-none'}>
-            <Uniform/>
-            <PointSource/>
-            <PointVortex/>
-            <Dipole/>
+          
+          <div style={{ padding: '0 12px' }}>
+            <div className={addMode !== 'preset' && 'display-none'}>
+              <RankineHalfbody/>
+              <RankineOval/>
+              <Cylinder/>
+              <RotatingCylinder/>
+            </div>
+            
+            <div className={addMode !== 'custom' && 'display-none'}>
+              <Uniform/>
+              <PointSource/>
+              <PointVortex/>
+              <Dipole/>
+            </div>
           </div>
         </div>
+        
         <div className="flex0 active-flows">
           <h4>Current Flows &middot; {activeFlowIds.length}</h4>
           { activeFlowIds.map((id, i) => {
