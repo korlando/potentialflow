@@ -242,7 +242,7 @@ export default class App extends Component {
           }}>
             <label style={{ margin: '0' }}>Potential Flow</label>
           </div>
-          <div style={{ padding: '0 12px' }}>
+          <div style={{ overflowX: 'auto'}}>
             <div ref={div => this.graph = div}
               style={{
                 width: '800px',
@@ -253,13 +253,13 @@ export default class App extends Component {
               minHeight: '40px',
               padding: '10px 0'
             }}>
-              <div className="flex1"></div>
+              <div className="flex1" style={{ marginLeft: '12px' }}></div>
               { flowStr &&
                 <div className="flex0 flow-eq main-flow-eq">
                   <TeX value={flowStr}/>
                 </div>
               }
-              <div className="flex0">
+              <div className="flex0" style={{ paddingRight: '12px' }}>
                 <select
                   className="form-control"
                   value={flowView}
@@ -271,8 +271,9 @@ export default class App extends Component {
                 </select>
               </div>
             </div>
-            <h4>Flow Elements</h4>
           </div>
+
+          <h4 style={{ padding: '0 12px'}}>Flow Elements</h4>
           
           <div className="flow-nav flexbox">
             { flowNavOptions.map((o, i) => {

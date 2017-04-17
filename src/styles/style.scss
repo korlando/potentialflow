@@ -154,6 +154,9 @@ button {
   padding: 10px;
   margin-bottom: 8px;
   margin-right: 6px;
+  &:last-child {
+    margin-bottom: 0;
+  }
   .close-x {
     padding: 2px;
   }
@@ -181,6 +184,7 @@ button {
 .flow-group {
   padding: 10px;
   border: 2px solid #fc6;
+  background: lighten(#fc6, 25%);
   border-radius: 3px;
   margin-bottom: 15px;
   .title {
@@ -194,7 +198,7 @@ button {
 .view-container {
   height: 100vh;
   overflow-y: auto;
-  overflow-x: auto;
+  overflow-x: hidden;
 }
 
 .active-flows {
