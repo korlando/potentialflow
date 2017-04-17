@@ -261,22 +261,18 @@ export default class App extends Component {
               );
             })}
           </div>
-          { addMode === 'custom' &&
-            <div>
-              <Uniform/>
-              <PointSource/>
-              <PointVortex/>
-              <Dipole/>
-            </div>
-          }
-          { addMode === 'preset' &&
-            <div>
-              <RankineHalfbody/>
-              <RankineOval/>
-              <Cylinder/>
-              <RotatingCylinder/>
-            </div>
-          }
+          <div className={addMode !== 'custom' && 'display-none'}>
+            <Uniform/>
+            <PointSource/>
+            <PointVortex/>
+            <Dipole/>
+          </div>
+          <div className={addMode !== 'preset' && 'display-none'}>
+            <RankineHalfbody/>
+            <RankineOval/>
+            <Cylinder/>
+            <RotatingCylinder/>
+          </div>
         </div>
         <div className="flex0 active-flows">
           <h4>Current Flows &middot; {activeFlowIds.length}</h4>

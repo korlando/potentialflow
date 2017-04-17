@@ -59,6 +59,9 @@ $blue: #69f;
 .align-items-center {
   @include alignItems(center);
 }
+.text-grey {
+  color: $grey;
+}
 
 body {
   font-family: 'Open Sans', sans-serif;
@@ -163,7 +166,7 @@ button {
   }
   label {
     margin: 0;
-    font-size: 18px;
+    font-size: 20px;
     margin-right: 5px;
   }
   .flow-eq {

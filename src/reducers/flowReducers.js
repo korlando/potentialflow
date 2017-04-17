@@ -41,19 +41,38 @@ const defaultState = {
 };
 
 export default (state = defaultState, action) => {
-  let flow;
+  let flow, index;
 
   switch(action.type) {
     case 'ADD_FLOW':
+      index = state.index;
       const newFlow = Object.assign({}, action.flow, {
-        flowId: state.index
+        flowId: index
       });
+      index += 1;
       return Object.assign({}, state, {
         activeFlowIds: [...state.activeFlowIds, newFlow.flowId],
         activeFlowMap: Object.assign({}, state.activeFlowMap, {
           [newFlow.flowId]: newFlow
         }),
-        index: state.index + 1
+        index
+      });
+
+    case 'ADD_BULK_FLOWS':
+      index = state.index;
+      const newFlows = {};
+      const newFlowIds = [];
+      action.flows.forEach((flow) => {
+        newFlows[index] = Object.assign({}, flow, {
+          flowId: index
+        });
+        newFlowIds.push(index);
+        index += 1;
+      });
+      return Object.assign({}, state, {
+        activeFlowIds: state.activeFlowIds.concat(newFlowIds),
+        activeFlowMap: Object.assign({}, state.activeFlowMap, newFlows),
+        index
       });
 
     case 'EDIT_FLOW':

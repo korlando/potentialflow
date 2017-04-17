@@ -5,6 +5,13 @@ export const addFlow = (flow) => {
   };
 };
 
+export const addBulkFlows = (flows) => {
+  return {
+    'type': 'ADD_BULK_FLOWS',
+    flows
+  };
+};
+
 export const editFlow = (flowId, inputChanges, flowFcns, flowStrs) => {
   return {
     type: 'EDIT_FLOW',

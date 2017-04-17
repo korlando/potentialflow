@@ -4215,7 +4215,7 @@ module.exports = React;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.over2Pi = exports.getRadius = exports.getRadiusSq = exports.over2PiTeX = exports.radiusTeX = exports.radiusSqTeX = exports.sqrtTeX = exports.fracTeX = exports.diffTeX = exports.editFlowView = exports.removeFlow = exports.editFlowForm = exports.editFlow = exports.addFlow = undefined;
+exports.over2Pi = exports.getRadius = exports.getRadiusSq = exports.over2PiTeX = exports.radiusTeX = exports.radiusSqTeX = exports.sqrtTeX = exports.fracTeX = exports.diffTeX = exports.editFlowView = exports.removeFlow = exports.editFlowForm = exports.editFlow = exports.addBulkFlows = exports.addFlow = undefined;
 
 var _flowActions = __webpack_require__(220);
 
@@ -4243,6 +4243,10 @@ function _interopRequireWildcard(obj) {
 
 var addFlow = exports.addFlow = function addFlow(type, inputs, flowFcns, flowStrs) {
   _store2.default.dispatch(flowActions.addFlow({ type: type, inputs: inputs, flowFcns: flowFcns, flowStrs: flowStrs }));
+};
+
+var addBulkFlows = exports.addBulkFlows = function addBulkFlows(flows) {
+  _store2.default.dispatch(flowActions.addBulkFlows(flows));
 };
 
 var editFlow = exports.editFlow = function editFlow(flowId, inputChanges, flowFcns, flowStrs) {
@@ -14976,7 +14980,7 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
               _this3.setState({ addMode: o.value });
             }
           } }, o.name);
-      })), addMode === 'custom' && _react2.default.createElement('div', null, _react2.default.createElement(_Uniform2.default, null), _react2.default.createElement(_PointSource2.default, null), _react2.default.createElement(_PointVortex2.default, null), _react2.default.createElement(_Dipole2.default, null)), addMode === 'preset' && _react2.default.createElement('div', null, _react2.default.createElement(_RankineHalfbody2.default, null), _react2.default.createElement(_RankineOval2.default, null), _react2.default.createElement(_Cylinder2.default, null), _react2.default.createElement(_RotatingCylinder2.default, null))), _react2.default.createElement('div', { className: 'flex0 active-flows' }, _react2.default.createElement('h4', null, 'Current Flows \xB7 ', activeFlowIds.length), activeFlowIds.map(function (id, i) {
+      })), _react2.default.createElement('div', { className: addMode !== 'custom' && 'display-none' }, _react2.default.createElement(_Uniform2.default, null), _react2.default.createElement(_PointSource2.default, null), _react2.default.createElement(_PointVortex2.default, null), _react2.default.createElement(_Dipole2.default, null)), _react2.default.createElement('div', { className: addMode !== 'preset' && 'display-none' }, _react2.default.createElement(_RankineHalfbody2.default, null), _react2.default.createElement(_RankineOval2.default, null), _react2.default.createElement(_Cylinder2.default, null), _react2.default.createElement(_RotatingCylinder2.default, null))), _react2.default.createElement('div', { className: 'flex0 active-flows' }, _react2.default.createElement('h4', null, 'Current Flows \xB7 ', activeFlowIds.length), activeFlowIds.map(function (id, i) {
         var flow = activeFlowMap[id];
         switch (flow.type) {
           case _flowTypes.UNIFORM:
@@ -15084,6 +15088,13 @@ var addFlow = exports.addFlow = function addFlow(flow) {
   return {
     type: 'ADD_FLOW',
     flow: flow
+  };
+};
+
+var addBulkFlows = exports.addBulkFlows = function addBulkFlows(flows) {
+  return {
+    'type': 'ADD_BULK_FLOWS',
+    flows: flows
   };
 };
 
@@ -16101,17 +16112,37 @@ exports.default = function () {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultState;
   var action = arguments[1];
 
-  var flow = void 0;
+  var flow = void 0,
+      index = void 0;
 
   switch (action.type) {
     case 'ADD_FLOW':
+      index = state.index;
       var newFlow = Object.assign({}, action.flow, {
-        flowId: state.index
+        flowId: index
       });
+      index += 1;
       return Object.assign({}, state, {
         activeFlowIds: [].concat(_toConsumableArray(state.activeFlowIds), [newFlow.flowId]),
         activeFlowMap: Object.assign({}, state.activeFlowMap, _defineProperty({}, newFlow.flowId, newFlow)),
-        index: state.index + 1
+        index: index
+      });
+
+    case 'ADD_BULK_FLOWS':
+      index = state.index;
+      var newFlows = {};
+      var newFlowIds = [];
+      action.flows.forEach(function (flow) {
+        newFlows[index] = Object.assign({}, flow, {
+          flowId: index
+        });
+        newFlowIds.push(index);
+        index += 1;
+      });
+      return Object.assign({}, state, {
+        activeFlowIds: state.activeFlowIds.concat(newFlowIds),
+        activeFlowMap: Object.assign({}, state.activeFlowMap, newFlows),
+        index: index
       });
 
     case 'EDIT_FLOW':
@@ -20306,7 +20337,7 @@ exports = module.exports = __webpack_require__(413)();
 
 
 // module
-exports.push([module.i, ".flexbox {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex; }\n\n.flex-wrap {\n  flex-wrap: wrap; }\n\n.flex-wrap-reverse {\n  flex-wrap: wrap-reverse; }\n\n.flex-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.flex0 {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto; }\n\n.flex1 {\n  -webkit-box-flex: 1 1 auto;\n  -moz-box-flex: 1 1 auto;\n  -webkit-flex: 1 1 auto;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto; }\n\n.align-items-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\nbody {\n  font-family: 'Open Sans', sans-serif;\n  color: #252830; }\n\n.display-none {\n  display: none; }\n\nbutton {\n  cursor: pointer; }\n\n.close-x {\n  display: inline-block;\n  padding: 0;\n  cursor: pointer;\n  border-radius: 3px;\n  background: transparent;\n  border: none;\n  outline: 0;\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s;\n  stroke: #747e95; }\n  .close-x:hover {\n    transform: scale(1.05); }\n  .close-x:active {\n    transition: 0;\n    background: rgba(0, 0, 0, 0.1); }\n  .close-x svg {\n    stroke: inherit;\n    stroke-width: 1.5px;\n    stroke-linecap: round;\n    display: block; }\n\n.flow-nav {\n  margin-bottom: 10px;\n  border-bottom: 2px solid #eaeef6; }\n  .flow-nav .option {\n    font-size: 18px;\n    padding: 5px;\n    padding-top: 7px;\n    border-top-left-radius: 4px;\n    border-top-right-radius: 4px;\n    border-top: 2px solid transparent;\n    border-right: 2px solid transparent;\n    border-left: 2px solid transparent;\n    color: #51586a;\n    cursor: pointer; }\n    .flow-nav .option:hover {\n      text-decoration: underline; }\n    .flow-nav .option:first-child {\n      margin-left: 10px; }\n    .flow-nav .option.active {\n      border-top: 2px solid #eaeef6;\n      border-right: 2px solid #eaeef6;\n      border-left: 2px solid #eaeef6;\n      background: white;\n      transform: translateY(2px);\n      padding-top: 5px;\n      color: #252830;\n      cursor: default; }\n      .flow-nav .option.active:hover {\n        text-decoration: none; }\n\n.flow-eq {\n  border: 2px solid #b3ccff;\n  background: #e6eeff;\n  overflow-x: auto; }\n\n.flow-element {\n  display: inline-block;\n  vertical-align: top;\n  max-width: 100%;\n  border-radius: 3px;\n  border: 2px solid #eaeef6;\n  background: #f1f4f9;\n  padding: 10px;\n  margin-bottom: 8px;\n  margin-right: 6px; }\n  .flow-element .close-x {\n    padding: 2px; }\n  .flow-element .input-group {\n    margin-bottom: 4px; }\n  .flow-element .input-group-addon {\n    background-color: #eaeef6;\n    width: 30px; }\n  .flow-element label {\n    margin: 0;\n    font-size: 18px;\n    margin-right: 5px; }\n  .flow-element .flow-eq {\n    color: #51586a;\n    margin-bottom: 5px;\n    font-size: 12px;\n    border-radius: 3px;\n    padding: 5px 5px; }\n\n.view-container {\n  padding: 0 12px;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: auto; }\n\n.active-flows {\n  padding: 30px 12px;\n  width: 270px;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  background: #51586a; }\n  .active-flows .flow-element {\n    margin-right: 0;\n    width: 100%; }\n  .active-flows h4 {\n    color: #f1f4f9;\n    margin-bottom: 20px; }\n\n.main-flow-eq {\n  display: inline-block;\n  border-radius: 3px;\n  padding: 4px 10px;\n  margin-right: 10px; }\n", ""]);
+exports.push([module.i, ".flexbox {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex; }\n\n.flex-wrap {\n  flex-wrap: wrap; }\n\n.flex-wrap-reverse {\n  flex-wrap: wrap-reverse; }\n\n.flex-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.flex0 {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto; }\n\n.flex1 {\n  -webkit-box-flex: 1 1 auto;\n  -moz-box-flex: 1 1 auto;\n  -webkit-flex: 1 1 auto;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto; }\n\n.align-items-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.text-grey {\n  color: #51586a; }\n\nbody {\n  font-family: 'Open Sans', sans-serif;\n  color: #252830; }\n\n.display-none {\n  display: none; }\n\nbutton {\n  cursor: pointer; }\n\n.close-x {\n  display: inline-block;\n  padding: 0;\n  cursor: pointer;\n  border-radius: 3px;\n  background: transparent;\n  border: none;\n  outline: 0;\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s;\n  stroke: #747e95; }\n  .close-x:hover {\n    transform: scale(1.05); }\n  .close-x:active {\n    transition: 0;\n    background: rgba(0, 0, 0, 0.1); }\n  .close-x svg {\n    stroke: inherit;\n    stroke-width: 1.5px;\n    stroke-linecap: round;\n    display: block; }\n\n.flow-nav {\n  margin-bottom: 10px;\n  border-bottom: 2px solid #eaeef6; }\n  .flow-nav .option {\n    font-size: 18px;\n    padding: 5px;\n    padding-top: 7px;\n    border-top-left-radius: 4px;\n    border-top-right-radius: 4px;\n    border-top: 2px solid transparent;\n    border-right: 2px solid transparent;\n    border-left: 2px solid transparent;\n    color: #51586a;\n    cursor: pointer; }\n    .flow-nav .option:hover {\n      text-decoration: underline; }\n    .flow-nav .option:first-child {\n      margin-left: 10px; }\n    .flow-nav .option.active {\n      border-top: 2px solid #eaeef6;\n      border-right: 2px solid #eaeef6;\n      border-left: 2px solid #eaeef6;\n      background: white;\n      transform: translateY(2px);\n      padding-top: 5px;\n      color: #252830;\n      cursor: default; }\n      .flow-nav .option.active:hover {\n        text-decoration: none; }\n\n.flow-eq {\n  border: 2px solid #b3ccff;\n  background: #e6eeff;\n  overflow-x: auto; }\n\n.flow-element {\n  display: inline-block;\n  vertical-align: top;\n  max-width: 100%;\n  border-radius: 3px;\n  border: 2px solid #eaeef6;\n  background: #f1f4f9;\n  padding: 10px;\n  margin-bottom: 8px;\n  margin-right: 6px; }\n  .flow-element .close-x {\n    padding: 2px; }\n  .flow-element .input-group {\n    margin-bottom: 4px; }\n  .flow-element .input-group-addon {\n    background-color: #eaeef6;\n    width: 30px; }\n  .flow-element label {\n    margin: 0;\n    font-size: 20px;\n    margin-right: 5px; }\n  .flow-element .flow-eq {\n    color: #51586a;\n    margin-bottom: 5px;\n    font-size: 12px;\n    border-radius: 3px;\n    padding: 5px 5px; }\n\n.view-container {\n  padding: 0 12px;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: auto; }\n\n.active-flows {\n  padding: 30px 12px;\n  width: 270px;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  background: #51586a; }\n  .active-flows .flow-element {\n    margin-right: 0;\n    width: 100%; }\n  .active-flows h4 {\n    color: #f1f4f9;\n    margin-bottom: 20px; }\n\n.main-flow-eq {\n  display: inline-block;\n  border-radius: 3px;\n  padding: 4px 10px;\n  margin-right: 10px; }\n", ""]);
 
 // exports
 
@@ -34676,6 +34707,12 @@ var _PresetFlow = __webpack_require__(542);
 
 var _PresetFlow2 = _interopRequireDefault(_PresetFlow);
 
+var _flowTypes = __webpack_require__(58);
+
+var _Uniform = __webpack_require__(224);
+
+var _PointSource = __webpack_require__(222);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -34698,6 +34735,26 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
+var uniformInputs = {
+  U: 1, V: 0
+};
+var pointSourceInputs = {
+  m: 100, x0: 0, y0: 0
+};
+var flows = [{
+  type: _flowTypes.UNIFORM,
+  name: 'Uniform',
+  inputs: uniformInputs,
+  flowFcns: (0, _Uniform.makeUniformFlowFcns)(uniformInputs),
+  flowStrs: (0, _Uniform.uniformFlowStrs)(uniformInputs)
+}, {
+  type: _flowTypes.POINT_SOURCE,
+  name: 'Point Source',
+  inputs: pointSourceInputs,
+  flowFcns: (0, _PointSource.makePointSourceFlowFcns)(pointSourceInputs),
+  flowStrs: (0, _PointSource.pointSourceFlowStrs)(pointSourceInputs)
+}];
+
 var RankineHalfbody = function (_Component) {
   _inherits(RankineHalfbody, _Component);
 
@@ -34710,7 +34767,7 @@ var RankineHalfbody = function (_Component) {
   _createClass(RankineHalfbody, [{
     key: 'render',
     value: function render() {
-      return _react2.default.createElement(_PresetFlow2.default, { name: 'Rankine Halfbody' });
+      return _react2.default.createElement(_PresetFlow2.default, { name: 'Rankine Halfbody', flows: flows });
     }
   }]);
 
@@ -34748,6 +34805,12 @@ var _react = __webpack_require__(18);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _util = __webpack_require__(67);
+
+var _variableMeta = __webpack_require__(226);
+
+var _variableMeta2 = _interopRequireDefault(_variableMeta);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -34780,14 +34843,22 @@ var PresetFlow = function (_Component) {
   }
 
   _createClass(PresetFlow, [{
-    key: "render",
+    key: 'render',
     value: function render() {
-      var name = this.props.name;
+      var _props = this.props,
+          name = _props.name,
+          flows = _props.flows;
 
-      return _react2.default.createElement("div", { className: "flow-element" }, _react2.default.createElement("label", null, name), _react2.default.createElement("button", {
-        type: "button",
-        className: "btn btn-primary btn-block btn-sm",
-        onClick: function onClick() {} }, "Add"));
+      return _react2.default.createElement('div', { className: 'flow-element' }, _react2.default.createElement('label', null, name), flows.map(function (flow, i) {
+        return _react2.default.createElement('div', { key: i, className: 'text-grey', style: { marginBottom: '10px' } }, flow.name, _react2.default.createElement('div', { style: { fontSize: '12px' } }, Object.keys(flow.inputs).map(function (input, j) {
+          return _react2.default.createElement('span', { key: j, style: { marginRight: '10px' } }, _variableMeta2.default[input].name, ' = ', flow.inputs[input]);
+        })));
+      }), _react2.default.createElement('button', {
+        type: 'button',
+        className: 'btn btn-primary btn-block btn-sm',
+        onClick: function onClick() {
+          (0, _util.addBulkFlows)(flows);
+        } }, 'Add'));
     }
   }]);
 
@@ -34829,6 +34900,12 @@ var _PresetFlow = __webpack_require__(542);
 
 var _PresetFlow2 = _interopRequireDefault(_PresetFlow);
 
+var _flowTypes = __webpack_require__(58);
+
+var _Uniform = __webpack_require__(224);
+
+var _PointSource = __webpack_require__(222);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -34851,6 +34928,35 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
+var uniformInputs = {
+  U: 1, V: 0
+};
+var pointSourceInputs = {
+  m: 100, x0: -20, y0: 0
+};
+var pointSinkInputs = {
+  m: -100, x0: 20, y0: 0
+};
+var flows = [{
+  type: _flowTypes.UNIFORM,
+  name: 'Uniform',
+  inputs: uniformInputs,
+  flowFcns: (0, _Uniform.makeUniformFlowFcns)(uniformInputs),
+  flowStrs: (0, _Uniform.uniformFlowStrs)(uniformInputs)
+}, {
+  type: _flowTypes.POINT_SOURCE,
+  name: 'Point Source',
+  inputs: pointSourceInputs,
+  flowFcns: (0, _PointSource.makePointSourceFlowFcns)(pointSourceInputs),
+  flowStrs: (0, _PointSource.pointSourceFlowStrs)(pointSourceInputs)
+}, {
+  type: _flowTypes.POINT_SOURCE,
+  name: 'Point Sink',
+  inputs: pointSinkInputs,
+  flowFcns: (0, _PointSource.makePointSourceFlowFcns)(pointSinkInputs),
+  flowStrs: (0, _PointSource.pointSourceFlowStrs)(pointSinkInputs)
+}];
+
 var RankineOval = function (_Component) {
   _inherits(RankineOval, _Component);
 
@@ -34863,7 +34969,7 @@ var RankineOval = function (_Component) {
   _createClass(RankineOval, [{
     key: 'render',
     value: function render() {
-      return _react2.default.createElement(_PresetFlow2.default, { name: 'Rankine Oval' });
+      return _react2.default.createElement(_PresetFlow2.default, { name: 'Rankine Oval', flows: flows });
     }
   }]);
 
@@ -34905,6 +35011,12 @@ var _PresetFlow = __webpack_require__(542);
 
 var _PresetFlow2 = _interopRequireDefault(_PresetFlow);
 
+var _flowTypes = __webpack_require__(58);
+
+var _Uniform = __webpack_require__(224);
+
+var _Dipole = __webpack_require__(221);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -34927,6 +35039,26 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
+var uniformInputs = {
+  U: -1, V: 0
+};
+var dipoleInputs = {
+  mu: 1000, x0: 0, y0: 0, alpha: 0
+};
+var flows = [{
+  type: _flowTypes.UNIFORM,
+  name: 'Uniform',
+  inputs: uniformInputs,
+  flowFcns: (0, _Uniform.makeUniformFlowFcns)(uniformInputs),
+  flowStrs: (0, _Uniform.uniformFlowStrs)(uniformInputs)
+}, {
+  type: _flowTypes.DIPOLE,
+  name: 'Dipole',
+  inputs: dipoleInputs,
+  flowFcns: (0, _Dipole.makeDipoleFlowFcns)(dipoleInputs),
+  flowStrs: (0, _Dipole.dipoleFlowStrs)(dipoleInputs)
+}];
+
 var Cylinder = function (_Component) {
   _inherits(Cylinder, _Component);
 
@@ -34939,7 +35071,7 @@ var Cylinder = function (_Component) {
   _createClass(Cylinder, [{
     key: 'render',
     value: function render() {
-      return _react2.default.createElement(_PresetFlow2.default, { name: 'Cylinder' });
+      return _react2.default.createElement(_PresetFlow2.default, { name: 'Cylinder', flows: flows });
     }
   }]);
 
@@ -34981,6 +35113,14 @@ var _PresetFlow = __webpack_require__(542);
 
 var _PresetFlow2 = _interopRequireDefault(_PresetFlow);
 
+var _flowTypes = __webpack_require__(58);
+
+var _Uniform = __webpack_require__(224);
+
+var _Dipole = __webpack_require__(221);
+
+var _PointVortex = __webpack_require__(223);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -35003,6 +35143,35 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
+var uniformInputs = {
+  U: -1, V: 0
+};
+var dipoleInputs = {
+  mu: 1000, x0: 0, y0: 0, alpha: 0
+};
+var pointVortexInputs = {
+  gamma: -100, x0: 0, y0: 0
+};
+var flows = [{
+  type: _flowTypes.UNIFORM,
+  name: 'Uniform',
+  inputs: uniformInputs,
+  flowFcns: (0, _Uniform.makeUniformFlowFcns)(uniformInputs),
+  flowStrs: (0, _Uniform.uniformFlowStrs)(uniformInputs)
+}, {
+  type: _flowTypes.DIPOLE,
+  name: 'Dipole',
+  inputs: dipoleInputs,
+  flowFcns: (0, _Dipole.makeDipoleFlowFcns)(dipoleInputs),
+  flowStrs: (0, _Dipole.dipoleFlowStrs)(dipoleInputs)
+}, {
+  type: _flowTypes.POINT_VORTEX,
+  name: 'Point Vortex',
+  inputs: pointVortexInputs,
+  flowFcns: (0, _PointVortex.makePointVortexFlowFcns)(pointVortexInputs),
+  flowStrs: (0, _PointVortex.pointVortexFlowStrs)(pointVortexInputs)
+}];
+
 var RotatingCylinder = function (_Component) {
   _inherits(RotatingCylinder, _Component);
 
@@ -35015,7 +35184,7 @@ var RotatingCylinder = function (_Component) {
   _createClass(RotatingCylinder, [{
     key: 'render',
     value: function render() {
-      return _react2.default.createElement(_PresetFlow2.default, { name: 'Rotating Cylinder' });
+      return _react2.default.createElement(_PresetFlow2.default, { name: 'Rotating Cylinder', flows: flows });
     }
   }]);
 

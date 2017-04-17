@@ -5,6 +5,10 @@ export const addFlow = (type, inputs, flowFcns, flowStrs) => {
   store.dispatch(flowActions.addFlow({ type, inputs, flowFcns, flowStrs }));
 };
 
+export const addBulkFlows = (flows) => {
+  store.dispatch(flowActions.addBulkFlows(flows));
+};
+
 export const editFlow = (flowId, inputChanges, flowFcns, flowStrs) => {
   store.dispatch(flowActions.editFlow(flowId, inputChanges, flowFcns, flowStrs));
 };
