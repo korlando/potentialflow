@@ -5300,11 +5300,23 @@ var _createClass = function () {
   };
 }();
 
+var _dec, _class;
+
 var _react = __webpack_require__(14);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRedux = __webpack_require__(98);
+
 var _util = __webpack_require__(59);
+
+var _TeX = __webpack_require__(151);
+
+var _TeX2 = _interopRequireDefault(_TeX);
+
+var _flowToTeX = __webpack_require__(152);
+
+var _flowToTeX2 = _interopRequireDefault(_flowToTeX);
 
 var _variableMeta = __webpack_require__(153);
 
@@ -5332,7 +5344,13 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var PresetFlow = function (_Component) {
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    flowView: state.flow.flowView
+  };
+};
+
+var PresetFlow = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = function (_Component) {
   _inherits(PresetFlow, _Component);
 
   function PresetFlow(props) {
@@ -5346,12 +5364,12 @@ var PresetFlow = function (_Component) {
     value: function render() {
       var _props = this.props,
           name = _props.name,
-          flows = _props.flows;
+          flows = _props.flows,
+          flowView = _props.flowView;
 
       return _react2.default.createElement('div', { className: 'flow-element' }, _react2.default.createElement('label', null, name), _react2.default.createElement('div', { className: 'text-grey', style: { fontSize: '10px' } }, 'Elements'), _react2.default.createElement('div', { className: 'flow-eq' }, flows.map(function (flow, i) {
-        return _react2.default.createElement('div', { key: i, className: 'text-grey', style: { marginBottom: '10px' } }, flow.name, _react2.default.createElement('div', { style: { fontSize: '12px' } }, Object.keys(flow.inputs).map(function (input, j) {
-          return _react2.default.createElement('span', { key: j, style: { marginRight: '10px' } }, _variableMeta2.default[input].name, ' = ', flow.inputs[input]);
-        })));
+        return _react2.default.createElement('div', { key: i, className: 'text-grey',
+          style: { marginBottom: i < flows.length - 1 ? '10px' : '0' } }, flow.name, _react2.default.createElement('div', { style: { fontSize: '12px' } }, _react2.default.createElement(_TeX2.default, { value: _flowToTeX2.default[flowView] + ' = ' + flow.flowStrs[flowView] })));
       })), _react2.default.createElement('button', {
         type: 'button',
         className: 'btn btn-primary btn-block btn-sm',
@@ -5362,8 +5380,7 @@ var PresetFlow = function (_Component) {
   }]);
 
   return PresetFlow;
-}(_react.Component);
-
+}(_react.Component)) || _class);
 exports.default = PresetFlow;
 ;
 

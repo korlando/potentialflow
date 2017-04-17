@@ -1,14 +1,24 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { addBulkFlows } from '../../../util';
+import TeX from '../../TeX';
+import flowToTeX from '../../../constants/flowToTeX';
 import variableMeta from '../../../constants/variableMeta';
 
+const mapStateToProps = (state) => {
+  return {
+    flowView: state.flow.flowView
+  };
+};
+
+@connect(mapStateToProps)
 export default class PresetFlow extends Component {
   constructor(props) {
     super(props);
   };
 
   render() {
-    const { name, flows } = this.props;
+    const { name, flows, flowView } = this.props;
     return (
       <div className="flow-element">
         <label>{name}</label>
@@ -16,16 +26,11 @@ export default class PresetFlow extends Component {
         <div className="flow-eq">
         { flows.map((flow, i) => {
           return (
-            <div key={i} className="text-grey" style={{ marginBottom: '10px' }}>
+            <div key={i} className="text-grey"
+              style={{ marginBottom: i < flows.length - 1 ? '10px' : '0' }}>
               {flow.name}
               <div style={{ fontSize: '12px' }}>
-                { Object.keys(flow.inputs).map((input, j) => {
-                  return (
-                    <span key={j} style={{ marginRight: '10px' }}>
-                      {variableMeta[input].name} = {flow.inputs[input]}
-                    </span>
-                  );
-                })}
+                <TeX value={flowToTeX[flowView] + ' = ' + flow.flowStrs[flowView]}/>
               </div>
             </div>
           );
