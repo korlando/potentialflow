@@ -2,6 +2,7 @@ $grey: #51586a;
 $light: #747e95;
 $lighter: #b7bccc;
 $lightest: #f1f4f9;
+$dark: #252830;
 $blue: #69f;
 
 @mixin flexbox() {
@@ -61,6 +62,7 @@ $blue: #69f;
 
 body {
   font-family: 'Open Sans', sans-serif;
+  color: $dark;
 }
 
 .display-none {
@@ -94,6 +96,42 @@ button {
     stroke-width: 1.5px; 
     stroke-linecap: round;
     display: block;
+  }
+}
+
+.flow-nav {
+  margin-bottom: 10px;
+  border-bottom: 2px solid darken($lightest, 2%);
+  .option {
+    font-size: 18px;
+    padding: 5px;
+    padding-top: 7px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-top: 2px solid transparent;
+    border-right: 2px solid transparent;
+    border-left: 2px solid transparent;
+    color: $grey;
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+    &:first-child {
+      margin-left: 10px;
+    }
+    &.active {
+      border-top: 2px solid darken($lightest, 2%);
+      border-right: 2px solid darken($lightest, 2%);
+      border-left: 2px solid darken($lightest, 2%);
+      background: white;
+      transform: translateY(2px);
+      padding-top: 5px;
+      color: $dark;
+      cursor: default;
+      &:hover {
+        text-decoration: none;
+      }
+    }
   }
 }
 

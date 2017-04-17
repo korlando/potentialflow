@@ -1,24 +1,38 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { addFlow, editFlowView } from '../util';
 import CloseButton from './CloseButton';
+import TeX from './TeX';
+
 import Uniform, { makeUniformFlowFcns,
                   uniformFlowStrs } from './FlowElements/Uniform';
 import PointSource from './FlowElements/PointSource';
 import PointVortex from './FlowElements/PointVortex';
 import Dipole from './FlowElements/Dipole';
+
+import RankineHalfbody from './FlowElements/Preset/RankineHalfbody';
+import RankineOval from './FlowElements/Preset/RankineOval';
+import Cylinder from './FlowElements/Preset/Cylinder';
+import RotatingCylinder from './FlowElements/Preset/RotatingCylinder';
+
 import { UNIFORM,
          POINT_SOURCE,
          POINT_VORTEX,
          DIPOLE} from '../constants/flowTypes';
-import { addFlow, editFlowView } from '../util';
 import flowToTeX from '../constants/flowToTeX';
-import TeX from './TeX';
 
 const SIZE = 100;
 const flowViewColorScales = {
   vp: 'YIOrRd',
   stream: 'YIGnBu'
 };
+const flowNavOptions = [{
+  name: 'Custom',
+  value: 'custom'
+}, {
+  name: 'Pre-set',
+  value: 'preset'
+}];
 
 /**
  * Generate custom X and Y array scales
@@ -156,7 +170,8 @@ export default class App extends Component {
 
     this.state = {
       flowFcnName: 'vp',
-      flowStr: ''
+      flowStr: '',
+      addMode: 'custom'
     };
     this.activeFlowTimer = null;
   };
@@ -195,7 +210,7 @@ export default class App extends Component {
     const { activeFlowIds,
             activeFlowMap,
             flowView } = this.props;
-    const { flowStr } = this.state;
+    const { flowStr, addMode } = this.state;
 
     return (
       <div className="flexbox">
@@ -231,13 +246,37 @@ export default class App extends Component {
                 </div>
               </div>
           </div>
-          <div>
-            <h4>Add Flow Element</h4>
-            <Uniform/>
-            <PointSource/>
-            <PointVortex/>
-            <Dipole/>
+          
+          <h4>Flow Elements</h4>
+          <div className="flow-nav flexbox">
+            { flowNavOptions.map((o, i) => {
+              return (
+                <div key={i}
+                  className={`option ${addMode === o.value ? ' active' : ''}`}
+                  onClick={(e) => {
+                    if(addMode !== o.value) {
+                      this.setState({ addMode: o.value });
+                    }
+                  }}>{o.name}</div>
+              );
+            })}
           </div>
+          { addMode === 'custom' &&
+            <div>
+              <Uniform/>
+              <PointSource/>
+              <PointVortex/>
+              <Dipole/>
+            </div>
+          }
+          { addMode === 'preset' &&
+            <div>
+              <RankineHalfbody/>
+              <RankineOval/>
+              <Cylinder/>
+              <RotatingCylinder/>
+            </div>
+          }
         </div>
         <div className="flex0 active-flows">
           <h4>Current Flows &middot; {activeFlowIds.length}</h4>
