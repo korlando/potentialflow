@@ -12,6 +12,8 @@ export default class PresetFlow extends Component {
     return (
       <div className="flow-element">
         <label>{name}</label>
+        <div className="text-grey" style={{ fontSize: '10px' }}>Elements</div>
+        <div className="flow-eq">
         { flows.map((flow, i) => {
           return (
             <div key={i} className="text-grey" style={{ marginBottom: '10px' }}>
@@ -28,6 +30,7 @@ export default class PresetFlow extends Component {
             </div>
           );
         })}
+        </div>
         <button
           type="button"
           className="btn btn-primary btn-block btn-sm"

@@ -107,7 +107,7 @@ button {
   border-bottom: 2px solid darken($lightest, 2%);
   .option {
     font-size: 18px;
-    padding: 5px;
+    padding: 5px 10px;
     padding-top: 7px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
@@ -186,18 +186,17 @@ button {
 }
 
 .active-flows {
-  padding: 30px 12px;
+  padding: 12px;
   width: 270px;
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
-  background: $grey;
+  border-left: 2px solid darken($lightest, 2%);
   .flow-element {
     margin-right: 0;
     width: 100%;
   }
   h4 {
-    color: $lightest;
     margin-bottom: 20px;
   }
 }

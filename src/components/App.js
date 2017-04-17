@@ -27,11 +27,11 @@ const flowViewColorScales = {
   stream: 'YIGnBu'
 };
 const flowNavOptions = [{
+  name: 'Preset',
+  value: 'preset'
+}, {
   name: 'Custom',
   value: 'custom'
-}, {
-  name: 'Pre-set',
-  value: 'preset'
 }];
 
 /**
@@ -69,17 +69,6 @@ const typeMap = {
   [POINT_SOURCE]: PointSource,
   [POINT_VORTEX]: PointVortex,
   [DIPOLE]: Dipole
-};
-
-function makeVelocityPotential(flowIds, flowMap) {
-  let velocityPotential = (x, y) => 0;
-  flowIds.forEach((id) => {
-    const currentVP = velocityPotential;
-    velocityPotential = (x, y) => {
-      return currentVP(x, y) + flowMap[id].flowFcns.vp(x, y);
-    };
-  });
-  return velocityPotential;
 };
 
 function makeFlowFcn(name, flowIds, flowMap) {
@@ -169,17 +158,19 @@ export default class App extends Component {
     super(props);
 
     this.state = {
-      flowFcnName: 'vp',
+      flowFcnName: 'stream',
       flowStr: '',
-      addMode: 'custom'
+      addMode: 'preset'
     };
     this.activeFlowTimer = null;
   };
 
   componentDidMount() {
-    this.renderNewPlot(this.graph, [], layout);
-    const inputs = { U: 0, V: 1 };
-    addFlow(UNIFORM, inputs, makeUniformFlowFcns(inputs), uniformFlowStrs(inputs));
+    const zData = makeZData(() => 0, xCoords, yCoords);
+    const data = makeData(zData, this.props.flowView);
+    this.renderNewPlot(this.graph, data, layout);
+    //const inputs = { U: 0, V: 1 };
+    //addFlow(UNIFORM, inputs, makeUniformFlowFcns(inputs), uniformFlowStrs(inputs));
   };
 
   componentWillReceiveProps(nextProps) {
@@ -261,17 +252,17 @@ export default class App extends Component {
               );
             })}
           </div>
-          <div className={addMode !== 'custom' && 'display-none'}>
-            <Uniform/>
-            <PointSource/>
-            <PointVortex/>
-            <Dipole/>
-          </div>
           <div className={addMode !== 'preset' && 'display-none'}>
             <RankineHalfbody/>
             <RankineOval/>
             <Cylinder/>
             <RotatingCylinder/>
+          </div>
+          <div className={addMode !== 'custom' && 'display-none'}>
+            <Uniform/>
+            <PointSource/>
+            <PointVortex/>
+            <Dipole/>
           </div>
         </div>
         <div className="flex0 active-flows">

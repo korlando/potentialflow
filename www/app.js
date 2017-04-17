@@ -14756,11 +14756,11 @@ var flowViewColorScales = {
   stream: 'YIGnBu'
 };
 var flowNavOptions = [{
+  name: 'Preset',
+  value: 'preset'
+}, {
   name: 'Custom',
   value: 'custom'
-}, {
-  name: 'Pre-set',
-  value: 'preset'
 }];
 
 /**
@@ -14795,19 +14795,6 @@ var xCoords = coordinates.xCoords,
     yCoords = coordinates.yCoords;
 
 var typeMap = (_typeMap = {}, _defineProperty(_typeMap, _flowTypes.UNIFORM, _Uniform2.default), _defineProperty(_typeMap, _flowTypes.POINT_SOURCE, _PointSource2.default), _defineProperty(_typeMap, _flowTypes.POINT_VORTEX, _PointVortex2.default), _defineProperty(_typeMap, _flowTypes.DIPOLE, _Dipole2.default), _typeMap);
-
-function makeVelocityPotential(flowIds, flowMap) {
-  var velocityPotential = function velocityPotential(x, y) {
-    return 0;
-  };
-  flowIds.forEach(function (id) {
-    var currentVP = velocityPotential;
-    velocityPotential = function velocityPotential(x, y) {
-      return currentVP(x, y) + flowMap[id].flowFcns.vp(x, y);
-    };
-  });
-  return velocityPotential;
-};
 
 function makeFlowFcn(name, flowIds, flowMap) {
   var fcn = function fcn(x, y) {
@@ -14901,9 +14888,9 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
     var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
     _this.state = {
-      flowFcnName: 'vp',
+      flowFcnName: 'stream',
       flowStr: '',
-      addMode: 'custom'
+      addMode: 'preset'
     };
     _this.activeFlowTimer = null;
     return _this;
@@ -14912,9 +14899,13 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
   _createClass(App, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      this.renderNewPlot(this.graph, [], layout);
-      var inputs = { U: 0, V: 1 };
-      (0, _util.addFlow)(_flowTypes.UNIFORM, inputs, (0, _Uniform.makeUniformFlowFcns)(inputs), (0, _Uniform.uniformFlowStrs)(inputs));
+      var zData = makeZData(function () {
+        return 0;
+      }, xCoords, yCoords);
+      var data = makeData(zData, this.props.flowView);
+      this.renderNewPlot(this.graph, data, layout);
+      //const inputs = { U: 0, V: 1 };
+      //addFlow(UNIFORM, inputs, makeUniformFlowFcns(inputs), uniformFlowStrs(inputs));
     }
   }, {
     key: 'componentWillReceiveProps',
@@ -14980,7 +14971,7 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
               _this3.setState({ addMode: o.value });
             }
           } }, o.name);
-      })), _react2.default.createElement('div', { className: addMode !== 'custom' && 'display-none' }, _react2.default.createElement(_Uniform2.default, null), _react2.default.createElement(_PointSource2.default, null), _react2.default.createElement(_PointVortex2.default, null), _react2.default.createElement(_Dipole2.default, null)), _react2.default.createElement('div', { className: addMode !== 'preset' && 'display-none' }, _react2.default.createElement(_RankineHalfbody2.default, null), _react2.default.createElement(_RankineOval2.default, null), _react2.default.createElement(_Cylinder2.default, null), _react2.default.createElement(_RotatingCylinder2.default, null))), _react2.default.createElement('div', { className: 'flex0 active-flows' }, _react2.default.createElement('h4', null, 'Current Flows \xB7 ', activeFlowIds.length), activeFlowIds.map(function (id, i) {
+      })), _react2.default.createElement('div', { className: addMode !== 'preset' && 'display-none' }, _react2.default.createElement(_RankineHalfbody2.default, null), _react2.default.createElement(_RankineOval2.default, null), _react2.default.createElement(_Cylinder2.default, null), _react2.default.createElement(_RotatingCylinder2.default, null)), _react2.default.createElement('div', { className: addMode !== 'custom' && 'display-none' }, _react2.default.createElement(_Uniform2.default, null), _react2.default.createElement(_PointSource2.default, null), _react2.default.createElement(_PointVortex2.default, null), _react2.default.createElement(_Dipole2.default, null))), _react2.default.createElement('div', { className: 'flex0 active-flows' }, _react2.default.createElement('h4', null, 'Current Flows \xB7 ', activeFlowIds.length), activeFlowIds.map(function (id, i) {
         var flow = activeFlowMap[id];
         switch (flow.type) {
           case _flowTypes.UNIFORM:
@@ -16079,7 +16070,7 @@ function _defineProperty(obj, key, value) {
 var defaultState = {
   activeFlowIds: [],
   activeFlowMap: {},
-  flowView: 'vp',
+  flowView: 'stream',
   flowForms: (_flowForms = {}, _defineProperty(_flowForms, _flowTypes.UNIFORM, {
     inputs: {
       U: 1,
@@ -20337,7 +20328,7 @@ exports = module.exports = __webpack_require__(413)();
 
 
 // module
-exports.push([module.i, ".flexbox {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex; }\n\n.flex-wrap {\n  flex-wrap: wrap; }\n\n.flex-wrap-reverse {\n  flex-wrap: wrap-reverse; }\n\n.flex-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.flex0 {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto; }\n\n.flex1 {\n  -webkit-box-flex: 1 1 auto;\n  -moz-box-flex: 1 1 auto;\n  -webkit-flex: 1 1 auto;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto; }\n\n.align-items-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.text-grey {\n  color: #51586a; }\n\nbody {\n  font-family: 'Open Sans', sans-serif;\n  color: #252830; }\n\n.display-none {\n  display: none; }\n\nbutton {\n  cursor: pointer; }\n\n.close-x {\n  display: inline-block;\n  padding: 0;\n  cursor: pointer;\n  border-radius: 3px;\n  background: transparent;\n  border: none;\n  outline: 0;\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s;\n  stroke: #747e95; }\n  .close-x:hover {\n    transform: scale(1.05); }\n  .close-x:active {\n    transition: 0;\n    background: rgba(0, 0, 0, 0.1); }\n  .close-x svg {\n    stroke: inherit;\n    stroke-width: 1.5px;\n    stroke-linecap: round;\n    display: block; }\n\n.flow-nav {\n  margin-bottom: 10px;\n  border-bottom: 2px solid #eaeef6; }\n  .flow-nav .option {\n    font-size: 18px;\n    padding: 5px;\n    padding-top: 7px;\n    border-top-left-radius: 4px;\n    border-top-right-radius: 4px;\n    border-top: 2px solid transparent;\n    border-right: 2px solid transparent;\n    border-left: 2px solid transparent;\n    color: #51586a;\n    cursor: pointer; }\n    .flow-nav .option:hover {\n      text-decoration: underline; }\n    .flow-nav .option:first-child {\n      margin-left: 10px; }\n    .flow-nav .option.active {\n      border-top: 2px solid #eaeef6;\n      border-right: 2px solid #eaeef6;\n      border-left: 2px solid #eaeef6;\n      background: white;\n      transform: translateY(2px);\n      padding-top: 5px;\n      color: #252830;\n      cursor: default; }\n      .flow-nav .option.active:hover {\n        text-decoration: none; }\n\n.flow-eq {\n  border: 2px solid #b3ccff;\n  background: #e6eeff;\n  overflow-x: auto; }\n\n.flow-element {\n  display: inline-block;\n  vertical-align: top;\n  max-width: 100%;\n  border-radius: 3px;\n  border: 2px solid #eaeef6;\n  background: #f1f4f9;\n  padding: 10px;\n  margin-bottom: 8px;\n  margin-right: 6px; }\n  .flow-element .close-x {\n    padding: 2px; }\n  .flow-element .input-group {\n    margin-bottom: 4px; }\n  .flow-element .input-group-addon {\n    background-color: #eaeef6;\n    width: 30px; }\n  .flow-element label {\n    margin: 0;\n    font-size: 20px;\n    margin-right: 5px; }\n  .flow-element .flow-eq {\n    color: #51586a;\n    margin-bottom: 5px;\n    font-size: 12px;\n    border-radius: 3px;\n    padding: 5px 5px; }\n\n.view-container {\n  padding: 0 12px;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: auto; }\n\n.active-flows {\n  padding: 30px 12px;\n  width: 270px;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  background: #51586a; }\n  .active-flows .flow-element {\n    margin-right: 0;\n    width: 100%; }\n  .active-flows h4 {\n    color: #f1f4f9;\n    margin-bottom: 20px; }\n\n.main-flow-eq {\n  display: inline-block;\n  border-radius: 3px;\n  padding: 4px 10px;\n  margin-right: 10px; }\n", ""]);
+exports.push([module.i, ".flexbox {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex; }\n\n.flex-wrap {\n  flex-wrap: wrap; }\n\n.flex-wrap-reverse {\n  flex-wrap: wrap-reverse; }\n\n.flex-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.flex0 {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto; }\n\n.flex1 {\n  -webkit-box-flex: 1 1 auto;\n  -moz-box-flex: 1 1 auto;\n  -webkit-flex: 1 1 auto;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto; }\n\n.align-items-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.text-grey {\n  color: #51586a; }\n\nbody {\n  font-family: 'Open Sans', sans-serif;\n  color: #252830; }\n\n.display-none {\n  display: none; }\n\nbutton {\n  cursor: pointer; }\n\n.close-x {\n  display: inline-block;\n  padding: 0;\n  cursor: pointer;\n  border-radius: 3px;\n  background: transparent;\n  border: none;\n  outline: 0;\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s;\n  stroke: #747e95; }\n  .close-x:hover {\n    transform: scale(1.05); }\n  .close-x:active {\n    transition: 0;\n    background: rgba(0, 0, 0, 0.1); }\n  .close-x svg {\n    stroke: inherit;\n    stroke-width: 1.5px;\n    stroke-linecap: round;\n    display: block; }\n\n.flow-nav {\n  margin-bottom: 10px;\n  border-bottom: 2px solid #eaeef6; }\n  .flow-nav .option {\n    font-size: 18px;\n    padding: 5px 10px;\n    padding-top: 7px;\n    border-top-left-radius: 4px;\n    border-top-right-radius: 4px;\n    border-top: 2px solid transparent;\n    border-right: 2px solid transparent;\n    border-left: 2px solid transparent;\n    color: #51586a;\n    cursor: pointer; }\n    .flow-nav .option:hover {\n      text-decoration: underline; }\n    .flow-nav .option:first-child {\n      margin-left: 10px; }\n    .flow-nav .option.active {\n      border-top: 2px solid #eaeef6;\n      border-right: 2px solid #eaeef6;\n      border-left: 2px solid #eaeef6;\n      background: white;\n      transform: translateY(2px);\n      padding-top: 5px;\n      color: #252830;\n      cursor: default; }\n      .flow-nav .option.active:hover {\n        text-decoration: none; }\n\n.flow-eq {\n  border: 2px solid #b3ccff;\n  background: #e6eeff;\n  overflow-x: auto; }\n\n.flow-element {\n  display: inline-block;\n  vertical-align: top;\n  max-width: 100%;\n  border-radius: 3px;\n  border: 2px solid #eaeef6;\n  background: #f1f4f9;\n  padding: 10px;\n  margin-bottom: 8px;\n  margin-right: 6px; }\n  .flow-element .close-x {\n    padding: 2px; }\n  .flow-element .input-group {\n    margin-bottom: 4px; }\n  .flow-element .input-group-addon {\n    background-color: #eaeef6;\n    width: 30px; }\n  .flow-element label {\n    margin: 0;\n    font-size: 20px;\n    margin-right: 5px; }\n  .flow-element .flow-eq {\n    color: #51586a;\n    margin-bottom: 5px;\n    font-size: 12px;\n    border-radius: 3px;\n    padding: 5px 5px; }\n\n.view-container {\n  padding: 0 12px;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: auto; }\n\n.active-flows {\n  padding: 12px;\n  width: 270px;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  border-left: 2px solid #eaeef6; }\n  .active-flows .flow-element {\n    margin-right: 0;\n    width: 100%; }\n  .active-flows h4 {\n    margin-bottom: 20px; }\n\n.main-flow-eq {\n  display: inline-block;\n  border-radius: 3px;\n  padding: 4px 10px;\n  margin-right: 10px; }\n", ""]);
 
 // exports
 
@@ -34743,7 +34734,7 @@ var pointSourceInputs = {
 };
 var flows = [{
   type: _flowTypes.UNIFORM,
-  name: 'Uniform',
+  name: 'Uniform Stream',
   inputs: uniformInputs,
   flowFcns: (0, _Uniform.makeUniformFlowFcns)(uniformInputs),
   flowStrs: (0, _Uniform.uniformFlowStrs)(uniformInputs)
@@ -34849,11 +34840,11 @@ var PresetFlow = function (_Component) {
           name = _props.name,
           flows = _props.flows;
 
-      return _react2.default.createElement('div', { className: 'flow-element' }, _react2.default.createElement('label', null, name), flows.map(function (flow, i) {
+      return _react2.default.createElement('div', { className: 'flow-element' }, _react2.default.createElement('label', null, name), _react2.default.createElement('div', { className: 'text-grey', style: { fontSize: '10px' } }, 'Elements'), _react2.default.createElement('div', { className: 'flow-eq' }, flows.map(function (flow, i) {
         return _react2.default.createElement('div', { key: i, className: 'text-grey', style: { marginBottom: '10px' } }, flow.name, _react2.default.createElement('div', { style: { fontSize: '12px' } }, Object.keys(flow.inputs).map(function (input, j) {
           return _react2.default.createElement('span', { key: j, style: { marginRight: '10px' } }, _variableMeta2.default[input].name, ' = ', flow.inputs[input]);
         })));
-      }), _react2.default.createElement('button', {
+      })), _react2.default.createElement('button', {
         type: 'button',
         className: 'btn btn-primary btn-block btn-sm',
         onClick: function onClick() {
@@ -34939,7 +34930,7 @@ var pointSinkInputs = {
 };
 var flows = [{
   type: _flowTypes.UNIFORM,
-  name: 'Uniform',
+  name: 'Uniform Stream',
   inputs: uniformInputs,
   flowFcns: (0, _Uniform.makeUniformFlowFcns)(uniformInputs),
   flowStrs: (0, _Uniform.uniformFlowStrs)(uniformInputs)
@@ -35047,7 +35038,7 @@ var dipoleInputs = {
 };
 var flows = [{
   type: _flowTypes.UNIFORM,
-  name: 'Uniform',
+  name: 'Uniform Stream',
   inputs: uniformInputs,
   flowFcns: (0, _Uniform.makeUniformFlowFcns)(uniformInputs),
   flowStrs: (0, _Uniform.uniformFlowStrs)(uniformInputs)
@@ -35154,7 +35145,7 @@ var pointVortexInputs = {
 };
 var flows = [{
   type: _flowTypes.UNIFORM,
-  name: 'Uniform',
+  name: 'Uniform Stream',
   inputs: uniformInputs,
   flowFcns: (0, _Uniform.makeUniformFlowFcns)(uniformInputs),
   flowStrs: (0, _Uniform.uniformFlowStrs)(uniformInputs)

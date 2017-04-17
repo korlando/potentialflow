@@ -6,7 +6,7 @@ import { UNIFORM,
 const defaultState = {
   activeFlowIds: [],
   activeFlowMap: {},
-  flowView: 'vp',
+  flowView: 'stream',
   flowForms: {
     [UNIFORM]: {
       inputs: {

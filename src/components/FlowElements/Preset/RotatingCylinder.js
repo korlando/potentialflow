@@ -17,7 +17,7 @@ const pointVortexInputs = {
 };
 const flows = [{
   type: UNIFORM,
-  name: 'Uniform',
+  name: 'Uniform Stream',
   inputs: uniformInputs,
   flowFcns: makeUniformFlowFcns(uniformInputs),
   flowStrs: uniformFlowStrs(uniformInputs)
