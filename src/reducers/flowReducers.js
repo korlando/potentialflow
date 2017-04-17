@@ -60,18 +60,29 @@ export default (state = defaultState, action) => {
 
     case 'ADD_BULK_FLOWS':
       index = state.index;
+      const newFlowGroup = {
+        flowIds: [],
+        flowId: index,
+        name: action.flowGroup.name,
+        group: true
+      };
+      index += 1;
+      
       const newFlows = {};
-      const newFlowIds = [];
-      action.flows.forEach((flow) => {
-        newFlows[index] = Object.assign({}, flow, {
-          flowId: index
+      action.flowGroup.flows.forEach((flow) => {
+        const newFlow = Object.assign({}, flow, {
+          flowId: index,
+          parentId: newFlowGroup.flowId
         });
-        newFlowIds.push(index);
+        newFlowGroup.flowIds.push(index);
+        newFlows[index] = newFlow;
         index += 1;
       });
       return Object.assign({}, state, {
-        activeFlowIds: state.activeFlowIds.concat(newFlowIds),
-        activeFlowMap: Object.assign({}, state.activeFlowMap, newFlows),
+        activeFlowIds: [...state.activeFlowIds, newFlowGroup.flowId],
+        activeFlowMap: Object.assign({}, state.activeFlowMap, newFlows, {
+          [newFlowGroup.flowId]: newFlowGroup
+        }),
         index
       });
 
@@ -98,12 +109,25 @@ export default (state = defaultState, action) => {
       });
 
     case 'REMOVE_FLOW':
-      return Object.assign({}, state, {
-        activeFlowIds: state.activeFlowIds.filter(id => id !== action.flowId),
-        activeFlowMap: Object.assign({}, state.activeFlowMap, {
-          [action.flowId]: undefined
-        })
-      });
+      const flowToRemove = state.activeFlowMap[action.flowId];
+      const { parentId } = flowToRemove;
+      if(parentId !== undefined) {
+        const parentFlow = state.activeFlowMap[parentId];
+        return Object.assign({}, state, {
+          activeFlowMap: Object.assign({}, state.activeFlowMap, {
+            [parentId]: Object.assign({}, parentFlow, {
+              flowIds: parentFlow.flowIds.filter(id => id !== action.flowId)
+            })
+          })
+        });
+      } else {
+        return Object.assign({}, state, {
+          activeFlowIds: state.activeFlowIds.filter(id => id !== action.flowId),
+          activeFlowMap: Object.assign({}, state.activeFlowMap, {
+            [action.flowId]: undefined
+          })
+        });
+      }
 
     case 'EDIT_FLOW_VIEW':
       return Object.assign({}, state, {

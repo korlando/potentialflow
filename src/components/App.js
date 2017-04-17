@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { addFlow, editFlowView } from '../util';
+import { addFlow, removeFlow, editFlowView } from '../util';
 import CloseButton from './CloseButton';
 import TeX from './TeX';
 
@@ -76,16 +76,31 @@ function makeFlowFcn(name, flowIds, flowMap) {
   flowIds.forEach((id) => {
     const currentFcn = fcn;
     fcn = (x, y) => {
-      return currentFcn(x, y) + flowMap[id].flowFcns[name](x, y);
+      const flow = flowMap[id];
+      let additional;
+      if(flow.group) {
+        additional = makeFlowFcn(name, flow.flowIds, flowMap)(x, y);
+      } else {
+        additional = flow.flowFcns[name](x, y);
+      }
+      return currentFcn(x, y) + additional;
     };
   });
   return fcn;
 };
 
-function makeFlowStr(name, flowIds, flowMap) {
-  let str = `${flowToTeX[name]} = `;
+function makeFlowStr(name, flowIds, flowMap, noLeftSide) {
+  let str = noLeftSide ? '' : `${flowToTeX[name]} = `;
+  if(flowIds.length === 0) {
+    return str + '0';
+  }
   flowIds.forEach((id, i) => {
-    str += flowMap[id].flowStrs[name];
+    const flow = flowMap[id];
+    if(flow.group) {
+      str += makeFlowStr(name, flow.flowIds, flowMap, true);
+    } else {
+      str += flow.flowStrs[name];
+    }
     if(i !== flowIds.length - 1) {
       str += ' + ';
     }
@@ -141,6 +156,21 @@ const layout = {
     l: 30,
     r: 20,
     b: 20
+  }
+};
+
+const getFlowComponent = (flow, index) => {
+  switch(flow.type) {
+    case UNIFORM:
+      return <Uniform key={index} {...flow}/>;
+    case POINT_SOURCE:
+      return <PointSource key={index} {...flow}/>;
+    case POINT_VORTEX:
+      return <PointVortex key={index} {...flow}/>;
+    case DIPOLE:
+      return <Dipole key={index} {...flow}/>;
+    default:
+      return null;
   }
 };
 
@@ -206,8 +236,13 @@ export default class App extends Component {
     return (
       <div className="flexbox">
         <div className="flex1 view-container">
+          <div style={{
+            padding: '6px 12px',
+            background: '#f1f4f9'
+          }}>
+            <label style={{ margin: '0' }}>Potential Flow</label>
+          </div>
           <div style={{ padding: '0 12px' }}>
-            <h1>Potential Flow</h1>
             <div ref={div => this.graph = div}
               style={{
                 width: '800px',
@@ -274,17 +309,24 @@ export default class App extends Component {
           <h4>Current Flows &middot; {activeFlowIds.length}</h4>
           { activeFlowIds.map((id, i) => {
             const flow = activeFlowMap[id];
-            switch(flow.type) {
-              case UNIFORM:
-                return <Uniform key={i} {...flow}/>;
-              case POINT_SOURCE:
-                return <PointSource key={i} {...flow}/>;
-              case POINT_VORTEX:
-                return <PointVortex key={i} {...flow}/>;
-              case DIPOLE:
-                return <Dipole key={i} {...flow}/>;
-              default:
-                return null;
+            if(flow.group) {
+              return (
+                <div key={i} className="flow-group">
+                  <div className="flexbox align-items-center title">
+                    <label className="flex1">
+                      {flow.name}
+                    </label>
+                    <CloseButton
+                      className="flex0"
+                      onClick={() => removeFlow(flow.flowId)}/>
+                  </div>
+                  { flow.flowIds.map((flowId, j) => {
+                    return getFlowComponent(activeFlowMap[flowId], j);
+                  })}
+                </div>
+              );
+            } else {
+              return getFlowComponent(flow, i);
             }
           })}
         </div>

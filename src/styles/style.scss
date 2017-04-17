@@ -178,6 +178,19 @@ button {
   }
 }
 
+.flow-group {
+  padding: 10px;
+  border: 2px solid #fc6;
+  border-radius: 3px;
+  margin-bottom: 15px;
+  .title {
+    margin-bottom: 10px;
+    label {
+      margin: 0;
+    }
+  }
+}
+
 .view-container {
   height: 100vh;
   overflow-y: auto;
@@ -186,7 +199,7 @@ button {
 
 .active-flows {
   padding: 12px;
-  width: 270px;
+  width: 300px;
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;

@@ -35,7 +35,7 @@ export default class PresetFlow extends Component {
           type="button"
           className="btn btn-primary btn-block btn-sm"
           onClick={() => {
-            addBulkFlows(flows);
+            addBulkFlows(flows, name);
           }}>Add</button>
       </div>
     );

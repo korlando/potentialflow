@@ -5,10 +5,10 @@ export const addFlow = (flow) => {
   };
 };
 
-export const addBulkFlows = (flows) => {
+export const addBulkFlows = (flowGroup) => {
   return {
     'type': 'ADD_BULK_FLOWS',
-    flows
+    flowGroup
   };
 };
 

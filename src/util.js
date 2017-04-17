@@ -5,8 +5,8 @@ export const addFlow = (type, inputs, flowFcns, flowStrs) => {
   store.dispatch(flowActions.addFlow({ type, inputs, flowFcns, flowStrs }));
 };
 
-export const addBulkFlows = (flows) => {
-  store.dispatch(flowActions.addBulkFlows(flows));
+export const addBulkFlows = (flows, name) => {
+  store.dispatch(flowActions.addBulkFlows({ flows, name }));
 };
 
 export const editFlow = (flowId, inputChanges, flowFcns, flowStrs) => {

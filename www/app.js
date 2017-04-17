@@ -4245,8 +4245,8 @@ var addFlow = exports.addFlow = function addFlow(type, inputs, flowFcns, flowStr
   _store2.default.dispatch(flowActions.addFlow({ type: type, inputs: inputs, flowFcns: flowFcns, flowStrs: flowStrs }));
 };
 
-var addBulkFlows = exports.addBulkFlows = function addBulkFlows(flows) {
-  _store2.default.dispatch(flowActions.addBulkFlows(flows));
+var addBulkFlows = exports.addBulkFlows = function addBulkFlows(flows, name) {
+  _store2.default.dispatch(flowActions.addBulkFlows({ flows: flows, name: name }));
 };
 
 var editFlow = exports.editFlow = function editFlow(flowId, inputChanges, flowFcns, flowStrs) {
@@ -14644,16 +14644,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = undefined;
 
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }return target;
-};
-
 var _createClass = function () {
   function defineProperties(target, props) {
     for (var i = 0; i < props.length; i++) {
@@ -14663,6 +14653,16 @@ var _createClass = function () {
     if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
   };
 }();
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }return target;
+};
 
 var _typeMap, _dec, _class;
 
@@ -14803,16 +14803,31 @@ function makeFlowFcn(name, flowIds, flowMap) {
   flowIds.forEach(function (id) {
     var currentFcn = fcn;
     fcn = function fcn(x, y) {
-      return currentFcn(x, y) + flowMap[id].flowFcns[name](x, y);
+      var flow = flowMap[id];
+      var additional = void 0;
+      if (flow.group) {
+        additional = makeFlowFcn(name, flow.flowIds, flowMap)(x, y);
+      } else {
+        additional = flow.flowFcns[name](x, y);
+      }
+      return currentFcn(x, y) + additional;
     };
   });
   return fcn;
 };
 
-function makeFlowStr(name, flowIds, flowMap) {
-  var str = _flowToTeX2.default[name] + ' = ';
+function makeFlowStr(name, flowIds, flowMap, noLeftSide) {
+  var str = noLeftSide ? '' : _flowToTeX2.default[name] + ' = ';
+  if (flowIds.length === 0) {
+    return str + '0';
+  }
   flowIds.forEach(function (id, i) {
-    str += flowMap[id].flowStrs[name];
+    var flow = flowMap[id];
+    if (flow.group) {
+      str += makeFlowStr(name, flow.flowIds, flowMap, true);
+    } else {
+      str += flow.flowStrs[name];
+    }
     if (i !== flowIds.length - 1) {
       str += ' + ';
     }
@@ -14868,6 +14883,21 @@ var layout = {
     l: 30,
     r: 20,
     b: 20
+  }
+};
+
+var getFlowComponent = function getFlowComponent(flow, index) {
+  switch (flow.type) {
+    case _flowTypes.UNIFORM:
+      return _react2.default.createElement(_Uniform2.default, _extends({ key: index }, flow));
+    case _flowTypes.POINT_SOURCE:
+      return _react2.default.createElement(_PointSource2.default, _extends({ key: index }, flow));
+    case _flowTypes.POINT_VORTEX:
+      return _react2.default.createElement(_PointVortex2.default, _extends({ key: index }, flow));
+    case _flowTypes.DIPOLE:
+      return _react2.default.createElement(_Dipole2.default, _extends({ key: index }, flow));
+    default:
+      return null;
   }
 };
 
@@ -14948,7 +14978,10 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
           flowStr = _state.flowStr,
           addMode = _state.addMode;
 
-      return _react2.default.createElement('div', { className: 'flexbox' }, _react2.default.createElement('div', { className: 'flex1 view-container' }, _react2.default.createElement('div', { style: { padding: '0 12px' } }, _react2.default.createElement('h1', null, 'Potential Flow'), _react2.default.createElement('div', { ref: function ref(div) {
+      return _react2.default.createElement('div', { className: 'flexbox' }, _react2.default.createElement('div', { className: 'flex1 view-container' }, _react2.default.createElement('div', { style: {
+          padding: '6px 12px',
+          background: '#f1f4f9'
+        } }, _react2.default.createElement('label', { style: { margin: '0' } }, 'Potential Flow')), _react2.default.createElement('div', { style: { padding: '0 12px' } }, _react2.default.createElement('div', { ref: function ref(div) {
           return _this3.graph = div;
         },
         style: {
@@ -14973,17 +15006,16 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
           } }, o.name);
       })), _react2.default.createElement('div', { style: { padding: '0 12px' } }, _react2.default.createElement('div', { className: addMode !== 'preset' && 'display-none' }, _react2.default.createElement(_RankineHalfbody2.default, null), _react2.default.createElement(_RankineOval2.default, null), _react2.default.createElement(_Cylinder2.default, null), _react2.default.createElement(_RotatingCylinder2.default, null)), _react2.default.createElement('div', { className: addMode !== 'custom' && 'display-none' }, _react2.default.createElement(_Uniform2.default, null), _react2.default.createElement(_PointSource2.default, null), _react2.default.createElement(_PointVortex2.default, null), _react2.default.createElement(_Dipole2.default, null)))), _react2.default.createElement('div', { className: 'flex0 active-flows' }, _react2.default.createElement('h4', null, 'Current Flows \xB7 ', activeFlowIds.length), activeFlowIds.map(function (id, i) {
         var flow = activeFlowMap[id];
-        switch (flow.type) {
-          case _flowTypes.UNIFORM:
-            return _react2.default.createElement(_Uniform2.default, _extends({ key: i }, flow));
-          case _flowTypes.POINT_SOURCE:
-            return _react2.default.createElement(_PointSource2.default, _extends({ key: i }, flow));
-          case _flowTypes.POINT_VORTEX:
-            return _react2.default.createElement(_PointVortex2.default, _extends({ key: i }, flow));
-          case _flowTypes.DIPOLE:
-            return _react2.default.createElement(_Dipole2.default, _extends({ key: i }, flow));
-          default:
-            return null;
+        if (flow.group) {
+          return _react2.default.createElement('div', { key: i, className: 'flow-group' }, _react2.default.createElement('div', { className: 'flexbox align-items-center title' }, _react2.default.createElement('label', { className: 'flex1' }, flow.name), _react2.default.createElement(_CloseButton2.default, {
+            className: 'flex0',
+            onClick: function onClick() {
+              return (0, _util.removeFlow)(flow.flowId);
+            } })), flow.flowIds.map(function (flowId, j) {
+            return getFlowComponent(activeFlowMap[flowId], j);
+          }));
+        } else {
+          return getFlowComponent(flow, i);
         }
       })));
     }
@@ -15082,10 +15114,10 @@ var addFlow = exports.addFlow = function addFlow(flow) {
   };
 };
 
-var addBulkFlows = exports.addBulkFlows = function addBulkFlows(flows) {
+var addBulkFlows = exports.addBulkFlows = function addBulkFlows(flowGroup) {
   return {
     'type': 'ADD_BULK_FLOWS',
-    flows: flows
+    flowGroup: flowGroup
   };
 };
 
@@ -16121,18 +16153,27 @@ exports.default = function () {
 
     case 'ADD_BULK_FLOWS':
       index = state.index;
+      var newFlowGroup = {
+        flowIds: [],
+        flowId: index,
+        name: action.flowGroup.name,
+        group: true
+      };
+      index += 1;
+
       var newFlows = {};
-      var newFlowIds = [];
-      action.flows.forEach(function (flow) {
-        newFlows[index] = Object.assign({}, flow, {
-          flowId: index
+      action.flowGroup.flows.forEach(function (flow) {
+        var newFlow = Object.assign({}, flow, {
+          flowId: index,
+          parentId: newFlowGroup.flowId
         });
-        newFlowIds.push(index);
+        newFlowGroup.flowIds.push(index);
+        newFlows[index] = newFlow;
         index += 1;
       });
       return Object.assign({}, state, {
-        activeFlowIds: state.activeFlowIds.concat(newFlowIds),
-        activeFlowMap: Object.assign({}, state.activeFlowMap, newFlows),
+        activeFlowIds: [].concat(_toConsumableArray(state.activeFlowIds), [newFlowGroup.flowId]),
+        activeFlowMap: Object.assign({}, state.activeFlowMap, newFlows, _defineProperty({}, newFlowGroup.flowId, newFlowGroup)),
         index: index
       });
 
@@ -16155,12 +16196,26 @@ exports.default = function () {
       });
 
     case 'REMOVE_FLOW':
-      return Object.assign({}, state, {
-        activeFlowIds: state.activeFlowIds.filter(function (id) {
-          return id !== action.flowId;
-        }),
-        activeFlowMap: Object.assign({}, state.activeFlowMap, _defineProperty({}, action.flowId, undefined))
-      });
+      var flowToRemove = state.activeFlowMap[action.flowId];
+      var parentId = flowToRemove.parentId;
+
+      if (parentId !== undefined) {
+        var parentFlow = state.activeFlowMap[parentId];
+        return Object.assign({}, state, {
+          activeFlowMap: Object.assign({}, state.activeFlowMap, _defineProperty({}, parentId, Object.assign({}, parentFlow, {
+            flowIds: parentFlow.flowIds.filter(function (id) {
+              return id !== action.flowId;
+            })
+          })))
+        });
+      } else {
+        return Object.assign({}, state, {
+          activeFlowIds: state.activeFlowIds.filter(function (id) {
+            return id !== action.flowId;
+          }),
+          activeFlowMap: Object.assign({}, state.activeFlowMap, _defineProperty({}, action.flowId, undefined))
+        });
+      }
 
     case 'EDIT_FLOW_VIEW':
       return Object.assign({}, state, {
@@ -20328,7 +20383,7 @@ exports = module.exports = __webpack_require__(413)();
 
 
 // module
-exports.push([module.i, ".flexbox {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex; }\n\n.flex-wrap {\n  flex-wrap: wrap; }\n\n.flex-wrap-reverse {\n  flex-wrap: wrap-reverse; }\n\n.flex-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.flex0 {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto; }\n\n.flex1 {\n  -webkit-box-flex: 1 1 auto;\n  -moz-box-flex: 1 1 auto;\n  -webkit-flex: 1 1 auto;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto; }\n\n.align-items-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.text-grey {\n  color: #51586a; }\n\nbody {\n  font-family: 'Open Sans', sans-serif;\n  color: #252830; }\n\n.display-none {\n  display: none; }\n\nbutton {\n  cursor: pointer; }\n\n.close-x {\n  display: inline-block;\n  padding: 0;\n  cursor: pointer;\n  border-radius: 3px;\n  background: transparent;\n  border: none;\n  outline: 0;\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s;\n  stroke: #747e95; }\n  .close-x:hover {\n    transform: scale(1.05); }\n  .close-x:active {\n    transition: 0;\n    background: rgba(0, 0, 0, 0.1); }\n  .close-x svg {\n    stroke: inherit;\n    stroke-width: 1.5px;\n    stroke-linecap: round;\n    display: block; }\n\n.flow-nav {\n  margin-bottom: 10px;\n  border-bottom: 2px solid #eaeef6; }\n  .flow-nav .option {\n    font-size: 18px;\n    padding: 5px 10px;\n    padding-top: 7px;\n    border-top-left-radius: 4px;\n    border-top-right-radius: 4px;\n    border-top: 2px solid transparent;\n    border-right: 2px solid transparent;\n    border-left: 2px solid transparent;\n    color: #51586a;\n    cursor: pointer; }\n    .flow-nav .option:hover {\n      text-decoration: underline; }\n    .flow-nav .option:first-child {\n      margin-left: 12px; }\n    .flow-nav .option.active {\n      border-top: 2px solid #eaeef6;\n      border-right: 2px solid #eaeef6;\n      border-left: 2px solid #eaeef6;\n      background: white;\n      transform: translateY(2px);\n      padding-top: 5px;\n      color: #252830;\n      cursor: default; }\n      .flow-nav .option.active:hover {\n        text-decoration: none; }\n\n.flow-eq {\n  border: 2px solid #b3ccff;\n  background: #e6eeff;\n  overflow-x: auto; }\n\n.flow-element {\n  display: inline-block;\n  vertical-align: top;\n  max-width: 100%;\n  border-radius: 3px;\n  border: 2px solid #eaeef6;\n  background: #f1f4f9;\n  padding: 10px;\n  margin-bottom: 8px;\n  margin-right: 6px; }\n  .flow-element .close-x {\n    padding: 2px; }\n  .flow-element .input-group {\n    margin-bottom: 4px; }\n  .flow-element .input-group-addon {\n    background-color: #eaeef6;\n    width: 30px; }\n  .flow-element label {\n    margin: 0;\n    font-size: 20px;\n    margin-right: 5px; }\n  .flow-element .flow-eq {\n    color: #51586a;\n    margin-bottom: 5px;\n    font-size: 12px;\n    border-radius: 3px;\n    padding: 5px 5px; }\n\n.view-container {\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: auto; }\n\n.active-flows {\n  padding: 12px;\n  width: 270px;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  border-left: 2px solid #eaeef6; }\n  .active-flows .flow-element {\n    margin-right: 0;\n    width: 100%; }\n  .active-flows h4 {\n    margin-bottom: 20px; }\n\n.main-flow-eq {\n  display: inline-block;\n  border-radius: 3px;\n  padding: 4px 10px;\n  margin-right: 10px; }\n", ""]);
+exports.push([module.i, ".flexbox {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex; }\n\n.flex-wrap {\n  flex-wrap: wrap; }\n\n.flex-wrap-reverse {\n  flex-wrap: wrap-reverse; }\n\n.flex-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.flex0 {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto; }\n\n.flex1 {\n  -webkit-box-flex: 1 1 auto;\n  -moz-box-flex: 1 1 auto;\n  -webkit-flex: 1 1 auto;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto; }\n\n.align-items-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.text-grey {\n  color: #51586a; }\n\nbody {\n  font-family: 'Open Sans', sans-serif;\n  color: #252830; }\n\n.display-none {\n  display: none; }\n\nbutton {\n  cursor: pointer; }\n\n.close-x {\n  display: inline-block;\n  padding: 0;\n  cursor: pointer;\n  border-radius: 3px;\n  background: transparent;\n  border: none;\n  outline: 0;\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s;\n  stroke: #747e95; }\n  .close-x:hover {\n    transform: scale(1.05); }\n  .close-x:active {\n    transition: 0;\n    background: rgba(0, 0, 0, 0.1); }\n  .close-x svg {\n    stroke: inherit;\n    stroke-width: 1.5px;\n    stroke-linecap: round;\n    display: block; }\n\n.flow-nav {\n  margin-bottom: 10px;\n  border-bottom: 2px solid #eaeef6; }\n  .flow-nav .option {\n    font-size: 18px;\n    padding: 5px 10px;\n    padding-top: 7px;\n    border-top-left-radius: 4px;\n    border-top-right-radius: 4px;\n    border-top: 2px solid transparent;\n    border-right: 2px solid transparent;\n    border-left: 2px solid transparent;\n    color: #51586a;\n    cursor: pointer; }\n    .flow-nav .option:hover {\n      text-decoration: underline; }\n    .flow-nav .option:first-child {\n      margin-left: 12px; }\n    .flow-nav .option.active {\n      border-top: 2px solid #eaeef6;\n      border-right: 2px solid #eaeef6;\n      border-left: 2px solid #eaeef6;\n      background: white;\n      transform: translateY(2px);\n      padding-top: 5px;\n      color: #252830;\n      cursor: default; }\n      .flow-nav .option.active:hover {\n        text-decoration: none; }\n\n.flow-eq {\n  border: 2px solid #b3ccff;\n  background: #e6eeff;\n  overflow-x: auto; }\n\n.flow-element {\n  display: inline-block;\n  vertical-align: top;\n  max-width: 100%;\n  border-radius: 3px;\n  border: 2px solid #eaeef6;\n  background: #f1f4f9;\n  padding: 10px;\n  margin-bottom: 8px;\n  margin-right: 6px; }\n  .flow-element .close-x {\n    padding: 2px; }\n  .flow-element .input-group {\n    margin-bottom: 4px; }\n  .flow-element .input-group-addon {\n    background-color: #eaeef6;\n    width: 30px; }\n  .flow-element label {\n    margin: 0;\n    font-size: 20px;\n    margin-right: 5px; }\n  .flow-element .flow-eq {\n    color: #51586a;\n    margin-bottom: 5px;\n    font-size: 12px;\n    border-radius: 3px;\n    padding: 5px 5px; }\n\n.flow-group {\n  padding: 10px;\n  border: 2px solid #fc6;\n  border-radius: 3px;\n  margin-bottom: 15px; }\n  .flow-group .title {\n    margin-bottom: 10px; }\n    .flow-group .title label {\n      margin: 0; }\n\n.view-container {\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: auto; }\n\n.active-flows {\n  padding: 12px;\n  width: 300px;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  border-left: 2px solid #eaeef6; }\n  .active-flows .flow-element {\n    margin-right: 0;\n    width: 100%; }\n  .active-flows h4 {\n    margin-bottom: 20px; }\n\n.main-flow-eq {\n  display: inline-block;\n  border-radius: 3px;\n  padding: 4px 10px;\n  margin-right: 10px; }\n", ""]);
 
 // exports
 
@@ -34848,7 +34903,7 @@ var PresetFlow = function (_Component) {
         type: 'button',
         className: 'btn btn-primary btn-block btn-sm',
         onClick: function onClick() {
-          (0, _util.addBulkFlows)(flows);
+          (0, _util.addBulkFlows)(flows, name);
         } }, 'Add'));
     }
   }]);
