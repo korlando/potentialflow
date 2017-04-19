@@ -6,6 +6,11 @@ import { UNIFORM,
 const defaultState = {
   activeFlowIds: [],
   activeFlowMap: {},
+  history: [{
+    activeFlowIds: [],
+    activeFlowMap: {}
+  }],
+  historyIndex: 0,
   flowView: 'stream',
   flowForms: {
     [UNIFORM]: {
@@ -41,7 +46,7 @@ const defaultState = {
 };
 
 export default (state = defaultState, action) => {
-  let flow, index;
+  let flow, index, history, historyEntry, historyIndex;
 
   switch(action.type) {
     case 'ADD_FLOW':
@@ -50,12 +55,18 @@ export default (state = defaultState, action) => {
         flowId: index
       });
       index += 1;
-      return Object.assign({}, state, {
+      historyEntry = {
         activeFlowIds: [...state.activeFlowIds, newFlow.flowId],
         activeFlowMap: Object.assign({}, state.activeFlowMap, {
           [newFlow.flowId]: newFlow
-        }),
-        index
+        })
+      };
+      historyIndex = state.historyIndex + 1;
+      history = [...state.history.slice(0, historyIndex), historyEntry];
+      return Object.assign({}, state, historyEntry, {
+        index,
+        historyIndex,
+        history
       });
 
     case 'ADD_BULK_FLOWS':
@@ -78,12 +89,18 @@ export default (state = defaultState, action) => {
         newFlows[index] = newFlow;
         index += 1;
       });
-      return Object.assign({}, state, {
+      historyEntry = {
         activeFlowIds: [...state.activeFlowIds, newFlowGroup.flowId],
         activeFlowMap: Object.assign({}, state.activeFlowMap, newFlows, {
           [newFlowGroup.flowId]: newFlowGroup
-        }),
-        index
+        })
+      };
+      historyIndex = state.historyIndex + 1;
+      history = [...state.history.slice(0, historyIndex), historyEntry];
+      return Object.assign({}, state, historyEntry, {
+        index,
+        historyIndex,
+        history
       });
 
     case 'EDIT_FLOW':
@@ -113,26 +130,52 @@ export default (state = defaultState, action) => {
       const { parentId } = flowToRemove;
       if(parentId !== undefined) {
         const parentFlow = state.activeFlowMap[parentId];
-        return Object.assign({}, state, {
+        historyEntry = {
           activeFlowMap: Object.assign({}, state.activeFlowMap, {
             [parentId]: Object.assign({}, parentFlow, {
               flowIds: parentFlow.flowIds.filter(id => id !== action.flowId)
             })
           })
-        });
+        };
       } else {
-        return Object.assign({}, state, {
+        historyEntry = {
           activeFlowIds: state.activeFlowIds.filter(id => id !== action.flowId),
           activeFlowMap: Object.assign({}, state.activeFlowMap, {
             [action.flowId]: undefined
           })
-        });
+        };
       }
+      historyIndex = state.historyIndex + 1;
+      history = [...state.history.slice(0, historyIndex), historyEntry];
+      return Object.assign({}, state, historyEntry, {
+        historyIndex,
+        history
+      });
 
     case 'EDIT_FLOW_VIEW':
       return Object.assign({}, state, {
         flowView: action.view
       });
+
+    case 'UNDO_FLOW_HISTORY':
+      historyIndex = state.historyIndex - 1;
+      if(historyIndex >= 0) {
+        historyEntry = state.history[historyIndex];
+        return Object.assign({}, state, historyEntry, {
+          historyIndex
+        });
+      }
+      return state;
+
+    case 'REDO_FLOW_HISTORY':
+      historyIndex = state.historyIndex + 1;
+      if(historyIndex < state.history.length) {
+        historyEntry = state.history[historyIndex];
+        return Object.assign({}, state, historyEntry, {
+          historyIndex
+        });
+      }
+      return state;
 
     default:
       return state;

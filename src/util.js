@@ -25,6 +25,14 @@ export const editFlowView = (view) => {
   store.dispatch(flowActions.editFlowView(view));
 };
 
+export const undoFlowHistory = () => {
+  store.dispatch(flowActions.undoFlowHistory());
+};
+
+export const redoFlowHistory = () => {
+  store.dispatch(flowActions.redoFlowHistory());
+};
+
 export const diffTeX = (first, second) => {
   if(second < 0) {
     return `${first} + ${-second}`;

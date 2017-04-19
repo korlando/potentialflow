@@ -43,3 +43,15 @@ export const editFlowView = (view) => {
     view
   };
 };
+
+export const undoFlowHistory = () => {
+  return {
+    type: 'UNDO_FLOW_HISTORY'
+  };
+};
+
+export const redoFlowHistory = () => {
+  return {
+    type: 'REDO_FLOW_HISTORY'
+  };
+};

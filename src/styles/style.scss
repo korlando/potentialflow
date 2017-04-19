@@ -67,6 +67,15 @@ body {
   font-family: 'Open Sans', sans-serif;
   color: $dark;
 }
+nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 6px 12px;
+  background: $lightest;
+  z-index: 1002;
+}
 
 .display-none {
   display: none;
@@ -74,6 +83,13 @@ body {
 
 button {
   cursor: pointer;
+  &.history-btn {
+    background: transparent;
+    border: none;
+    &[disabled] {
+      cursor: default;
+    }
+  }
 }
 .close-x {
   display: inline-block;
@@ -199,6 +215,7 @@ button {
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
+  padding-top: 50px;
 }
 
 .active-flows {

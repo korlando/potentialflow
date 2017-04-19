@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { addFlow, removeFlow, editFlowView } from '../util';
+import { addFlow,
+         removeFlow,
+         editFlowView,
+         undoFlowHistory,
+         redoFlowHistory } from '../util';
 import CloseButton from './CloseButton';
 import TeX from './TeX';
 
@@ -184,7 +188,9 @@ const mapStateToProps = (state) => {
   return {
     activeFlowIds: state.flow.activeFlowIds,
     activeFlowMap: state.flow.activeFlowMap,
-    flowView: state.flow.flowView
+    flowView: state.flow.flowView,
+    historyIndex: state.flow.historyIndex,
+    history: state.flow.history
   };
 };
 
@@ -236,78 +242,93 @@ export default class App extends Component {
   render() {
     const { activeFlowIds,
             activeFlowMap,
-            flowView } = this.props;
+            flowView,
+            historyIndex,
+            history } = this.props;
     const { flowStr, addMode } = this.state;
 
     return (
       <div className="flexbox">
-        <div className="flex1 view-container">
-          <div style={{
-            padding: '6px 12px',
-            background: '#f1f4f9'
-          }}>
-            <label style={{ margin: '0' }}>Potential Flow</label>
-          </div>
-          <div style={{ overflowX: 'auto'}}>
-            <div ref={div => this.graph = div}
-              style={{
-                width: '800px',
-                height: '500px',
-                margin: 'auto'
-              }}></div>
-            <div className="flexbox align-items-center" style={{
-              minHeight: '40px',
-              padding: '10px 0'
-            }}>
-              <div className="flex1" style={{ marginLeft: '12px' }}></div>
-              { flowStr &&
-                <div className="flex0 flow-eq main-flow-eq">
-                  <TeX value={flowStr}/>
+        <div className="flex1" style={{ position: 'relative' }}>
+          <nav className="flexbox align-items-center">
+            <label className="flex1" style={{ margin: '0' }}>
+              Potential Flow
+            </label>
+            <button className="history-btn flex0"
+              title="Undo"
+              disabled={historyIndex <= 0}
+              onClick={undoFlowHistory}>
+              <span className="lnr lnr-undo"></span>
+            </button>
+            <button className="history-btn flex0"
+              title="Redo"
+              disabled={historyIndex >= history.length - 1}
+              onClick={redoFlowHistory}>
+              <span className="lnr lnr-redo"></span>
+            </button>
+          </nav>
+          <div className="view-container">
+            <div style={{ overflowX: 'auto'}}>
+              <div ref={div => this.graph = div}
+                style={{
+                  width: '800px',
+                  height: '500px',
+                  margin: 'auto'
+                }}></div>
+              <div className="flexbox align-items-center" style={{
+                minHeight: '40px',
+                padding: '10px 0'
+              }}>
+                <div className="flex1" style={{ marginLeft: '12px' }}></div>
+                { flowStr &&
+                  <div className="flex0 flow-eq main-flow-eq">
+                    <TeX value={flowStr}/>
+                  </div>
+                }
+                <div className="flex0" style={{ paddingRight: '12px' }}>
+                  <select
+                    className="form-control"
+                    value={flowView}
+                    onChange={e => editFlowView(e.target.value)}>
+                    <option value="vp">Velocity Potential</option>
+                    <option value="stream">Stream Function</option>
+                    <option value="xVel">X Velocity</option>
+                    <option value="yVel">Y Velocity</option>
+                  </select>
                 </div>
-              }
-              <div className="flex0" style={{ paddingRight: '12px' }}>
-                <select
-                  className="form-control"
-                  value={flowView}
-                  onChange={e => editFlowView(e.target.value)}>
-                  <option value="vp">Velocity Potential</option>
-                  <option value="stream">Stream Function</option>
-                  <option value="xVel">X Velocity</option>
-                  <option value="yVel">Y Velocity</option>
-                </select>
               </div>
             </div>
-          </div>
 
-          <h4 style={{ padding: '0 12px'}}>Flow Elements</h4>
-          
-          <div className="flow-nav flexbox">
-            { flowNavOptions.map((o, i) => {
-              return (
-                <div key={i}
-                  className={`option ${addMode === o.value ? ' active' : ''}`}
-                  onClick={(e) => {
-                    if(addMode !== o.value) {
-                      this.setState({ addMode: o.value });
-                    }
-                  }}>{o.name}</div>
-              );
-            })}
-          </div>
-          
-          <div style={{ padding: '0 12px' }}>
-            <div className={addMode !== 'preset' && 'display-none'}>
-              <RankineHalfbody/>
-              <RankineOval/>
-              <Cylinder/>
-              <RotatingCylinder/>
+            <h4 style={{ padding: '0 12px'}}>Flow Elements</h4>
+            
+            <div className="flow-nav flexbox">
+              { flowNavOptions.map((o, i) => {
+                return (
+                  <div key={i}
+                    className={`option ${addMode === o.value ? ' active' : ''}`}
+                    onClick={(e) => {
+                      if(addMode !== o.value) {
+                        this.setState({ addMode: o.value });
+                      }
+                    }}>{o.name}</div>
+                );
+              })}
             </div>
             
-            <div className={addMode !== 'custom' && 'display-none'}>
-              <Uniform/>
-              <PointSource/>
-              <PointVortex/>
-              <Dipole/>
+            <div style={{ padding: '0 12px' }}>
+              <div className={addMode !== 'preset' && 'display-none'}>
+                <RankineHalfbody/>
+                <RankineOval/>
+                <Cylinder/>
+                <RotatingCylinder/>
+              </div>
+              
+              <div className={addMode !== 'custom' && 'display-none'}>
+                <Uniform/>
+                <PointSource/>
+                <PointVortex/>
+                <Dipole/>
+              </div>
             </div>
           </div>
         </div>
