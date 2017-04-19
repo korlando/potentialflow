@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { addBulkFlows } from '../../../util';
+import { addAlert } from '../../../alert';
 import TeX from '../../TeX';
 import flowToTeX from '../../../constants/flowToTeX';
 import variableMeta from '../../../constants/variableMeta';
@@ -41,6 +42,7 @@ export default class PresetFlow extends Component {
           className="btn btn-primary btn-block btn-sm"
           onClick={() => {
             addBulkFlows(flows, name);
+            addAlert(`Added "${name}" Flow`, true, 10 * 1000);
           }}>Add</button>
       </div>
     );

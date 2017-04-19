@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { addFlow,
-         removeFlow,
-         editFlowView,
-         undoFlowHistory,
-         redoFlowHistory } from '../util';
+         removeFlow } from '../util';
 import CloseButton from './CloseButton';
 import TeX from './TeX';
+import Nav from './Nav';
 
 import Uniform, { makeUniformFlowFcns,
                   uniformFlowStrs } from './FlowElements/Uniform';
@@ -188,9 +186,7 @@ const mapStateToProps = (state) => {
   return {
     activeFlowIds: state.flow.activeFlowIds,
     activeFlowMap: state.flow.activeFlowMap,
-    flowView: state.flow.flowView,
-    historyIndex: state.flow.historyIndex,
-    history: state.flow.history
+    flowView: state.flow.flowView
   };
 };
 
@@ -242,31 +238,13 @@ export default class App extends Component {
   render() {
     const { activeFlowIds,
             activeFlowMap,
-            flowView,
-            historyIndex,
-            history } = this.props;
+            flowView } = this.props;
     const { flowStr, addMode } = this.state;
 
     return (
       <div className="flexbox">
         <div className="flex1" style={{ position: 'relative' }}>
-          <nav className="flexbox align-items-center">
-            <label className="flex1" style={{ margin: '0' }}>
-              Potential Flow
-            </label>
-            <button className="history-btn flex0"
-              title="Undo"
-              disabled={historyIndex <= 0}
-              onClick={undoFlowHistory}>
-              <span className="lnr lnr-undo"></span>
-            </button>
-            <button className="history-btn flex0"
-              title="Redo"
-              disabled={historyIndex >= history.length - 1}
-              onClick={redoFlowHistory}>
-              <span className="lnr lnr-redo"></span>
-            </button>
-          </nav>
+          <Nav/>
           <div className="view-container">
             <div style={{ overflowX: 'auto'}}>
               <div ref={div => this.graph = div}
@@ -275,28 +253,17 @@ export default class App extends Component {
                   height: '500px',
                   margin: 'auto'
                 }}></div>
-              <div className="flexbox align-items-center" style={{
-                minHeight: '40px',
-                padding: '10px 0'
-              }}>
-                <div className="flex1" style={{ marginLeft: '12px' }}></div>
-                { flowStr &&
-                  <div className="flex0 flow-eq main-flow-eq">
-                    <TeX value={flowStr}/>
-                  </div>
-                }
-                <div className="flex0" style={{ paddingRight: '12px' }}>
-                  <select
-                    className="form-control"
-                    value={flowView}
-                    onChange={e => editFlowView(e.target.value)}>
-                    <option value="vp">Velocity Potential</option>
-                    <option value="stream">Stream Function</option>
-                    <option value="xVel">X Velocity</option>
-                    <option value="yVel">Y Velocity</option>
-                  </select>
+            </div>
+
+            <div className="flexbox justify-content-center" style={{
+              minHeight: '67px',
+              padding: '10px'
+            }}>
+              { flowStr &&
+                <div className="flow-eq main-flow-eq">
+                  <TeX value={flowStr}/>
                 </div>
-              </div>
+              }
             </div>
 
             <h4 style={{ padding: '0 12px'}}>Flow Elements</h4>

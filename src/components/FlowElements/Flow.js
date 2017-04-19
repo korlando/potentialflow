@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import CloseButton from '../CloseButton';
 import { addFlow, editFlow, editFlowForm, removeFlow } from '../../util';
+import { addAlert } from '../../alert';
 import variableMeta from '../../constants/variableMeta';
 import flowToTeX from '../../constants/flowToTeX';
+import CloseButton from '../CloseButton';
 import TeX from '../TeX';
 
 const mapStateToProps = (state, ownProps) => {
@@ -49,10 +50,12 @@ export default class Flow extends Component {
             flow,
             makeFlowFcns,
             makeFlowStrs,
-            type } = this.props;
+            type,
+            name } = this.props;
     const { inputs } = flow;
     if(flowId === undefined) {
       addFlow(type, inputs, makeFlowFcns(inputs), makeFlowStrs(inputs));
+      addAlert(`Added "${name}" Flow`, true, 10 * 1000);
     }
   };
 

@@ -59,6 +59,9 @@ $blue: #69f;
 .align-items-center {
   @include alignItems(center);
 }
+.justify-content-center {
+  @include justifyContent(center);
+}
 .text-grey {
   color: $grey;
 }
@@ -75,6 +78,53 @@ nav {
   padding: 6px 12px;
   background: $lightest;
   z-index: 1002;
+}
+
+.alert-box-enter {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-100%) !important;
+}
+.alert-box-enter.alert-box-enter-active {
+  transition: all 0.2s;
+  opacity: 1;
+  transform: translateX(-50%) translateY(-50%) !important;
+}
+.alert-box-leave {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-50%) !important;
+}
+.alert-box-leave.alert-box-leave-active {
+  transition: all 0.2s;
+  opacity: 0;
+  transform: translateX(-50%) translateY(-100%) !important;
+}
+.alert-box {
+  background: $blue;
+  padding: 0 12px;
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  border-radius: 3px;
+  .undo {
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+    margin-right: 15px;
+    &:hover {
+      text-decoration: underline;
+      opacity: 1;
+    }
+  }
+  .close-x {
+    padding: 3px;
+    svg {
+      stroke: lighten($blue, 25%);
+    }
+  }
 }
 
 .display-none {
@@ -239,4 +289,5 @@ button {
   border-radius: 3px;
   padding: 4px 10px;
   margin-right: 10px;
+  max-width: 800px;
 }
