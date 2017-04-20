@@ -17983,11 +17983,14 @@ var flowViewColorScales = {
   stream: 'YIGnBu'
 };
 var flowNavOptions = [{
-  name: 'Preset',
+  name: 'Add Preset',
   value: 'preset'
 }, {
-  name: 'Custom',
+  name: 'Add Custom',
   value: 'custom'
+}, {
+  name: 'Inspect Flows',
+  value: 'inspect'
 }];
 
 /**
@@ -18091,6 +18094,14 @@ function makeZData(zFcn, xCoords, yCoords) {
   return zData;
 };
 
+function makeFlowFcnMap(activeFlowIds, activeFlowMap) {
+  var flowFcnMap = {};
+  Object.keys(_flowToTeX2.default).forEach(function (key) {
+    flowFcnMap[key] = makeFlowFcn(key, activeFlowIds, activeFlowMap);
+  });
+  return flowFcnMap;
+};
+
 var makeData = function makeData(zData, flowView) {
   return [{
     z: zData,
@@ -18137,8 +18148,11 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
 
     _this.state = {
       flowFcnName: 'stream',
-      flowStr: '',
-      addMode: 'preset'
+      flowStr: makeFlowStr('stream', [], {}),
+      flowFcnMap: makeFlowFcnMap([], {}),
+      addMode: 'preset',
+      inspectX: 0,
+      inspectY: 0
     };
     _this.activeFlowTimer = null;
     return _this;
@@ -18152,8 +18166,6 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
       }, xCoords, yCoords);
       var data = makeData(zData, this.props.flowView);
       this.renderNewPlot(this.graph, data, layout);
-      //const inputs = { U: 0, V: 1 };
-      //addFlow(UNIFORM, inputs, makeUniformFlowFcns(inputs), uniformFlowStrs(inputs));
     }
   }, {
     key: 'componentWillReceiveProps',
@@ -18168,13 +18180,14 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
         clearTimeout(this.activeFlowTimer);
 
         this.activeFlowTimer = setTimeout(function () {
-          var flowFcn = makeFlowFcn(flowView, activeFlowIds, activeFlowMap);
+          var flowFcnMap = makeFlowFcnMap(activeFlowIds, activeFlowMap);
+          var flowFcn = flowFcnMap[flowView];
           var zData = makeZData(flowFcn, xCoords, yCoords);
           var newData = makeData(zData, flowView);
           _this2.renderNewPlot(_this2.graph, newData, layout);
 
           var flowStr = makeFlowStr(flowView, activeFlowIds, activeFlowMap);
-          _this2.setState({ flowStr: flowStr });
+          _this2.setState({ flowStr: flowStr, flowFcnMap: flowFcnMap });
         }, 300);
       }
     }
@@ -18194,7 +18207,10 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
           flowView = _props.flowView;
       var _state = this.state,
           flowStr = _state.flowStr,
-          addMode = _state.addMode;
+          flowFcnMap = _state.flowFcnMap,
+          addMode = _state.addMode,
+          inspectX = _state.inspectX,
+          inspectY = _state.inspectY;
 
       return _react2.default.createElement('div', { className: 'flexbox' }, _react2.default.createElement('div', { className: 'flex1', style: { position: 'relative' } }, _react2.default.createElement(_Nav2.default, null), _react2.default.createElement('div', { className: 'view-container' }, _react2.default.createElement('div', { style: { overflowX: 'auto' } }, _react2.default.createElement('div', { ref: function ref(div) {
           return _this3.graph = div;
@@ -18214,7 +18230,21 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
               _this3.setState({ addMode: o.value });
             }
           } }, o.name);
-      })), _react2.default.createElement('div', { style: { padding: '12px' } }, _react2.default.createElement('div', { className: addMode !== 'preset' && 'display-none' }, _react2.default.createElement(_RankineHalfbody2.default, null), _react2.default.createElement(_RankineOval2.default, null), _react2.default.createElement(_Cylinder2.default, null), _react2.default.createElement(_RotatingCylinder2.default, null)), _react2.default.createElement('div', { className: addMode !== 'custom' && 'display-none' }, _react2.default.createElement(_Uniform2.default, null), _react2.default.createElement(_PointSource2.default, null), _react2.default.createElement(_PointVortex2.default, null), _react2.default.createElement(_Dipole2.default, null))))), _react2.default.createElement(_ActiveFlowsPanel2.default, null));
+      })), _react2.default.createElement('div', { style: { padding: '12px' } }, _react2.default.createElement('div', { className: addMode !== 'preset' && 'display-none' }, _react2.default.createElement(_RankineHalfbody2.default, null), _react2.default.createElement(_RankineOval2.default, null), _react2.default.createElement(_Cylinder2.default, null), _react2.default.createElement(_RotatingCylinder2.default, null)), _react2.default.createElement('div', { className: addMode !== 'custom' && 'display-none' }, _react2.default.createElement(_Uniform2.default, null), _react2.default.createElement(_PointSource2.default, null), _react2.default.createElement(_PointVortex2.default, null), _react2.default.createElement(_Dipole2.default, null)), _react2.default.createElement('div', { className: 'flexbox ' + (addMode !== 'inspect' && 'display-none') }, _react2.default.createElement('div', { className: 'flex0', style: { paddingRight: '12px' } }, _react2.default.createElement('div', { className: 'input-group', style: { marginBottom: '5px' } }, _react2.default.createElement('div', { className: 'input-group-addon' }, 'x'), _react2.default.createElement('input', { type: 'number',
+        className: 'form-control',
+        value: inspectX,
+        onChange: function onChange(e) {
+          return _this3.setState({ inspectX: e.target.value });
+        },
+        placeholder: 'X position' })), _react2.default.createElement('div', { className: 'input-group' }, _react2.default.createElement('div', { className: 'input-group-addon' }, 'y'), _react2.default.createElement('input', { type: 'number',
+        className: 'form-control',
+        value: inspectY,
+        onChange: function onChange(e) {
+          return _this3.setState({ inspectY: e.target.value });
+        },
+        placeholder: 'Y position' }))), _react2.default.createElement('div', { className: 'flex0' }, Object.keys(_flowToTeX2.default).map(function (key) {
+        return _react2.default.createElement(_TeX2.default, { value: _flowToTeX2.default[key] + ' = ' + flowFcnMap[key](inspectX, inspectY) });
+      })))))), _react2.default.createElement(_ActiveFlowsPanel2.default, null));
     }
   }]);
 

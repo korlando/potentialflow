@@ -5,8 +5,7 @@ import TeX from './TeX';
 import Nav from './Nav';
 import ActiveFlowsPanel from './ActiveFlowsPanel';
 
-import Uniform, { makeUniformFlowFcns,
-                  uniformFlowStrs } from './FlowElements/Uniform';
+import Uniform from './FlowElements/Uniform';
 import PointSource from './FlowElements/PointSource';
 import PointVortex from './FlowElements/PointVortex';
 import Dipole from './FlowElements/Dipole';
@@ -28,11 +27,14 @@ const flowViewColorScales = {
   stream: 'YIGnBu'
 };
 const flowNavOptions = [{
-  name: 'Preset',
+  name: 'Add Preset',
   value: 'preset'
 }, {
-  name: 'Custom',
+  name: 'Add Custom',
   value: 'custom'
+}, {
+  name: 'Inspect Flows',
+  value: 'inspect'
 }];
 
 /**
@@ -138,6 +140,14 @@ function makeZData(zFcn, xCoords, yCoords) {
   return zData;
 };
 
+function makeFlowFcnMap(activeFlowIds, activeFlowMap) {
+  const flowFcnMap = {};
+  Object.keys(flowToTeX).forEach((key) => {
+    flowFcnMap[key] = makeFlowFcn(key, activeFlowIds, activeFlowMap);
+  });
+  return flowFcnMap;
+};
+
 const makeData = (zData, flowView) => {
   return [{
     z: zData,
@@ -181,8 +191,11 @@ export default class App extends Component {
 
     this.state = {
       flowFcnName: 'stream',
-      flowStr: '',
-      addMode: 'preset'
+      flowStr: makeFlowStr('stream', [], {}),
+      flowFcnMap: makeFlowFcnMap([], {}),
+      addMode: 'preset',
+      inspectX: 0,
+      inspectY: 0
     };
     this.activeFlowTimer = null;
   };
@@ -191,8 +204,6 @@ export default class App extends Component {
     const zData = makeZData(() => 0, xCoords, yCoords);
     const data = makeData(zData, this.props.flowView);
     this.renderNewPlot(this.graph, data, layout);
-    //const inputs = { U: 0, V: 1 };
-    //addFlow(UNIFORM, inputs, makeUniformFlowFcns(inputs), uniformFlowStrs(inputs));
   };
 
   componentWillReceiveProps(nextProps) {
@@ -204,13 +215,14 @@ export default class App extends Component {
       clearTimeout(this.activeFlowTimer);
       
       this.activeFlowTimer = setTimeout(() => {
-        const flowFcn = makeFlowFcn(flowView, activeFlowIds, activeFlowMap);
+        const flowFcnMap = makeFlowFcnMap(activeFlowIds, activeFlowMap);
+        const flowFcn = flowFcnMap[flowView];
         const zData = makeZData(flowFcn, xCoords, yCoords);
         const newData = makeData(zData, flowView);
         this.renderNewPlot(this.graph, newData, layout);
 
         const flowStr = makeFlowStr(flowView, activeFlowIds, activeFlowMap);
-        this.setState({ flowStr });
+        this.setState({ flowStr, flowFcnMap });
       }, 300);
     }
   };
@@ -223,7 +235,11 @@ export default class App extends Component {
     const { activeFlowIds,
             activeFlowMap,
             flowView } = this.props;
-    const { flowStr, addMode } = this.state;
+    const { flowStr,
+            flowFcnMap,
+            addMode,
+            inspectX,
+            inspectY } = this.state;
 
     return (
       <div className="flexbox">
@@ -279,6 +295,33 @@ export default class App extends Component {
                 <PointSource/>
                 <PointVortex/>
                 <Dipole/>
+              </div>
+
+              <div className={`flexbox ${addMode !== 'inspect' && 'display-none'}`}>
+                <div className="flex0" style={{ paddingRight: '12px' }}>
+                  <div className="input-group" style={{ marginBottom: '5px' }}>
+                    <div className="input-group-addon">x</div>
+                    <input type="number"
+                      className="form-control"
+                      value={inspectX}
+                      onChange={e => this.setState({ inspectX: e.target.value })}
+                      placeholder="X position"/>
+                  </div>
+                  <div className="input-group">
+                    <div className="input-group-addon">y</div>
+                    <input type="number"
+                      className="form-control"
+                      value={inspectY}
+                      onChange={e => this.setState({ inspectY: e.target.value })}
+                      placeholder="Y position"/>
+                  </div>
+                </div>
+
+                <div className="flex0">
+                  { Object.keys(flowToTeX).map((key) => {
+                    return <TeX value={`${flowToTeX[key]} = ${flowFcnMap[key](inspectX, inspectY)}`}/>;
+                  })}
+                </div>
               </div>
             </div>
           </div>
