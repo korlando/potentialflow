@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { addFlow,
-         removeFlow } from '../util';
-import CloseButton from './CloseButton';
+import { addFlow } from '../util';
 import TeX from './TeX';
 import Nav from './Nav';
+import ActiveFlowsPanel from './ActiveFlowsPanel';
 
 import Uniform, { makeUniformFlowFcns,
                   uniformFlowStrs } from './FlowElements/Uniform';
@@ -167,21 +166,6 @@ const layout = {
   }
 };
 
-const getFlowComponent = (flow, index) => {
-  switch(flow.type) {
-    case UNIFORM:
-      return <Uniform key={index} {...flow}/>;
-    case POINT_SOURCE:
-      return <PointSource key={index} {...flow}/>;
-    case POINT_VORTEX:
-      return <PointVortex key={index} {...flow}/>;
-    case DIPOLE:
-      return <Dipole key={index} {...flow}/>;
-    default:
-      return null;
-  }
-};
-
 const mapStateToProps = (state) => {
   return {
     activeFlowIds: state.flow.activeFlowIds,
@@ -282,7 +266,7 @@ export default class App extends Component {
               })}
             </div>
             
-            <div style={{ padding: '0 12px' }}>
+            <div style={{ padding: '12px' }}>
               <div className={addMode !== 'preset' && 'display-none'}>
                 <RankineHalfbody/>
                 <RankineOval/>
@@ -300,31 +284,7 @@ export default class App extends Component {
           </div>
         </div>
         
-        <div className="flex0 active-flows">
-          <h4>Current Flows &middot; {activeFlowIds.length}</h4>
-          { activeFlowIds.map((id, i) => {
-            const flow = activeFlowMap[id];
-            if(flow.group) {
-              return (
-                <div key={i} className="flow-group">
-                  <div className="flexbox align-items-center title">
-                    <label className="flex1">
-                      {flow.name}
-                    </label>
-                    <CloseButton
-                      className="flex0"
-                      onClick={() => removeFlow(flow.flowId)}/>
-                  </div>
-                  { flow.flowIds.map((flowId, j) => {
-                    return getFlowComponent(activeFlowMap[flowId], j);
-                  })}
-                </div>
-              );
-            } else {
-              return getFlowComponent(flow, i);
-            }
-          })}
-        </div>
+        <ActiveFlowsPanel/>
       </div>
     );
   };

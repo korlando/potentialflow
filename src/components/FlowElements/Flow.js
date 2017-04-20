@@ -98,7 +98,7 @@ export default class Flow extends Component {
         </div>
 
         <form onSubmit={this.handleSubmit}>
-          { Object.keys(flow.inputs).map((key, i) => {
+          { flow && Object.keys(flow.inputs).map((key, i) => {
             const variable = variableMeta[key];
             return (
               <div key={i} className="input-group input-group-sm">

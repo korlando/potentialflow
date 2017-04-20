@@ -27,6 +27,8 @@ export default class Nav extends Component {
             history,
             alerts,
             flowView } = this.props;
+    const disableUndo = historyIndex <= 0;
+    const disableRedo = historyIndex >= history.length - 1;
 
     return (
       <nav className="flexbox align-items-center">
@@ -69,14 +71,16 @@ export default class Nav extends Component {
         </div>
         <button className="history-btn flex0"
           title="Undo"
-          disabled={historyIndex <= 0}
-          onClick={undoFlowHistory}>
+          disabled={disableUndo}
+          onClick={undoFlowHistory}
+          title={disableUndo ? '' : `Undo ${history[historyIndex].name}`}>
           <span className="lnr lnr-undo"></span>
         </button>
         <button className="history-btn flex0"
           title="Redo"
-          disabled={historyIndex >= history.length - 1}
-          onClick={redoFlowHistory}>
+          disabled={disableRedo}
+          onClick={redoFlowHistory}
+          title={disableRedo ? '' : `Redo ${history[historyIndex + 1].name}`}>
           <span className="lnr lnr-redo"></span>
         </button>
       </nav>

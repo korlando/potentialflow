@@ -45,6 +45,33 @@ const defaultState = {
   index: 0
 };
 
+const flowTypeToName = {
+  [UNIFORM]: 'Uniform Flow',
+  [POINT_VORTEX]: 'Point Vortex Flow',
+  [DIPOLE]: 'Dipole Flow'
+};
+
+const getHistoryName = (flow, prefix) => {
+  if(flow.group) {
+    return prefix + flow.name;
+  }
+  switch(flow.type) {
+    case UNIFORM:
+      return prefix + 'Uniform Flow';
+    case POINT_SOURCE:
+      if(flow.m >= 0) {
+        return prefix + 'Point Souce Flow';
+      }
+      return prefix + 'Point Sink Flow';
+    case POINT_VORTEX:
+      return prefix + 'Point Vortex Flow';
+    case DIPOLE:
+      return prefix + 'Dipole';
+    default:
+      return prefix;
+  }
+};
+
 export default (state = defaultState, action) => {
   let flow, index, history, historyEntry, historyIndex;
 
@@ -59,7 +86,8 @@ export default (state = defaultState, action) => {
         activeFlowIds: [...state.activeFlowIds, newFlow.flowId],
         activeFlowMap: Object.assign({}, state.activeFlowMap, {
           [newFlow.flowId]: newFlow
-        })
+        }),
+        name: getHistoryName(newFlow, 'add ')
       };
       historyIndex = state.historyIndex + 1;
       history = [...state.history.slice(0, historyIndex), historyEntry];
@@ -93,7 +121,8 @@ export default (state = defaultState, action) => {
         activeFlowIds: [...state.activeFlowIds, newFlowGroup.flowId],
         activeFlowMap: Object.assign({}, state.activeFlowMap, newFlows, {
           [newFlowGroup.flowId]: newFlowGroup
-        })
+        }),
+        name: getHistoryName(newFlowGroup, 'add ')
       };
       historyIndex = state.historyIndex + 1;
       history = [...state.history.slice(0, historyIndex), historyEntry];
@@ -128,6 +157,7 @@ export default (state = defaultState, action) => {
     case 'REMOVE_FLOW':
       const flowToRemove = state.activeFlowMap[action.flowId];
       const { parentId } = flowToRemove;
+      const historyName = getHistoryName(flowToRemove, 'remove ');
       if(parentId !== undefined) {
         const parentFlow = state.activeFlowMap[parentId];
         historyEntry = {
@@ -135,14 +165,16 @@ export default (state = defaultState, action) => {
             [parentId]: Object.assign({}, parentFlow, {
               flowIds: parentFlow.flowIds.filter(id => id !== action.flowId)
             })
-          })
+          }),
+          name: historyName
         };
       } else {
         historyEntry = {
           activeFlowIds: state.activeFlowIds.filter(id => id !== action.flowId),
           activeFlowMap: Object.assign({}, state.activeFlowMap, {
             [action.flowId]: undefined
-          })
+          }),
+          name: historyName
         };
       }
       historyIndex = state.historyIndex + 1;
