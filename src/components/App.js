@@ -67,24 +67,29 @@ const generateXY = (xSize, ySize) => {
 const coordinates = generateXY(SIZE, SIZE);
 const { xCoords, yCoords } = coordinates;
 
-const typeMap = {
-  [UNIFORM]: Uniform,
-  [POINT_SOURCE]: PointSource,
-  [POINT_VORTEX]: PointVortex,
-  [DIPOLE]: Dipole
-};
-
-function makeFlowFcn(name, flowIds, flowMap) {
+/**
+ * Generate the overall active flow function given a key.
+ * Assumes all objects in flowMap have the appropriate
+ * sub-function on (x, y) for the key.
+ * 
+ * @param {String} key the flow function key; can be:
+ *   'vp', 'stream', 'xVel', 'yVel'
+ * @param {Array} flowIds active flow IDs
+ * @param {Object} flowMap map from flow ID to flow object
+ * @return {Function} function on (x, y) corresponding to 
+ *         the provided key
+ */
+function makeFlowFcn(key, flowIds, flowMap) {
   let fcn = (x, y) => 0;
   flowIds.forEach((id) => {
     const currentFcn = fcn;
+    const flow = flowMap[id];
     fcn = (x, y) => {
-      const flow = flowMap[id];
       let additional;
       if(flow.group) {
-        additional = makeFlowFcn(name, flow.flowIds, flowMap)(x, y);
+        additional = makeFlowFcn(key, flow.flowIds, flowMap)(x, y);
       } else {
-        additional = flow.flowFcns[name](x, y);
+        additional = flow.flowFcns[key](x, y);
       }
       return currentFcn(x, y) + additional;
     };
@@ -92,8 +97,20 @@ function makeFlowFcn(name, flowIds, flowMap) {
   return fcn;
 };
 
-function makeFlowStr(name, flowIds, flowMap, noLeftSide) {
-  let str = noLeftSide ? '' : `${flowToTeX[name]} = `;
+/**
+ * Generate a string representation of the active
+ * flow equation in TeX format.
+ *
+ * @param {String} key the flow function key; can be:
+ *   'vp', 'stream', 'xVel', 'yVel'
+ * @param {Array} flowIds active flow IDs
+ * @param {Object} flowMap map from flow ID to flow object
+ * @param {Boolean} noLeftSide toggle whether to include 
+ *        the function name followed by '='
+ * @return {String} TeX formatted equation
+ */
+function makeFlowStr(key, flowIds, flowMap, noLeftSide) {
+  let str = noLeftSide ? '' : `${flowToTeX[key]}(x, y) = `;
   if(flowIds.length === 0) {
     return str + '0';
   }
@@ -102,9 +119,9 @@ function makeFlowStr(name, flowIds, flowMap, noLeftSide) {
   flowIds.forEach((id, i) => {
     const flow = flowMap[id];
     if(flow.group) {
-      strs.push(makeFlowStr(name, flow.flowIds, flowMap, true));
+      strs.push(makeFlowStr(key, flow.flowIds, flowMap, true));
     } else {
-      strs.push(flow.flowStrs[name]);
+      strs.push(flow.flowStrs[key]);
     }
   });
 
@@ -115,6 +132,39 @@ function makeFlowStr(name, flowIds, flowMap, noLeftSide) {
     }
   }
   return str;
+};
+
+function makeVelocityMagnitudeFcn(xVelFcn, yVelFcn) {
+  return (x, y) => {
+    return Math.sqrt(
+      Math.pow(xVelFcn(x, y), 2) +
+      Math.pow(yVelFcn(x, y), 2)
+    );
+  };
+};
+
+function makeUniformVelocitySum(flowIds, flowMap) {
+  let fcn = (x, y) => 0;
+  flowIds.forEach((id) => {
+    const flow = flowMap[id];
+    if(flow.type === UNIFORM) {
+
+    }
+  });
+  return fcn;
+};
+
+function makePressureFcn(farFieldPressure, density, flowFcnMap, flowIds, flowMap) {
+  const uniformVelSum = makeUniformVelocitySum(flowIds, flowMap);
+  const xVelFcn = flowFcnMap['xVel'];
+  const yVelFcn = flowFcnMap['yVel'];
+  
+  return (x, y) => {
+    return Number(farFieldPressure) + (0.5 * Number(density)) * (
+      Math.pow(uniformVelSum(x, y), 2) - 
+      makeVelocityMagnitudeFcn(xVelFcn, yVelFcn)(x, y)
+    );
+  };
 };
 
 /**
@@ -148,6 +198,14 @@ function makeFlowFcnMap(activeFlowIds, activeFlowMap) {
   return flowFcnMap;
 };
 
+/**
+ * Generate Plotly contour plot data.
+ * @param {Array} zData array of arrays 
+ *        representing the Z data of the contours
+ * @param flowView currently viewed flow equation;
+ *        affects colorscale of the plot
+ * @return Plotly data, fit for a contour plot
+ */
 const makeData = (zData, flowView) => {
   return [{
     z: zData,
@@ -195,7 +253,9 @@ export default class App extends Component {
       flowFcnMap: makeFlowFcnMap([], {}),
       addMode: 'preset',
       inspectX: 0,
-      inspectY: 0
+      inspectY: 0,
+      farFieldPressure: 0,
+      density: 0
     };
     this.activeFlowTimer = null;
   };
@@ -239,7 +299,9 @@ export default class App extends Component {
             flowFcnMap,
             addMode,
             inspectX,
-            inspectY } = this.state;
+            inspectY,
+            farFieldPressure,
+            density } = this.state;
 
     return (
       <div className="flexbox">
@@ -256,7 +318,7 @@ export default class App extends Component {
             </div>
 
             <div className="flexbox justify-content-center" style={{
-              minHeight: '67px',
+              minHeight: '60px',
               padding: '10px'
             }}>
               { flowStr &&
@@ -282,7 +344,7 @@ export default class App extends Component {
               })}
             </div>
             
-            <div style={{ padding: '12px' }}>
+            <div style={{ padding: '12px', minHeight: '500px' }}>
               <div className={addMode !== 'preset' && 'display-none'}>
                 <RankineHalfbody/>
                 <RankineOval/>
@@ -297,8 +359,9 @@ export default class App extends Component {
                 <Dipole/>
               </div>
 
-              <div className={`flexbox ${addMode !== 'inspect' && 'display-none'}`}>
-                <div className="flex0" style={{ paddingRight: '12px' }}>
+              <div className={`inspect-flows flexbox ${addMode !== 'inspect' && 'display-none'}`}>
+                <div className="flex0" style={{ paddingRight: '20px' }}>
+                  <label>Enter a point (x, y)</label>
                   <div className="input-group" style={{ marginBottom: '5px' }}>
                     <div className="input-group-addon">x</div>
                     <input type="number"
@@ -307,7 +370,8 @@ export default class App extends Component {
                       onChange={e => this.setState({ inspectX: e.target.value })}
                       placeholder="X position"/>
                   </div>
-                  <div className="input-group">
+
+                  <div className="input-group" style={{ marginBottom: '5px' }}>
                     <div className="input-group-addon">y</div>
                     <input type="number"
                       className="form-control"
@@ -317,10 +381,45 @@ export default class App extends Component {
                   </div>
                 </div>
 
+                <div className="flex0" style={{ paddingRight: '20px' }}>
+                  <label>Flow at ({inspectX}, {inspectY})</label>
+                  <div className="flow-eq">
+                    { Object.keys(flowToTeX).map((key, i) => {
+                      return (
+                        <div key={i} style={{ marginBottom: '5px' }}>
+                          <TeX value={`${flowToTeX[key]} = ${flowFcnMap[key](inspectX, inspectY)}`}/>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
                 <div className="flex0">
-                  { Object.keys(flowToTeX).map((key) => {
-                    return <TeX value={`${flowToTeX[key]} = ${flowFcnMap[key](inspectX, inspectY)}`}/>;
-                  })}
+                  <label>Enter far field pressure</label>
+                  <div className="input-group">
+                    <div className="input-group-addon">
+                      <div>P<sub>&infin;</sub></div>
+                    </div>
+                    <input type="number"
+                      className="form-control"
+                      value={farFieldPressure}
+                      onChange={e => this.setState({ farFieldPressure: e.target.value })}
+                      placeholder="Far Field Pressure"/>
+                  </div>
+
+                  <label>Enter density</label>
+                  <div className="input-group">
+                    <div className="input-group-addon">&rho;</div>
+                    <input type="number"
+                      className="form-control"
+                      value={density}
+                      onChange={e => this.setState({ density: e.target.value })}
+                      placeholder="Density"/>
+                  </div>
+
+                  <label>Pressure at ({inspectX}, {inspectY})</label>
+                  <div className="flow-eq">
+                    <TeX value={`P = ${makePressureFcn(farFieldPressure, density, flowFcnMap, activeFlowIds, activeFlowMap)(inspectX, inspectY)}`}/>
+                  </div>
                 </div>
               </div>
             </div>

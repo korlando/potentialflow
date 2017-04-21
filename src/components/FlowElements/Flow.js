@@ -91,7 +91,7 @@ export default class Flow extends Component {
             return (
               <div key={key}
                 className={flowView === key ? '' : 'display-none'}>
-                <TeX value={flowToTeX[key] + ' = ' + eqs[key]}/>
+                <TeX value={flowToTeX[key] + '(x, y) = ' + eqs[key]}/>
               </div>
             );
           })}

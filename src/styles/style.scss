@@ -136,6 +136,7 @@ button {
   &.history-btn {
     background: transparent;
     border: none;
+    font-size: 20px;
     &[disabled] {
       cursor: default;
     }
@@ -207,6 +208,12 @@ button {
   border: 2px solid lighten($blue, 15%);
   background: lighten($blue, 25%);
   overflow-x: auto;
+  border-radius: 3px;
+  padding: 5px 8px;
+}
+
+.input-group-addon {
+  background-color: darken($lightest, 2%);
 }
 
 .flow-element {
@@ -229,7 +236,6 @@ button {
     margin-bottom: 4px;
   }
   .input-group-addon {
-    background-color: darken($lightest, 2%);
     width: 30px;
   }
   label {
@@ -241,8 +247,6 @@ button {
     color: $grey;
     margin-bottom: 5px;
     font-size: 12px;
-    border-radius: 3px;
-    padding: 5px 5px;
   }
 }
 
@@ -289,4 +293,11 @@ button {
   padding: 4px 10px;
   margin-right: 10px;
   max-width: 800px;
+}
+
+.inspect-flows {
+  label {
+    font-size: 12px;
+    margin-bottom: 2px;
+  }
 }

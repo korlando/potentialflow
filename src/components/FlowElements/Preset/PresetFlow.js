@@ -31,7 +31,7 @@ export default class PresetFlow extends Component {
               style={{ marginBottom: i < flows.length - 1 ? '10px' : '0' }}>
               {flow.name}
               <div style={{ fontSize: '12px' }}>
-                <TeX value={flowToTeX[flowView] + ' = ' + flow.flowStrs[flowView]}/>
+                <TeX value={flowToTeX[flowView] + '(x, y) = ' + flow.flowStrs[flowView]}/>
               </div>
             </div>
           );

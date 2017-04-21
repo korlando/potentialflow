@@ -6133,7 +6133,7 @@ var Flow = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = func
           return (0, _util.removeFlow)(flowId);
         } })), _react2.default.createElement('div', { className: 'flow-eq text-center' }, Object.keys(eqs).map(function (key) {
         return _react2.default.createElement('div', { key: key,
-          className: flowView === key ? '' : 'display-none' }, _react2.default.createElement(_TeX2.default, { value: _flowToTeX2.default[key] + ' = ' + eqs[key] }));
+          className: flowView === key ? '' : 'display-none' }, _react2.default.createElement(_TeX2.default, { value: _flowToTeX2.default[key] + '(x, y) = ' + eqs[key] }));
       })), _react2.default.createElement('form', { onSubmit: this.handleSubmit }, flow && Object.keys(flow.inputs).map(function (key, i) {
         var variable = _variableMeta2.default[key];
         return _react2.default.createElement('div', { key: i, className: 'input-group input-group-sm' }, _react2.default.createElement('div', { className: 'input-group-addon',
@@ -6447,7 +6447,7 @@ var PresetFlow = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class 
 
       return _react2.default.createElement('div', { className: 'flow-element' }, _react2.default.createElement('label', null, name), _react2.default.createElement('div', { className: 'text-grey', style: { fontSize: '10px' } }, 'Elements'), _react2.default.createElement('div', { className: 'flow-eq' }, flows.map(function (flow, i) {
         return _react2.default.createElement('div', { key: i, className: 'text-grey',
-          style: { marginBottom: i < flows.length - 1 ? '10px' : '0' } }, flow.name, _react2.default.createElement('div', { style: { fontSize: '12px' } }, _react2.default.createElement(_TeX2.default, { value: _flowToTeX2.default[flowView] + ' = ' + flow.flowStrs[flowView] })));
+          style: { marginBottom: i < flows.length - 1 ? '10px' : '0' } }, flow.name, _react2.default.createElement('div', { style: { fontSize: '12px' } }, _react2.default.createElement(_TeX2.default, { value: _flowToTeX2.default[flowView] + '(x, y) = ' + flow.flowStrs[flowView] })));
       })), _react2.default.createElement('button', {
         type: 'button',
         className: 'btn btn-primary btn-block btn-sm',
@@ -7752,10 +7752,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = {
-  vp: '\\phi(x, y)',
-  stream: '\\psi(x, y)',
-  xVel: 'v_x(x, y)',
-  yVel: 'v_y(x, y)'
+  vp: '\\phi',
+  stream: '\\psi',
+  xVel: 'v_x',
+  yVel: 'v_y'
 };
 
 /***/ }),
@@ -17887,7 +17887,7 @@ var _createClass = function () {
   };
 }();
 
-var _typeMap, _dec, _class;
+var _dec, _class;
 
 var _react = __webpack_require__(11);
 
@@ -17969,14 +17969,6 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
-  } else {
-    obj[key] = value;
-  }return obj;
-}
-
 var SIZE = 100;
 var flowViewColorScales = {
   vp: 'YIOrRd',
@@ -18024,21 +18016,32 @@ var coordinates = generateXY(SIZE, SIZE);
 var xCoords = coordinates.xCoords,
     yCoords = coordinates.yCoords;
 
-var typeMap = (_typeMap = {}, _defineProperty(_typeMap, _flowTypes.UNIFORM, _Uniform2.default), _defineProperty(_typeMap, _flowTypes.POINT_SOURCE, _PointSource2.default), _defineProperty(_typeMap, _flowTypes.POINT_VORTEX, _PointVortex2.default), _defineProperty(_typeMap, _flowTypes.DIPOLE, _Dipole2.default), _typeMap);
+/**
+ * Generate the overall active flow function given a key.
+ * Assumes all objects in flowMap have the appropriate
+ * sub-function on (x, y) for the key.
+ * 
+ * @param {String} key the flow function key; can be:
+ *   'vp', 'stream', 'xVel', 'yVel'
+ * @param {Array} flowIds active flow IDs
+ * @param {Object} flowMap map from flow ID to flow object
+ * @return {Function} function on (x, y) corresponding to 
+ *         the provided key
+ */
 
-function makeFlowFcn(name, flowIds, flowMap) {
+function makeFlowFcn(key, flowIds, flowMap) {
   var fcn = function fcn(x, y) {
     return 0;
   };
   flowIds.forEach(function (id) {
     var currentFcn = fcn;
+    var flow = flowMap[id];
     fcn = function fcn(x, y) {
-      var flow = flowMap[id];
       var additional = void 0;
       if (flow.group) {
-        additional = makeFlowFcn(name, flow.flowIds, flowMap)(x, y);
+        additional = makeFlowFcn(key, flow.flowIds, flowMap)(x, y);
       } else {
-        additional = flow.flowFcns[name](x, y);
+        additional = flow.flowFcns[key](x, y);
       }
       return currentFcn(x, y) + additional;
     };
@@ -18046,8 +18049,20 @@ function makeFlowFcn(name, flowIds, flowMap) {
   return fcn;
 };
 
-function makeFlowStr(name, flowIds, flowMap, noLeftSide) {
-  var str = noLeftSide ? '' : _flowToTeX2.default[name] + ' = ';
+/**
+ * Generate a string representation of the active
+ * flow equation in TeX format.
+ *
+ * @param {String} key the flow function key; can be:
+ *   'vp', 'stream', 'xVel', 'yVel'
+ * @param {Array} flowIds active flow IDs
+ * @param {Object} flowMap map from flow ID to flow object
+ * @param {Boolean} noLeftSide toggle whether to include 
+ *        the function name followed by '='
+ * @return {String} TeX formatted equation
+ */
+function makeFlowStr(key, flowIds, flowMap, noLeftSide) {
+  var str = noLeftSide ? '' : _flowToTeX2.default[key] + '(x, y) = ';
   if (flowIds.length === 0) {
     return str + '0';
   }
@@ -18056,9 +18071,9 @@ function makeFlowStr(name, flowIds, flowMap, noLeftSide) {
   flowIds.forEach(function (id, i) {
     var flow = flowMap[id];
     if (flow.group) {
-      strs.push(makeFlowStr(name, flow.flowIds, flowMap, true));
+      strs.push(makeFlowStr(key, flow.flowIds, flowMap, true));
     } else {
-      strs.push(flow.flowStrs[name]);
+      strs.push(flow.flowStrs[key]);
     }
   });
 
@@ -18069,6 +18084,33 @@ function makeFlowStr(name, flowIds, flowMap, noLeftSide) {
     }
   }
   return str;
+};
+
+function makeVelocityMagnitudeFcn(xVelFcn, yVelFcn) {
+  return function (x, y) {
+    return Math.sqrt(Math.pow(xVelFcn(x, y), 2) + Math.pow(yVelFcn(x, y), 2));
+  };
+};
+
+function makeUniformVelocitySum(flowIds, flowMap) {
+  var fcn = function fcn(x, y) {
+    return 0;
+  };
+  flowIds.forEach(function (id) {
+    var flow = flowMap[id];
+    if (flow.type === _flowTypes.UNIFORM) {}
+  });
+  return fcn;
+};
+
+function makePressureFcn(farFieldPressure, density, flowFcnMap, flowIds, flowMap) {
+  var uniformVelSum = makeUniformVelocitySum(flowIds, flowMap);
+  var xVelFcn = flowFcnMap['xVel'];
+  var yVelFcn = flowFcnMap['yVel'];
+
+  return function (x, y) {
+    return Number(farFieldPressure) + 0.5 * Number(density) * (Math.pow(uniformVelSum(x, y), 2) - makeVelocityMagnitudeFcn(xVelFcn, yVelFcn)(x, y));
+  };
 };
 
 /**
@@ -18102,6 +18144,14 @@ function makeFlowFcnMap(activeFlowIds, activeFlowMap) {
   return flowFcnMap;
 };
 
+/**
+ * Generate Plotly contour plot data.
+ * @param {Array} zData array of arrays 
+ *        representing the Z data of the contours
+ * @param flowView currently viewed flow equation;
+ *        affects colorscale of the plot
+ * @return Plotly data, fit for a contour plot
+ */
 var makeData = function makeData(zData, flowView) {
   return [{
     z: zData,
@@ -18152,7 +18202,9 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
       flowFcnMap: makeFlowFcnMap([], {}),
       addMode: 'preset',
       inspectX: 0,
-      inspectY: 0
+      inspectY: 0,
+      farFieldPressure: 0,
+      density: 0
     };
     _this.activeFlowTimer = null;
     return _this;
@@ -18210,7 +18262,9 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
           flowFcnMap = _state.flowFcnMap,
           addMode = _state.addMode,
           inspectX = _state.inspectX,
-          inspectY = _state.inspectY;
+          inspectY = _state.inspectY,
+          farFieldPressure = _state.farFieldPressure,
+          density = _state.density;
 
       return _react2.default.createElement('div', { className: 'flexbox' }, _react2.default.createElement('div', { className: 'flex1', style: { position: 'relative' } }, _react2.default.createElement(_Nav2.default, null), _react2.default.createElement('div', { className: 'view-container' }, _react2.default.createElement('div', { style: { overflowX: 'auto' } }, _react2.default.createElement('div', { ref: function ref(div) {
           return _this3.graph = div;
@@ -18220,7 +18274,7 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
           height: '500px',
           margin: 'auto'
         } })), _react2.default.createElement('div', { className: 'flexbox justify-content-center', style: {
-          minHeight: '67px',
+          minHeight: '60px',
           padding: '10px'
         } }, flowStr && _react2.default.createElement('div', { className: 'flow-eq main-flow-eq' }, _react2.default.createElement(_TeX2.default, { value: flowStr }))), _react2.default.createElement('h4', { style: { padding: '0 12px' } }, 'Flow Elements'), _react2.default.createElement('div', { className: 'flow-nav flexbox' }, flowNavOptions.map(function (o, i) {
         return _react2.default.createElement('div', { key: i,
@@ -18230,21 +18284,33 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
               _this3.setState({ addMode: o.value });
             }
           } }, o.name);
-      })), _react2.default.createElement('div', { style: { padding: '12px' } }, _react2.default.createElement('div', { className: addMode !== 'preset' && 'display-none' }, _react2.default.createElement(_RankineHalfbody2.default, null), _react2.default.createElement(_RankineOval2.default, null), _react2.default.createElement(_Cylinder2.default, null), _react2.default.createElement(_RotatingCylinder2.default, null)), _react2.default.createElement('div', { className: addMode !== 'custom' && 'display-none' }, _react2.default.createElement(_Uniform2.default, null), _react2.default.createElement(_PointSource2.default, null), _react2.default.createElement(_PointVortex2.default, null), _react2.default.createElement(_Dipole2.default, null)), _react2.default.createElement('div', { className: 'flexbox ' + (addMode !== 'inspect' && 'display-none') }, _react2.default.createElement('div', { className: 'flex0', style: { paddingRight: '12px' } }, _react2.default.createElement('div', { className: 'input-group', style: { marginBottom: '5px' } }, _react2.default.createElement('div', { className: 'input-group-addon' }, 'x'), _react2.default.createElement('input', { type: 'number',
+      })), _react2.default.createElement('div', { style: { padding: '12px', minHeight: '500px' } }, _react2.default.createElement('div', { className: addMode !== 'preset' && 'display-none' }, _react2.default.createElement(_RankineHalfbody2.default, null), _react2.default.createElement(_RankineOval2.default, null), _react2.default.createElement(_Cylinder2.default, null), _react2.default.createElement(_RotatingCylinder2.default, null)), _react2.default.createElement('div', { className: addMode !== 'custom' && 'display-none' }, _react2.default.createElement(_Uniform2.default, null), _react2.default.createElement(_PointSource2.default, null), _react2.default.createElement(_PointVortex2.default, null), _react2.default.createElement(_Dipole2.default, null)), _react2.default.createElement('div', { className: 'inspect-flows flexbox ' + (addMode !== 'inspect' && 'display-none') }, _react2.default.createElement('div', { className: 'flex0', style: { paddingRight: '20px' } }, _react2.default.createElement('label', null, 'Enter a point (x, y)'), _react2.default.createElement('div', { className: 'input-group', style: { marginBottom: '5px' } }, _react2.default.createElement('div', { className: 'input-group-addon' }, 'x'), _react2.default.createElement('input', { type: 'number',
         className: 'form-control',
         value: inspectX,
         onChange: function onChange(e) {
           return _this3.setState({ inspectX: e.target.value });
         },
-        placeholder: 'X position' })), _react2.default.createElement('div', { className: 'input-group' }, _react2.default.createElement('div', { className: 'input-group-addon' }, 'y'), _react2.default.createElement('input', { type: 'number',
+        placeholder: 'X position' })), _react2.default.createElement('div', { className: 'input-group', style: { marginBottom: '5px' } }, _react2.default.createElement('div', { className: 'input-group-addon' }, 'y'), _react2.default.createElement('input', { type: 'number',
         className: 'form-control',
         value: inspectY,
         onChange: function onChange(e) {
           return _this3.setState({ inspectY: e.target.value });
         },
-        placeholder: 'Y position' }))), _react2.default.createElement('div', { className: 'flex0' }, Object.keys(_flowToTeX2.default).map(function (key) {
-        return _react2.default.createElement(_TeX2.default, { value: _flowToTeX2.default[key] + ' = ' + flowFcnMap[key](inspectX, inspectY) });
-      })))))), _react2.default.createElement(_ActiveFlowsPanel2.default, null));
+        placeholder: 'Y position' }))), _react2.default.createElement('div', { className: 'flex0', style: { paddingRight: '20px' } }, _react2.default.createElement('label', null, 'Flow at (', inspectX, ', ', inspectY, ')'), _react2.default.createElement('div', { className: 'flow-eq' }, Object.keys(_flowToTeX2.default).map(function (key, i) {
+        return _react2.default.createElement('div', { key: i, style: { marginBottom: '5px' } }, _react2.default.createElement(_TeX2.default, { value: _flowToTeX2.default[key] + ' = ' + flowFcnMap[key](inspectX, inspectY) }));
+      }))), _react2.default.createElement('div', { className: 'flex0' }, _react2.default.createElement('label', null, 'Enter far field pressure'), _react2.default.createElement('div', { className: 'input-group' }, _react2.default.createElement('div', { className: 'input-group-addon' }, _react2.default.createElement('div', null, 'P', _react2.default.createElement('sub', null, "\u221E"))), _react2.default.createElement('input', { type: 'number',
+        className: 'form-control',
+        value: farFieldPressure,
+        onChange: function onChange(e) {
+          return _this3.setState({ farFieldPressure: e.target.value });
+        },
+        placeholder: 'Far Field Pressure' })), _react2.default.createElement('label', null, 'Enter density'), _react2.default.createElement('div', { className: 'input-group' }, _react2.default.createElement('div', { className: 'input-group-addon' }, "\u03C1"), _react2.default.createElement('input', { type: 'number',
+        className: 'form-control',
+        value: density,
+        onChange: function onChange(e) {
+          return _this3.setState({ density: e.target.value });
+        },
+        placeholder: 'Density' })), _react2.default.createElement('label', null, 'Pressure at (', inspectX, ', ', inspectY, ')'), _react2.default.createElement('div', { className: 'flow-eq' }, _react2.default.createElement(_TeX2.default, { value: 'P = ' + makePressureFcn(farFieldPressure, density, flowFcnMap, activeFlowIds, activeFlowMap)(inspectX, inspectY) }))))))), _react2.default.createElement(_ActiveFlowsPanel2.default, null));
     }
   }]);
 
@@ -23627,7 +23693,7 @@ exports = module.exports = __webpack_require__(435)();
 
 
 // module
-exports.push([module.i, ".flexbox {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex; }\n\n.flex-wrap {\n  flex-wrap: wrap; }\n\n.flex-wrap-reverse {\n  flex-wrap: wrap-reverse; }\n\n.flex-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.flex0 {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto; }\n\n.flex1 {\n  -webkit-box-flex: 1 1 auto;\n  -moz-box-flex: 1 1 auto;\n  -webkit-flex: 1 1 auto;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto; }\n\n.align-items-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.justify-content-center {\n  -webkit-box-pack: center;\n  -moz-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center; }\n\n.text-grey {\n  color: #51586a; }\n\nbody {\n  font-family: 'Open Sans', sans-serif;\n  color: #252830; }\n\nnav {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  padding: 6px 12px;\n  background: #f1f4f9;\n  z-index: 1002; }\n\n.alert-box-enter {\n  opacity: 0;\n  transform: translateX(-50%) translateY(-100%) !important; }\n\n.alert-box-enter.alert-box-enter-active {\n  transition: all 0.2s;\n  opacity: 1;\n  transform: translateX(-50%) translateY(-50%) !important; }\n\n.alert-box-leave {\n  opacity: 1;\n  transform: translateX(-50%) translateY(-50%) !important; }\n\n.alert-box-leave.alert-box-leave-active {\n  transition: all 0.2s;\n  opacity: 0;\n  transform: translateX(-50%) translateY(-100%) !important; }\n\n.alert-box {\n  background: #69f;\n  padding: 0 12px;\n  color: white;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translateX(-50%) translateY(-50%);\n  border-radius: 3px; }\n  .alert-box .undo {\n    cursor: pointer;\n    font-size: 14px;\n    font-weight: bold;\n    opacity: 0.8;\n    transition: opacity 0.2s;\n    margin-right: 15px; }\n    .alert-box .undo:hover {\n      text-decoration: underline;\n      opacity: 1; }\n  .alert-box .close-x {\n    padding: 3px; }\n    .alert-box .close-x svg {\n      stroke: #e6eeff; }\n\n.display-none {\n  display: none; }\n\nbutton {\n  cursor: pointer; }\n  button.history-btn {\n    background: transparent;\n    border: none; }\n    button.history-btn[disabled] {\n      cursor: default; }\n\n.close-x {\n  display: inline-block;\n  padding: 0;\n  cursor: pointer;\n  border-radius: 3px;\n  background: transparent;\n  border: none;\n  outline: 0;\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s;\n  stroke: #747e95; }\n  .close-x:hover {\n    transform: scale(1.05); }\n  .close-x:active {\n    transition: 0;\n    background: rgba(0, 0, 0, 0.1); }\n  .close-x svg {\n    stroke: inherit;\n    stroke-width: 1.5px;\n    stroke-linecap: round;\n    display: block; }\n\n.flow-nav {\n  border-bottom: 2px solid #eaeef6; }\n  .flow-nav .option {\n    font-size: 18px;\n    padding: 5px 10px;\n    padding-top: 7px;\n    border-top-left-radius: 4px;\n    border-top-right-radius: 4px;\n    border-top: 2px solid transparent;\n    border-right: 2px solid transparent;\n    border-left: 2px solid transparent;\n    color: #51586a;\n    cursor: pointer; }\n    .flow-nav .option:hover {\n      text-decoration: underline; }\n    .flow-nav .option:first-child {\n      margin-left: 12px; }\n    .flow-nav .option.active {\n      border-top: 2px solid #eaeef6;\n      border-right: 2px solid #eaeef6;\n      border-left: 2px solid #eaeef6;\n      background: white;\n      transform: translateY(2px);\n      padding-top: 5px;\n      color: #252830;\n      cursor: default; }\n      .flow-nav .option.active:hover {\n        text-decoration: none; }\n\n.flow-eq {\n  border: 2px solid #b3ccff;\n  background: #e6eeff;\n  overflow-x: auto; }\n\n.flow-element {\n  display: inline-block;\n  vertical-align: top;\n  max-width: 100%;\n  border-radius: 3px;\n  border: 2px solid #eaeef6;\n  background: #f1f4f9;\n  padding: 10px;\n  margin-bottom: 8px;\n  margin-right: 6px; }\n  .flow-element:last-child {\n    margin-bottom: 0; }\n  .flow-element .close-x {\n    padding: 2px; }\n  .flow-element .input-group {\n    margin-bottom: 4px; }\n  .flow-element .input-group-addon {\n    background-color: #eaeef6;\n    width: 30px; }\n  .flow-element label {\n    margin: 0;\n    font-size: 20px;\n    margin-right: 5px; }\n  .flow-element .flow-eq {\n    color: #51586a;\n    margin-bottom: 5px;\n    font-size: 12px;\n    border-radius: 3px;\n    padding: 5px 5px; }\n\n.flow-group {\n  padding: 10px;\n  border: 2px solid #fc6;\n  background: #fff7e6;\n  border-radius: 3px;\n  margin-bottom: 15px; }\n  .flow-group .title {\n    margin-bottom: 10px; }\n    .flow-group .title label {\n      margin: 0; }\n\n.view-container {\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  padding-top: 50px; }\n\n.active-flows {\n  padding: 12px;\n  width: 300px;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  border-left: 2px solid #eaeef6; }\n  .active-flows .flow-element {\n    margin-right: 0;\n    width: 100%; }\n  .active-flows h4 {\n    margin-bottom: 20px; }\n\n.main-flow-eq {\n  display: inline-block;\n  border-radius: 3px;\n  padding: 4px 10px;\n  margin-right: 10px;\n  max-width: 800px; }\n", ""]);
+exports.push([module.i, ".flexbox {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex; }\n\n.flex-wrap {\n  flex-wrap: wrap; }\n\n.flex-wrap-reverse {\n  flex-wrap: wrap-reverse; }\n\n.flex-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.flex0 {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto; }\n\n.flex1 {\n  -webkit-box-flex: 1 1 auto;\n  -moz-box-flex: 1 1 auto;\n  -webkit-flex: 1 1 auto;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto; }\n\n.align-items-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.justify-content-center {\n  -webkit-box-pack: center;\n  -moz-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center; }\n\n.text-grey {\n  color: #51586a; }\n\nbody {\n  font-family: 'Open Sans', sans-serif;\n  color: #252830; }\n\nnav {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  padding: 6px 12px;\n  background: #f1f4f9;\n  z-index: 1002; }\n\n.alert-box-enter {\n  opacity: 0;\n  transform: translateX(-50%) translateY(-100%) !important; }\n\n.alert-box-enter.alert-box-enter-active {\n  transition: all 0.2s;\n  opacity: 1;\n  transform: translateX(-50%) translateY(-50%) !important; }\n\n.alert-box-leave {\n  opacity: 1;\n  transform: translateX(-50%) translateY(-50%) !important; }\n\n.alert-box-leave.alert-box-leave-active {\n  transition: all 0.2s;\n  opacity: 0;\n  transform: translateX(-50%) translateY(-100%) !important; }\n\n.alert-box {\n  background: #69f;\n  padding: 0 12px;\n  color: white;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translateX(-50%) translateY(-50%);\n  border-radius: 3px; }\n  .alert-box .undo {\n    cursor: pointer;\n    font-size: 14px;\n    font-weight: bold;\n    opacity: 0.8;\n    transition: opacity 0.2s;\n    margin-right: 15px; }\n    .alert-box .undo:hover {\n      text-decoration: underline;\n      opacity: 1; }\n  .alert-box .close-x {\n    padding: 3px; }\n    .alert-box .close-x svg {\n      stroke: #e6eeff; }\n\n.display-none {\n  display: none; }\n\nbutton {\n  cursor: pointer; }\n  button.history-btn {\n    background: transparent;\n    border: none;\n    font-size: 20px; }\n    button.history-btn[disabled] {\n      cursor: default; }\n\n.close-x {\n  display: inline-block;\n  padding: 0;\n  cursor: pointer;\n  border-radius: 3px;\n  background: transparent;\n  border: none;\n  outline: 0;\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s;\n  stroke: #747e95; }\n  .close-x:hover {\n    transform: scale(1.05); }\n  .close-x:active {\n    transition: 0;\n    background: rgba(0, 0, 0, 0.1); }\n  .close-x svg {\n    stroke: inherit;\n    stroke-width: 1.5px;\n    stroke-linecap: round;\n    display: block; }\n\n.flow-nav {\n  border-bottom: 2px solid #eaeef6; }\n  .flow-nav .option {\n    font-size: 18px;\n    padding: 5px 10px;\n    padding-top: 7px;\n    border-top-left-radius: 4px;\n    border-top-right-radius: 4px;\n    border-top: 2px solid transparent;\n    border-right: 2px solid transparent;\n    border-left: 2px solid transparent;\n    color: #51586a;\n    cursor: pointer; }\n    .flow-nav .option:hover {\n      text-decoration: underline; }\n    .flow-nav .option:first-child {\n      margin-left: 12px; }\n    .flow-nav .option.active {\n      border-top: 2px solid #eaeef6;\n      border-right: 2px solid #eaeef6;\n      border-left: 2px solid #eaeef6;\n      background: white;\n      transform: translateY(2px);\n      padding-top: 5px;\n      color: #252830;\n      cursor: default; }\n      .flow-nav .option.active:hover {\n        text-decoration: none; }\n\n.flow-eq {\n  border: 2px solid #b3ccff;\n  background: #e6eeff;\n  overflow-x: auto;\n  border-radius: 3px;\n  padding: 5px 8px; }\n\n.input-group-addon {\n  background-color: #eaeef6; }\n\n.flow-element {\n  display: inline-block;\n  vertical-align: top;\n  max-width: 100%;\n  border-radius: 3px;\n  border: 2px solid #eaeef6;\n  background: #f1f4f9;\n  padding: 10px;\n  margin-bottom: 8px;\n  margin-right: 6px; }\n  .flow-element:last-child {\n    margin-bottom: 0; }\n  .flow-element .close-x {\n    padding: 2px; }\n  .flow-element .input-group {\n    margin-bottom: 4px; }\n  .flow-element .input-group-addon {\n    width: 30px; }\n  .flow-element label {\n    margin: 0;\n    font-size: 20px;\n    margin-right: 5px; }\n  .flow-element .flow-eq {\n    color: #51586a;\n    margin-bottom: 5px;\n    font-size: 12px; }\n\n.flow-group {\n  padding: 10px;\n  border: 2px solid #fc6;\n  background: #fff7e6;\n  border-radius: 3px;\n  margin-bottom: 15px; }\n  .flow-group .title {\n    margin-bottom: 10px; }\n    .flow-group .title label {\n      margin: 0; }\n\n.view-container {\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  padding-top: 50px; }\n\n.active-flows {\n  padding: 12px;\n  width: 300px;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  border-left: 2px solid #eaeef6; }\n  .active-flows .flow-element {\n    margin-right: 0;\n    width: 100%; }\n  .active-flows h4 {\n    margin-bottom: 20px; }\n\n.main-flow-eq {\n  display: inline-block;\n  border-radius: 3px;\n  padding: 4px 10px;\n  margin-right: 10px;\n  max-width: 800px; }\n\n.inspect-flows label {\n  font-size: 12px;\n  margin-bottom: 2px; }\n", ""]);
 
 // exports
 
