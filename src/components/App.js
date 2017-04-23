@@ -143,26 +143,27 @@ function makeVelocityMagnitudeFcn(xVelFcn, yVelFcn) {
   };
 };
 
-function makeUniformVelocitySum(flowIds, flowMap) {
-  let fcn = (x, y) => 0;
+function makeUniformVelocityMagnitude(flowIds, flowMap) {
+  let USum = 0;
+  let VSum = 0;
   flowIds.forEach((id) => {
     const flow = flowMap[id];
     if(flow.type === UNIFORM) {
-
+      USum += flow.inputs.U;
+      VSum += flow.inputs.V;
     }
   });
-  return fcn;
+  return makeVelocityMagnitudeFcn((x, y) => USum, (x, y) => VSum);
 };
 
 function makePressureFcn(farFieldPressure, density, flowFcnMap, flowIds, flowMap) {
-  const uniformVelSum = makeUniformVelocitySum(flowIds, flowMap);
+  const uniformVelMag = makeUniformVelocityMagnitude(flowIds, flowMap);
   const xVelFcn = flowFcnMap['xVel'];
   const yVelFcn = flowFcnMap['yVel'];
   
   return (x, y) => {
     return Number(farFieldPressure) + (0.5 * Number(density)) * (
-      Math.pow(uniformVelSum(x, y), 2) - 
-      makeVelocityMagnitudeFcn(xVelFcn, yVelFcn)(x, y)
+      uniformVelMag(x, y) - makeVelocityMagnitudeFcn(xVelFcn, yVelFcn)(x, y)
     );
   };
 };

@@ -18092,24 +18092,30 @@ function makeVelocityMagnitudeFcn(xVelFcn, yVelFcn) {
   };
 };
 
-function makeUniformVelocitySum(flowIds, flowMap) {
-  var fcn = function fcn(x, y) {
-    return 0;
-  };
+function makeUniformVelocityMagnitude(flowIds, flowMap) {
+  var USum = 0;
+  var VSum = 0;
   flowIds.forEach(function (id) {
     var flow = flowMap[id];
-    if (flow.type === _flowTypes.UNIFORM) {}
+    if (flow.type === _flowTypes.UNIFORM) {
+      USum += flow.inputs.U;
+      VSum += flow.inputs.V;
+    }
   });
-  return fcn;
+  return makeVelocityMagnitudeFcn(function (x, y) {
+    return USum;
+  }, function (x, y) {
+    return VSum;
+  });
 };
 
 function makePressureFcn(farFieldPressure, density, flowFcnMap, flowIds, flowMap) {
-  var uniformVelSum = makeUniformVelocitySum(flowIds, flowMap);
+  var uniformVelMag = makeUniformVelocityMagnitude(flowIds, flowMap);
   var xVelFcn = flowFcnMap['xVel'];
   var yVelFcn = flowFcnMap['yVel'];
 
   return function (x, y) {
-    return Number(farFieldPressure) + 0.5 * Number(density) * (Math.pow(uniformVelSum(x, y), 2) - makeVelocityMagnitudeFcn(xVelFcn, yVelFcn)(x, y));
+    return Number(farFieldPressure) + 0.5 * Number(density) * (uniformVelMag(x, y) - makeVelocityMagnitudeFcn(xVelFcn, yVelFcn)(x, y));
   };
 };
 
