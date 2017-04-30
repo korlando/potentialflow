@@ -305,7 +305,7 @@ export default class App extends Component {
             density } = this.state;
 
     return (
-      <div className="flexbox">
+      <div className="flexbox" style={{ overflowX: 'auto' }}>
         <div className="flex1" style={{ position: 'relative' }}>
           <Nav/>
           <div className="view-container">

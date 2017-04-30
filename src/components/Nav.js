@@ -31,10 +31,19 @@ export default class Nav extends Component {
     const disableRedo = historyIndex >= history.length - 1;
 
     return (
-      <nav className="flexbox align-items-center">
-        <label className="flex1" style={{ margin: '0' }}>
-          Potential Flow
-        </label>
+      <div className="nav-controls flexbox align-items-center">
+        <div className="flex0" style={{ paddingRight: '12px' }}>
+          <select
+            className="form-control"
+            value={flowView}
+            onChange={e => editFlowView(e.target.value)}>
+            <option value="vp">Velocity Potential</option>
+            <option value="stream">Stream Function</option>
+            <option value="xVel">X Velocity</option>
+            <option value="yVel">Y Velocity</option>
+          </select>
+        </div>
+        <div className="flex1"></div>
         <ReactCSSTransitionGroup
           transitionName="alert-box"
           transitionEnterTimeout={200}
@@ -58,17 +67,6 @@ export default class Nav extends Component {
             );
           })}
         </ReactCSSTransitionGroup>
-        <div className="flex0" style={{ paddingRight: '12px' }}>
-          <select
-            className="form-control"
-            value={flowView}
-            onChange={e => editFlowView(e.target.value)}>
-            <option value="vp">Velocity Potential</option>
-            <option value="stream">Stream Function</option>
-            <option value="xVel">X Velocity</option>
-            <option value="yVel">Y Velocity</option>
-          </select>
-        </div>
         <button className="history-btn flex0"
           title="Undo"
           disabled={disableUndo}
@@ -83,7 +81,7 @@ export default class Nav extends Component {
           title={disableRedo ? '' : `Redo ${history[historyIndex + 1].name}`}>
           <span className="lnr lnr-redo"></span>
         </button>
-      </nav>
+      </div>
     );
   };
 };

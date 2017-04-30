@@ -47,9 +47,6 @@ $blue: #69f;
 .flex-wrap-reverse {
   flex-wrap: wrap-reverse;
 }
-.flex-center {
-  @include alignItems(center);
-}
 .flex0 {
   @include flex(0 0 auto);
 }
@@ -70,7 +67,7 @@ body {
   font-family: 'Open Sans', sans-serif;
   color: $dark;
 }
-nav {
+.nav-controls {
   position: absolute;
   top: 0;
   left: 0;
