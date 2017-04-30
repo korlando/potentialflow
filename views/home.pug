@@ -1,0 +1,16 @@
+extends layout
+block head
+  link(rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css")
+  script(src="https://cdn.plot.ly/plotly-1.26.0.min.js")
+  script(type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML")
+  script.
+    MathJax.Hub.processSectionDelay = 0;
+    MathJax.Hub.Config({
+      showMathMenu: false,
+      showMathMenuMSIE: false,
+      tex2jax: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+    });
+block content
+  #app
+block scripts
+  script(src="/app.js")

@@ -1,0 +1,21 @@
+html(lang="en")
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge, chrome=1")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0")
+    title=title
+    meta(name="description" content=description)
+    meta(property="og:url" content=url)
+    meta(property="og:title" content=title)
+    meta(property="og:description" content=description)
+    link(rel="canonical" href=url)
+    link(href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet")
+    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous")
+    link(rel="stylesheet" href="/css/style.css")
+    block head
+  body.flexbox.flex-column
+    include ./includes/nav
+    .flex1
+      block content
+    include ./includes/footer
+    block scripts
