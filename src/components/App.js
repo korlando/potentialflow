@@ -259,12 +259,18 @@ export default class App extends Component {
       density: 0
     };
     this.activeFlowTimer = null;
+    this.handleResize = this.handleResize.bind(this);
   };
 
   componentDidMount() {
     const zData = makeZData(() => 0, xCoords, yCoords);
     const data = makeData(zData, this.props.flowView);
     this.renderNewPlot(this.graph, data, layout);
+    window.addEventListener('resize', this.handleResize);
+  };
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
   };
 
   componentWillReceiveProps(nextProps) {
@@ -288,6 +294,12 @@ export default class App extends Component {
     }
   };
 
+  handleResize() {
+    setTimeout(() => {
+      Plotly.Plots.resize(this.graph);
+    });
+  };
+
   renderNewPlot(node, data, layout) {
     Plotly.newPlot(node, data, layout);
   };
@@ -305,14 +317,14 @@ export default class App extends Component {
             density } = this.state;
 
     return (
-      <div className="flexbox" style={{ overflowX: 'auto' }}>
-        <div className="flex1" style={{ position: 'relative' }}>
+      <div className="flexbox">
+        <div className="flex0" style={{ width: '70%' }}>
           <Nav/>
           <div className="view-container">
             <div style={{ overflowX: 'auto'}}>
               <div ref={div => this.graph = div}
                 style={{
-                  width: '800px',
+                  width: '100%',
                   height: '500px',
                   margin: 'auto'
                 }}></div>

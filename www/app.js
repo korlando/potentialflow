@@ -18213,6 +18213,7 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
       density: 0
     };
     _this.activeFlowTimer = null;
+    _this.handleResize = _this.handleResize.bind(_this);
     return _this;
   }
 
@@ -18224,6 +18225,12 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
       }, xCoords, yCoords);
       var data = makeData(zData, this.props.flowView);
       this.renderNewPlot(this.graph, data, layout);
+      window.addEventListener('resize', this.handleResize);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      window.removeEventListener('resize', this.handleResize);
     }
   }, {
     key: 'componentWillReceiveProps',
@@ -18250,6 +18257,15 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
       }
     }
   }, {
+    key: 'handleResize',
+    value: function handleResize() {
+      var _this3 = this;
+
+      setTimeout(function () {
+        Plotly.Plots.resize(_this3.graph);
+      });
+    }
+  }, {
     key: 'renderNewPlot',
     value: function renderNewPlot(node, data, layout) {
       Plotly.newPlot(node, data, layout);
@@ -18257,7 +18273,7 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
   }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
+      var _this4 = this;
 
       var _props = this.props,
           activeFlowIds = _props.activeFlowIds,
@@ -18272,11 +18288,11 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
           farFieldPressure = _state.farFieldPressure,
           density = _state.density;
 
-      return _react2.default.createElement('div', { className: 'flexbox', style: { overflowX: 'auto' } }, _react2.default.createElement('div', { className: 'flex1', style: { position: 'relative' } }, _react2.default.createElement(_Nav2.default, null), _react2.default.createElement('div', { className: 'view-container' }, _react2.default.createElement('div', { style: { overflowX: 'auto' } }, _react2.default.createElement('div', { ref: function ref(div) {
-          return _this3.graph = div;
+      return _react2.default.createElement('div', { className: 'flexbox' }, _react2.default.createElement('div', { className: 'flex0', style: { width: '70%' } }, _react2.default.createElement(_Nav2.default, null), _react2.default.createElement('div', { className: 'view-container' }, _react2.default.createElement('div', { style: { overflowX: 'auto' } }, _react2.default.createElement('div', { ref: function ref(div) {
+          return _this4.graph = div;
         },
         style: {
-          width: '800px',
+          width: '100%',
           height: '500px',
           margin: 'auto'
         } })), _react2.default.createElement('div', { className: 'flexbox justify-content-center', style: {
@@ -18287,20 +18303,20 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
           className: 'option ' + (addMode === o.value ? ' active' : ''),
           onClick: function onClick(e) {
             if (addMode !== o.value) {
-              _this3.setState({ addMode: o.value });
+              _this4.setState({ addMode: o.value });
             }
           } }, o.name);
       })), _react2.default.createElement('div', { style: { padding: '12px', minHeight: '500px' } }, _react2.default.createElement('div', { className: addMode !== 'preset' && 'display-none' }, _react2.default.createElement(_RankineHalfbody2.default, null), _react2.default.createElement(_RankineOval2.default, null), _react2.default.createElement(_Cylinder2.default, null), _react2.default.createElement(_RotatingCylinder2.default, null)), _react2.default.createElement('div', { className: addMode !== 'custom' && 'display-none' }, _react2.default.createElement(_Uniform2.default, null), _react2.default.createElement(_PointSource2.default, null), _react2.default.createElement(_PointVortex2.default, null), _react2.default.createElement(_Dipole2.default, null)), _react2.default.createElement('div', { className: 'inspect-flows flexbox ' + (addMode !== 'inspect' && 'display-none') }, _react2.default.createElement('div', { className: 'flex0', style: { paddingRight: '20px' } }, _react2.default.createElement('label', null, 'Enter a point (x, y)'), _react2.default.createElement('div', { className: 'input-group', style: { marginBottom: '5px' } }, _react2.default.createElement('div', { className: 'input-group-addon' }, 'x'), _react2.default.createElement('input', { type: 'number',
         className: 'form-control',
         value: inspectX,
         onChange: function onChange(e) {
-          return _this3.setState({ inspectX: e.target.value });
+          return _this4.setState({ inspectX: e.target.value });
         },
         placeholder: 'X position' })), _react2.default.createElement('div', { className: 'input-group', style: { marginBottom: '5px' } }, _react2.default.createElement('div', { className: 'input-group-addon' }, 'y'), _react2.default.createElement('input', { type: 'number',
         className: 'form-control',
         value: inspectY,
         onChange: function onChange(e) {
-          return _this3.setState({ inspectY: e.target.value });
+          return _this4.setState({ inspectY: e.target.value });
         },
         placeholder: 'Y position' }))), _react2.default.createElement('div', { className: 'flex0', style: { paddingRight: '20px' } }, _react2.default.createElement('label', null, 'Flow at (', inspectX, ', ', inspectY, ')'), _react2.default.createElement('div', { className: 'flow-eq' }, Object.keys(_flowToTeX2.default).map(function (key, i) {
         return _react2.default.createElement('div', { key: i, style: { marginBottom: '5px' } }, _react2.default.createElement(_TeX2.default, { value: _flowToTeX2.default[key] + ' = ' + flowFcnMap[key](inspectX, inspectY) }));
@@ -18308,13 +18324,13 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
         className: 'form-control',
         value: farFieldPressure,
         onChange: function onChange(e) {
-          return _this3.setState({ farFieldPressure: e.target.value });
+          return _this4.setState({ farFieldPressure: e.target.value });
         },
         placeholder: 'Far Field Pressure' })), _react2.default.createElement('label', null, 'Enter density'), _react2.default.createElement('div', { className: 'input-group' }, _react2.default.createElement('div', { className: 'input-group-addon' }, "\u03C1"), _react2.default.createElement('input', { type: 'number',
         className: 'form-control',
         value: density,
         onChange: function onChange(e) {
-          return _this3.setState({ density: e.target.value });
+          return _this4.setState({ density: e.target.value });
         },
         placeholder: 'Density' })), _react2.default.createElement('label', null, 'Pressure at (', inspectX, ', ', inspectY, ')'), _react2.default.createElement('div', { className: 'flow-eq' }, _react2.default.createElement(_TeX2.default, { value: 'P = ' + makePressureFcn(farFieldPressure, density, flowFcnMap, activeFlowIds, activeFlowMap)(inspectX, inspectY) }))))))), _react2.default.createElement(_ActiveFlowsPanel2.default, null));
     }
@@ -18608,7 +18624,7 @@ var ActiveFlowsPanel = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_
           activeFlowIds = _props.activeFlowIds,
           activeFlowMap = _props.activeFlowMap;
 
-      return _react2.default.createElement('div', { className: 'flex0 active-flows' }, _react2.default.createElement('h4', null, 'Current Flows \xB7 ', activeFlowIds.length), _react2.default.createElement(_reactFlipMove2.default, {
+      return _react2.default.createElement('div', { className: 'flex0 active-flows', style: { width: '30%' } }, _react2.default.createElement('h4', null, 'Current Flows \xB7 ', activeFlowIds.length), _react2.default.createElement(_reactFlipMove2.default, {
         enterAnimation: 'fade',
         leaveAnimation: 'fade',
         staggerDurationBy: 10 }, activeFlowIds.map(function (id, i) {
