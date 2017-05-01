@@ -12,4 +12,13 @@ router.get('/', (req, res, next) => {
   });*/
 });
 
+router.get('/:page', (req, res, next) => {
+  const pageName = req.params.page;
+  const pageInfo = pages[pageName];
+  if(pageInfo) {
+    return res.render(`${pageName}.pug`, pageInfo);
+  }
+  res.status(404).render('404', pages['404']);
+});
+
 module.exports = router;

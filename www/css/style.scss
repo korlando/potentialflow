@@ -45,6 +45,16 @@ $lighterGrey: #b7bccc;
 .flex-wrap {
   flex-wrap: wrap;
 }
+.flex0 {
+  @include flex(0 0 auto);
+}
+.flex1 {
+  @include flex(1 1 auto);
+}
+
+h1 {
+  font-weight: normal;
+}
 
 nav.main-nav {
   padding: 0 15px;
