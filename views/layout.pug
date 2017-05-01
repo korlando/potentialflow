@@ -18,4 +18,30 @@ html(lang="en")
     .flex1
       block content
     include ./includes/footer
+    script(src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous")
+    script.
+      $(function() {
+        var threshold = 900;
+        var loaded = false;
+        var $window = $(window);
+        var $navLinks = $('ul.nav-links');
+        var $hamburger = $('button.hamburger');
+        var handleResize = function() {
+          if($window.width() < threshold) {
+            $hamburger.show();
+            if(!loaded) {
+              $navLinks.hide();
+            }
+          } else {
+            $hamburger.hide();
+            $navLinks.show();
+          }
+          loaded = true;
+        };
+        handleResize();
+        $window.on('resize', handleResize);
+        $hamburger.on('click', function() {
+          $navLinks.toggle();
+        });
+      });
     block scripts

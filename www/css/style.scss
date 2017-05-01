@@ -56,12 +56,63 @@ h1 {
   font-weight: normal;
 }
 
+button.hamburger {
+  display: inline-block;
+  vertical-align: middle;
+  padding: 0;
+  transition: all 0.3s;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 3px;
+  background: transparent;
+  border: none;
+  outline: 0;
+  .inner {
+    position: relative;
+    width: 24px;
+    height: 20px;
+  }
+  &:hover {
+    transform: scale(1.05);
+  }
+  &:active {
+    transition: 0;
+    background: rgba(0,0,0,.1);
+  }
+  .line {
+    stroke: $lighterGrey;
+    stroke-width: 1.5px; 
+    stroke-linecap: round;
+    display: block;
+    position: absolute;
+    width: 24px;
+    height: 4px;
+    transform-origin: 50% 50%;
+    transition: top .3s .3s ease, transform .3s ease;
+  }
+  .line:nth-child(1) {
+    top: 2px;
+    left: 0;
+  }
+  .line:nth-child(2) {
+    top: 8px;
+    left: 0;
+  }
+  .line:nth-child(3) {
+    top: 14px;
+    left: 0;
+  }
+}
+
 nav.main-nav {
-  padding: 0 15px;
+  padding: 0;
   padding-right: 3px;
   background: $darkGrey;
   a.logo {
     padding: 12px 0;
+    padding-left: 15px;
+    display: inline-block;
+    vertical-align: middle;
     color: white;
     text-decoration: none;
     &:link, &:visited, &:active {
@@ -72,6 +123,15 @@ nav.main-nav {
       font-size: 11px;
       color: #bcdeff;
     }
+  }
+  button.hamburger {
+    height: 48px;
+    padding: 12px 15px;
+    float: right;
+  }
+  @media screen and (max-width: 900px) {
+    display: block !important;
+    padding-right: 0;
   }
 }
 ul.nav-links {
@@ -96,6 +156,14 @@ ul.nav-links {
       color: white;
       text-decoration: none;
       background: lighten($darkGrey, 3%);
+    }
+  }
+  @media screen and (max-width: 900px) {
+    li, a {
+      display: block;
+    }
+    a {
+      padding-left: 15px;
     }
   }
 }
