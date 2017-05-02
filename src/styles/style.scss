@@ -268,9 +268,14 @@ button {
   padding-top: 50px;
 }
 
+.main-panel {
+  width: 70%;
+  position: relative;
+}
+
 .active-flows {
   padding: 12px;
-  width: 300px;
+  width: 30%;
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
@@ -281,6 +286,28 @@ button {
   }
   h4 {
     margin-bottom: 20px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .main-panel {
+    width: 100%;
+  }
+  .active-flows {
+    width: 100%;
+    border-left: none;
+    border-top: 2px solid darken($lightest, 2%);
+    height: auto;
+    min-height: 100px;
+  }
+  .app-container {
+    display: block !important;
+  }
+  .view-container {
+    height: auto;
+  }
+  .flow-nav .option {
+    font-size: 14px;
   }
 }
 

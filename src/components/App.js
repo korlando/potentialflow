@@ -317,18 +317,16 @@ export default class App extends Component {
             density } = this.state;
 
     return (
-      <div className="flexbox">
-        <div className="flex0" style={{ width: '70%' }}>
+      <div className="flexbox app-container">
+        <div className="flex0 main-panel">
           <Nav/>
           <div className="view-container">
-            <div style={{ overflowX: 'auto'}}>
-              <div ref={div => this.graph = div}
-                style={{
-                  width: '100%',
-                  height: '500px',
-                  margin: 'auto'
-                }}></div>
-            </div>
+            <div ref={div => this.graph = div}
+              style={{
+                width: '100%',
+                height: '500px',
+                margin: 'auto'
+              }}></div>
 
             <div className="flexbox justify-content-center" style={{
               minHeight: '60px',

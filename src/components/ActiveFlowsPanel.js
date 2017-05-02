@@ -46,7 +46,7 @@ export default class ActiveFlowsPanel extends Component {
     const { activeFlowIds, activeFlowMap } = this.props;
 
     return (
-      <div className="flex0 active-flows" style={{ width: '30%' }}>
+      <div className="flex0 active-flows">
         <h4>Current Flows &middot; {activeFlowIds.length}</h4>
         <FlipMove
           enterAnimation="fade"

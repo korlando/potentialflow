@@ -288,6 +288,10 @@ process.off = noop;
 process.removeListener = noop;
 process.removeAllListeners = noop;
 process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
@@ -18288,14 +18292,14 @@ var App = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = funct
           farFieldPressure = _state.farFieldPressure,
           density = _state.density;
 
-      return _react2.default.createElement('div', { className: 'flexbox' }, _react2.default.createElement('div', { className: 'flex0', style: { width: '70%' } }, _react2.default.createElement(_Nav2.default, null), _react2.default.createElement('div', { className: 'view-container' }, _react2.default.createElement('div', { style: { overflowX: 'auto' } }, _react2.default.createElement('div', { ref: function ref(div) {
+      return _react2.default.createElement('div', { className: 'flexbox app-container' }, _react2.default.createElement('div', { className: 'flex0 main-panel' }, _react2.default.createElement(_Nav2.default, null), _react2.default.createElement('div', { className: 'view-container' }, _react2.default.createElement('div', { ref: function ref(div) {
           return _this4.graph = div;
         },
         style: {
           width: '100%',
           height: '500px',
           margin: 'auto'
-        } })), _react2.default.createElement('div', { className: 'flexbox justify-content-center', style: {
+        } }), _react2.default.createElement('div', { className: 'flexbox justify-content-center', style: {
           minHeight: '60px',
           padding: '10px'
         } }, flowStr && _react2.default.createElement('div', { className: 'flow-eq main-flow-eq' }, _react2.default.createElement(_TeX2.default, { value: flowStr }))), _react2.default.createElement('h4', { style: { padding: '0 12px' } }, 'Flow Elements'), _react2.default.createElement('div', { className: 'flow-nav flexbox' }, flowNavOptions.map(function (o, i) {
@@ -18624,7 +18628,7 @@ var ActiveFlowsPanel = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_
           activeFlowIds = _props.activeFlowIds,
           activeFlowMap = _props.activeFlowMap;
 
-      return _react2.default.createElement('div', { className: 'flex0 active-flows', style: { width: '30%' } }, _react2.default.createElement('h4', null, 'Current Flows \xB7 ', activeFlowIds.length), _react2.default.createElement(_reactFlipMove2.default, {
+      return _react2.default.createElement('div', { className: 'flex0 active-flows' }, _react2.default.createElement('h4', null, 'Current Flows \xB7 ', activeFlowIds.length), _react2.default.createElement(_reactFlipMove2.default, {
         enterAnimation: 'fade',
         leaveAnimation: 'fade',
         staggerDurationBy: 10 }, activeFlowIds.map(function (id, i) {
@@ -23715,7 +23719,7 @@ exports = module.exports = __webpack_require__(435)();
 
 
 // module
-exports.push([module.i, ".flexbox {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex; }\n\n.flex-wrap {\n  flex-wrap: wrap; }\n\n.flex-wrap-reverse {\n  flex-wrap: wrap-reverse; }\n\n.flex0 {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto; }\n\n.flex1 {\n  -webkit-box-flex: 1 1 auto;\n  -moz-box-flex: 1 1 auto;\n  -webkit-flex: 1 1 auto;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto; }\n\n.align-items-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.justify-content-center {\n  -webkit-box-pack: center;\n  -moz-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center; }\n\n.text-grey {\n  color: #51586a; }\n\nbody {\n  font-family: 'Open Sans', sans-serif;\n  color: #252830; }\n\n.nav-controls {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  padding: 6px 12px;\n  background: #f1f4f9;\n  z-index: 1002; }\n\n.alert-box-enter {\n  opacity: 0;\n  transform: translateX(-50%) translateY(-100%) !important; }\n\n.alert-box-enter.alert-box-enter-active {\n  transition: all 0.2s;\n  opacity: 1;\n  transform: translateX(-50%) translateY(-50%) !important; }\n\n.alert-box-leave {\n  opacity: 1;\n  transform: translateX(-50%) translateY(-50%) !important; }\n\n.alert-box-leave.alert-box-leave-active {\n  transition: all 0.2s;\n  opacity: 0;\n  transform: translateX(-50%) translateY(-100%) !important; }\n\n.alert-box {\n  background: #69f;\n  padding: 0 12px;\n  color: white;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translateX(-50%) translateY(-50%);\n  border-radius: 3px; }\n  .alert-box .undo {\n    cursor: pointer;\n    font-size: 14px;\n    font-weight: bold;\n    opacity: 0.8;\n    transition: opacity 0.2s;\n    margin-right: 15px; }\n    .alert-box .undo:hover {\n      text-decoration: underline;\n      opacity: 1; }\n  .alert-box .close-x {\n    padding: 3px; }\n    .alert-box .close-x svg {\n      stroke: #e6eeff; }\n\n.display-none {\n  display: none; }\n\nbutton {\n  cursor: pointer; }\n  button.history-btn {\n    background: transparent;\n    border: none;\n    font-size: 20px; }\n    button.history-btn[disabled] {\n      cursor: default; }\n\n.close-x {\n  display: inline-block;\n  padding: 0;\n  cursor: pointer;\n  border-radius: 3px;\n  background: transparent;\n  border: none;\n  outline: 0;\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s;\n  stroke: #747e95; }\n  .close-x:hover {\n    transform: scale(1.05); }\n  .close-x:active {\n    transition: 0;\n    background: rgba(0, 0, 0, 0.1); }\n  .close-x svg {\n    stroke: inherit;\n    stroke-width: 1.5px;\n    stroke-linecap: round;\n    display: block; }\n\n.flow-nav {\n  border-bottom: 2px solid #eaeef6; }\n  .flow-nav .option {\n    font-size: 18px;\n    padding: 5px 10px;\n    padding-top: 7px;\n    border-top-left-radius: 4px;\n    border-top-right-radius: 4px;\n    border-top: 2px solid transparent;\n    border-right: 2px solid transparent;\n    border-left: 2px solid transparent;\n    color: #51586a;\n    cursor: pointer; }\n    .flow-nav .option:hover {\n      text-decoration: underline; }\n    .flow-nav .option:first-child {\n      margin-left: 12px; }\n    .flow-nav .option.active {\n      border-top: 2px solid #eaeef6;\n      border-right: 2px solid #eaeef6;\n      border-left: 2px solid #eaeef6;\n      background: white;\n      transform: translateY(2px);\n      padding-top: 5px;\n      color: #252830;\n      cursor: default; }\n      .flow-nav .option.active:hover {\n        text-decoration: none; }\n\n.flow-eq {\n  border: 2px solid #b3ccff;\n  background: #e6eeff;\n  overflow-x: auto;\n  border-radius: 3px;\n  padding: 5px 8px; }\n\n.input-group-addon {\n  background-color: #eaeef6; }\n\n.flow-element {\n  display: inline-block;\n  vertical-align: top;\n  max-width: 100%;\n  border-radius: 3px;\n  border: 2px solid #eaeef6;\n  background: #f1f4f9;\n  padding: 10px;\n  margin-bottom: 8px;\n  margin-right: 6px; }\n  .flow-element:last-child {\n    margin-bottom: 0; }\n  .flow-element .close-x {\n    padding: 2px; }\n  .flow-element .input-group {\n    margin-bottom: 4px; }\n  .flow-element .input-group-addon {\n    width: 30px; }\n  .flow-element label {\n    margin: 0;\n    font-size: 20px;\n    margin-right: 5px; }\n  .flow-element .flow-eq {\n    color: #51586a;\n    margin-bottom: 5px;\n    font-size: 12px; }\n\n.flow-group {\n  padding: 10px;\n  border: 2px solid #fc6;\n  background: #fff7e6;\n  border-radius: 3px;\n  margin-bottom: 15px; }\n  .flow-group .title {\n    margin-bottom: 10px; }\n    .flow-group .title label {\n      margin: 0; }\n\n.view-container {\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  padding-top: 50px; }\n\n.active-flows {\n  padding: 12px;\n  width: 300px;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  border-left: 2px solid #eaeef6; }\n  .active-flows .flow-element {\n    margin-right: 0;\n    width: 100%; }\n  .active-flows h4 {\n    margin-bottom: 20px; }\n\n.main-flow-eq {\n  display: inline-block;\n  border-radius: 3px;\n  padding: 4px 10px;\n  margin-right: 10px;\n  max-width: 800px; }\n\n.inspect-flows label {\n  font-size: 12px;\n  margin-bottom: 2px; }\n", ""]);
+exports.push([module.i, ".flexbox {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex; }\n\n.flex-wrap {\n  flex-wrap: wrap; }\n\n.flex-wrap-reverse {\n  flex-wrap: wrap-reverse; }\n\n.flex0 {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto; }\n\n.flex1 {\n  -webkit-box-flex: 1 1 auto;\n  -moz-box-flex: 1 1 auto;\n  -webkit-flex: 1 1 auto;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto; }\n\n.align-items-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.justify-content-center {\n  -webkit-box-pack: center;\n  -moz-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center; }\n\n.text-grey {\n  color: #51586a; }\n\nbody {\n  font-family: 'Open Sans', sans-serif;\n  color: #252830; }\n\n.nav-controls {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  padding: 6px 12px;\n  background: #f1f4f9;\n  z-index: 1002; }\n\n.alert-box-enter {\n  opacity: 0;\n  transform: translateX(-50%) translateY(-100%) !important; }\n\n.alert-box-enter.alert-box-enter-active {\n  transition: all 0.2s;\n  opacity: 1;\n  transform: translateX(-50%) translateY(-50%) !important; }\n\n.alert-box-leave {\n  opacity: 1;\n  transform: translateX(-50%) translateY(-50%) !important; }\n\n.alert-box-leave.alert-box-leave-active {\n  transition: all 0.2s;\n  opacity: 0;\n  transform: translateX(-50%) translateY(-100%) !important; }\n\n.alert-box {\n  background: #69f;\n  padding: 0 12px;\n  color: white;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translateX(-50%) translateY(-50%);\n  border-radius: 3px; }\n  .alert-box .undo {\n    cursor: pointer;\n    font-size: 14px;\n    font-weight: bold;\n    opacity: 0.8;\n    transition: opacity 0.2s;\n    margin-right: 15px; }\n    .alert-box .undo:hover {\n      text-decoration: underline;\n      opacity: 1; }\n  .alert-box .close-x {\n    padding: 3px; }\n    .alert-box .close-x svg {\n      stroke: #e6eeff; }\n\n.display-none {\n  display: none; }\n\nbutton {\n  cursor: pointer; }\n  button.history-btn {\n    background: transparent;\n    border: none;\n    font-size: 20px; }\n    button.history-btn[disabled] {\n      cursor: default; }\n\n.close-x {\n  display: inline-block;\n  padding: 0;\n  cursor: pointer;\n  border-radius: 3px;\n  background: transparent;\n  border: none;\n  outline: 0;\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s;\n  stroke: #747e95; }\n  .close-x:hover {\n    transform: scale(1.05); }\n  .close-x:active {\n    transition: 0;\n    background: rgba(0, 0, 0, 0.1); }\n  .close-x svg {\n    stroke: inherit;\n    stroke-width: 1.5px;\n    stroke-linecap: round;\n    display: block; }\n\n.flow-nav {\n  border-bottom: 2px solid #eaeef6; }\n  .flow-nav .option {\n    font-size: 18px;\n    padding: 5px 10px;\n    padding-top: 7px;\n    border-top-left-radius: 4px;\n    border-top-right-radius: 4px;\n    border-top: 2px solid transparent;\n    border-right: 2px solid transparent;\n    border-left: 2px solid transparent;\n    color: #51586a;\n    cursor: pointer; }\n    .flow-nav .option:hover {\n      text-decoration: underline; }\n    .flow-nav .option:first-child {\n      margin-left: 12px; }\n    .flow-nav .option.active {\n      border-top: 2px solid #eaeef6;\n      border-right: 2px solid #eaeef6;\n      border-left: 2px solid #eaeef6;\n      background: white;\n      transform: translateY(2px);\n      padding-top: 5px;\n      color: #252830;\n      cursor: default; }\n      .flow-nav .option.active:hover {\n        text-decoration: none; }\n\n.flow-eq {\n  border: 2px solid #b3ccff;\n  background: #e6eeff;\n  overflow-x: auto;\n  border-radius: 3px;\n  padding: 5px 8px; }\n\n.input-group-addon {\n  background-color: #eaeef6; }\n\n.flow-element {\n  display: inline-block;\n  vertical-align: top;\n  max-width: 100%;\n  border-radius: 3px;\n  border: 2px solid #eaeef6;\n  background: #f1f4f9;\n  padding: 10px;\n  margin-bottom: 8px;\n  margin-right: 6px; }\n  .flow-element:last-child {\n    margin-bottom: 0; }\n  .flow-element .close-x {\n    padding: 2px; }\n  .flow-element .input-group {\n    margin-bottom: 4px; }\n  .flow-element .input-group-addon {\n    width: 30px; }\n  .flow-element label {\n    margin: 0;\n    font-size: 20px;\n    margin-right: 5px; }\n  .flow-element .flow-eq {\n    color: #51586a;\n    margin-bottom: 5px;\n    font-size: 12px; }\n\n.flow-group {\n  padding: 10px;\n  border: 2px solid #fc6;\n  background: #fff7e6;\n  border-radius: 3px;\n  margin-bottom: 15px; }\n  .flow-group .title {\n    margin-bottom: 10px; }\n    .flow-group .title label {\n      margin: 0; }\n\n.view-container {\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  padding-top: 50px; }\n\n.main-panel {\n  width: 70%;\n  position: relative; }\n\n.active-flows {\n  padding: 12px;\n  width: 30%;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  border-left: 2px solid #eaeef6; }\n  .active-flows .flow-element {\n    margin-right: 0;\n    width: 100%; }\n  .active-flows h4 {\n    margin-bottom: 20px; }\n\n@media screen and (max-width: 768px) {\n  .main-panel {\n    width: 100%; }\n  .active-flows {\n    width: 100%;\n    border-left: none;\n    border-top: 2px solid #eaeef6;\n    height: auto;\n    min-height: 100px; }\n  .app-container {\n    display: block !important; }\n  .view-container {\n    height: auto; }\n  .flow-nav .option {\n    font-size: 14px; } }\n\n.main-flow-eq {\n  display: inline-block;\n  border-radius: 3px;\n  padding: 4px 10px;\n  margin-right: 10px;\n  max-width: 800px; }\n\n.inspect-flows label {\n  font-size: 12px;\n  margin-bottom: 2px; }\n", ""]);
 
 // exports
 
@@ -35068,7 +35072,7 @@ if (!Array.isArray) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(process) {
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -35110,13 +35114,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 /* eslint-disable block-scoped-var */
 
-// Define `process` global in case the consumer hasn't defined
-// process.env.NODE_ENV. We use 'var' to escape block scoping.
-/* eslint-disable no-use-before-define, vars-on-top, no-var */
-if (typeof process === 'undefined') {
-  var process = { env: {} };
+var nodeEnv = void 0;
+try {
+  nodeEnv = process.env.NODE_ENV;
+} catch (e) {
+  nodeEnv = 'development';
 }
-/* eslint-enable */
 
 function propConverter(ComposedComponent) {
   var FlipMovePropConverter = function (_Component) {
@@ -35129,6 +35132,27 @@ function propConverter(ComposedComponent) {
     }
 
     _createClass(FlipMovePropConverter, [{
+      key: 'checkForStatelessFunctionalComponents',
+      value: function checkForStatelessFunctionalComponents(children) {
+        // Skip all console warnings in production.
+        // Bail early, to avoid unnecessary work.
+        if (nodeEnv === 'production') {
+          return;
+        }
+
+        // FlipMove does not support stateless functional components.
+        // Check to see if any supplied components won't work.
+        // If the child doesn't have a key, it means we aren't animating it.
+        // It's allowed to be an SFC, since we ignore it.
+        var noStateless = children.every(function (child) {
+          return !(0, _helpers.isElementAnSFC)(child) || typeof child.key === 'undefined';
+        });
+
+        if (!noStateless) {
+          console.warn((0, _errorMessages.statelessFunctionalComponentSupplied)());
+        }
+      }
+    }, {
       key: 'convertProps',
       value: function convertProps(props) {
         var propTypes = FlipMovePropConverter.propTypes,
@@ -35142,19 +35166,7 @@ function propConverter(ComposedComponent) {
         // child is passed, as well as if the child is falsy.
         workingProps.children = _react2.default.Children.toArray(props.children);
 
-        if (process.env.NODE_ENV !== 'production') {
-          // FlipMove does not support stateless functional components.
-          // Check to see if any supplied components won't work.
-          // If the child doesn't have a key, it means we aren't animating it.
-          // It's allowed to be an SFC, since we ignore it.
-          var noStateless = workingProps.children.every(function (child) {
-            return !(0, _helpers.isElementAnSFC)(child) || typeof child.key === 'undefined';
-          });
-
-          if (!noStateless) {
-            console.warn((0, _errorMessages.statelessFunctionalComponentSupplied)());
-          }
-        }
+        this.checkForStatelessFunctionalComponents(workingProps.children);
 
         // Do string-to-int conversion for all timing-related props
         var timingPropNames = ['duration', 'delay', 'staggerDurationBy', 'staggerDelayBy'];
@@ -35166,7 +35178,7 @@ function propConverter(ComposedComponent) {
           if (isNaN(value)) {
             var defaultValue = defaultProps[prop];
 
-            if (process.env.NODE_ENV !== 'production') {
+            if (nodeEnv !== 'production') {
               console.error((0, _errorMessages.invalidTypeForTimingProp)({
                 prop: prop,
                 value: value,
@@ -35189,7 +35201,7 @@ function propConverter(ComposedComponent) {
 
         // Accept `disableAnimations`, but add a deprecation warning
         if (typeof props.disableAnimations !== 'undefined') {
-          if (process.env.NODE_ENV !== 'production') {
+          if (nodeEnv !== 'production') {
             console.warn((0, _errorMessages.deprecatedDisableAnimations)());
           }
 
@@ -35236,7 +35248,7 @@ function propConverter(ComposedComponent) {
               var presetKeys = Object.keys(presets);
 
               if (presetKeys.indexOf(animation) === -1) {
-                if (process.env.NODE_ENV !== 'production') {
+                if (nodeEnv !== 'production') {
                   console.error((0, _errorMessages.invalidEnterLeavePreset)({
                     value: animation,
                     acceptableValues: presetKeys.join(', '),
@@ -35318,6 +35330,7 @@ function propConverter(ComposedComponent) {
 
 exports.default = propConverter;
 module.exports = exports['default'];
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 538 */
@@ -38427,7 +38440,7 @@ function combineReducers(reducers) {
 /* 566 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global, process) {/**
+/* WEBPACK VAR INJECTION */(function(global) {/**
  * Copyright (c) 2014, Facebook, Inc.
  * All rights reserved.
  *
@@ -38445,6 +38458,7 @@ function combineReducers(reducers) {
   var undefined; // More compressible than void 0.
   var $Symbol = typeof Symbol === "function" ? Symbol : {};
   var iteratorSymbol = $Symbol.iterator || "@@iterator";
+  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
   var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
 
   var inModule = typeof module === "object";
@@ -38618,8 +38632,8 @@ function combineReducers(reducers) {
       }
     }
 
-    if (typeof process === "object" && process.domain) {
-      invoke = process.domain.bind(invoke);
+    if (typeof global.process === "object" && global.process.domain) {
+      invoke = global.process.domain.bind(invoke);
     }
 
     var previousPromise;
@@ -38658,6 +38672,9 @@ function combineReducers(reducers) {
   }
 
   defineIteratorMethods(AsyncIterator.prototype);
+  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
+    return this;
+  };
   runtime.AsyncIterator = AsyncIterator;
 
   // Note that simple async functions are implemented on top of
@@ -38840,6 +38857,15 @@ function combineReducers(reducers) {
   defineIteratorMethods(Gp);
 
   Gp[toStringTagSymbol] = "Generator";
+
+  // A Generator should always return itself as the iterator object when the
+  // @@iterator function is called on it. Some browsers' implementations of the
+  // iterator prototype chain incorrectly implement this, causing the Generator
+  // object to not be returned from this call. This ensures that doesn't happen.
+  // See https://github.com/facebook/regenerator/issues/274 for more details.
+  Gp[iteratorSymbol] = function() {
+    return this;
+  };
 
   Gp.toString = function() {
     return "[object Generator]";
@@ -39151,7 +39177,7 @@ function combineReducers(reducers) {
   typeof self === "object" ? self : this
 );
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(101), __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(101)))
 
 /***/ }),
 /* 567 */
