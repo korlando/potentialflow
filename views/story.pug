@@ -1,3 +1,14 @@
 extends ./layout
 block content
-  
+  .container.pt50.pb50
+    h1.pb30 The Story of Potential Flow
+    p Potential flow is an idealized model of fluid dynamics that applies when a flow is inviscid, incompressible, and irrotational. These three simplifying assumptions lead to a convenient mathematical model of the fluid flow, and despite the simplification, potential flow is a very practical model that is widely used in aerodynamics and hydrodynamics.
+    p When a flow is incompressible, the velocity field can be described as divergence free: del dot v = 0 (proof here). This assumption is valid for low speed flows relative to the speed of sound. A good rule of thumb is that for Mach numbers below Ma ≅ 0.3, incompressibility is valid.
+    p An irrotational flow has a velocity field with no vorticity: del cross v = 0, and irrotationality leads to the existence of a velocity potential: v = del phi (proof here). When a flow is irrotational and inviscid, an important result stated in Kelvin’s Theorem is that the flow will continue to remain irrotational. This means that any flow that is uniform and irrotational far upstream will tend to remain irrotational as it flows around objects downstream. The assumption of inviscid flow is generally valid for Reynolds numbers much greater than Re = 1. High Reynolds numbers indicate that inertial forces are much greater than viscous forces, and for example a car driving on the highway is at about Re = 10^7.
+    p In the case that a flow is both incompressible (del dot v = 0) and irrotational (del cross v = 0 and phi = del v), it can also be described as:
+    .pb10
+      div del cross del phi = 0
+      div del^2 phi = 0
+    p This is also known as Laplace’s equation, and it is the governing equation of potential flow. There are a few known unique solutions to Laplace’s equation, and because it is a linear equation, other solutions to the equation can be created by linear supposition and scaling of the unique solutions. These solutions, known as flow elements, can be scaled and added in any way and they will satisfy Laplace’s equation and give a velocity field that satisfies potential flow.
+    p These potential flow solutions are powerful tools because analytical solutions in fluid dynamics are rare. There are certainly limitations to when these solutions can apply. The most notable error in potential flow theory is the result that bodies immersed in a flow experience no drag force. This contradiction to physical intuition is known as D’Alambert’s paradox, and this was solved with the discovery of boundary layer theory. Boundary layers are thin areas where fluid flow meets a solid boundary and viscous effects are important at these interfaces. Potential neglects viscosity, so it does not adequately describe boundary layers or separated regions where boundary layers detach from the interface. However, for the flow outside of thin boundary layers in air and water, like airflow around a wing, Potential flow is an excellent model.
+
