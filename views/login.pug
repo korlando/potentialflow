@@ -1,0 +1,46 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    title Login - Potential Flow
+    link(href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet")
+    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous")
+  body(style="font-family: 'Open Sans', sans-serif;background:#f1f4f9;")
+    .container(style="padding-top:70px;padding-bottom:70px;")
+      div(style="width:400px;max-width:100%;margin:auto;background:white;border:2px solid #d6deed;padding:20px;")
+        h1.text-center(style="margin-bottom:20px;") PotentialFlow.com
+        form
+          .input-group(style="margin-bottom:10px;")
+            span.input-group-addon
+              img(src="/images/lock.svg" width="20")
+            input.form-control(type="password" name="password" placeholder="password" required)
+          button.btn.btn-primary.btn-block(type="submit") Log In
+          .error.text-danger.text-center(style="padding-top:10px;")
+    script(src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous")
+    script.
+      $(function() {
+        var $input = $('input[name="password"]');
+        var $error = $('.error');
+        $error.hide();
+        $input.focus();
+        $('form').on('submit', function(e) {
+          e.preventDefault();
+          var p = $input.val();
+          $.ajax({
+            method: 'POST',
+            url: '/api/v1/login',
+            contentType: 'application/json',
+            data: JSON.stringify({ p: p }),
+            processData: false,
+            error: function(jqXHR, textStatus, errorThrown) {
+              $error.text(errorThrown);
+              $error.slideDown();
+            },
+            success: function(data, textStatus, jqXHR) {
+              window.location.reload();
+            }
+          });
+        });
+      });
+
+

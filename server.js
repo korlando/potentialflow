@@ -4,6 +4,8 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const http = require('http');
+const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
 
 if(cluster.isMaster) {
   cluster.fork();
@@ -41,6 +43,19 @@ if(cluster.isMaster) {
     index: ''
   }));
 
+  app.use(session({
+    secret: process.env.PF_SESSION_SECRET,
+    name: 'pfSessionId',
+    cookie: {
+      maxAge: 7 * 24 * 3600 * 1000,
+      httpOnly: true,
+    },
+    resave: false,
+    saveUninitialized: false,
+    store: new RedisStore({ port: 6379 }),
+  }));
+
+  app.use('/api/v1', require('./routes/api-v1')());
   app.use('/', require('./routes/routes'));
 
   // error handling
@@ -52,7 +67,10 @@ if(cluster.isMaster) {
   
   app.use((err, req, res, next) => {
     res.status(err.status || 500);
-    res.render('error');
+    res.render('error', {
+      message: err.message,
+      status: err.status
+    });
   });
 
   const server = http.createServer(app);
