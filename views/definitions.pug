@@ -4,13 +4,13 @@ block content
     h1.pb30 Definitions
     .pb10
       h2.fw300#potential-flow Potential Flow
-      p Potential flow is an idealized model of fluid flow that occurs in the case of <em>incompressible</em>, <em>inviscid</em>, and <em>irrotational</em> flow. The velocity field of a potential flow satisfies <em>Laplace’s equation</em>: \del^2 v = 0 (proof here).
+      p Potential flow is an idealized model of fluid flow that occurs in the case of <em>incompressible</em>, <em>inviscid</em>, and <em>irrotational</em> flow. The velocity field of a potential flow satisfies <em>Laplace’s equation</em>: $\nabla^{2} \textbf{v} = 0$ (proof here).
     .pb10
       h2.fw300#irrotational-flow Irrotational Flow
-      p Irrotational flow is defined by having a <em>velocity field</em> that satisfies \del cross v = 0 everywhere in the flow except for in some cases singularities may exist, which are single points that violate this statement. An equivalent statement is that the <em>velocity field</em> is curl free or has no <em>vorticity</em>. By definition, all <em>potential flows</em> satisfy irrotationality. All irrotational <em>velocity fields</em> will have a scalar potential \phi that satisfy \del phi = v (see proof).
+      p Irrotational flow is defined by having a <em>velocity field</em> that satisfies $\nabla \times \textbf{v} = 0$ everywhere in the flow except for in some cases singularities may exist, which are single points that violate this statement. An equivalent statement is that the <em>velocity field</em> is curl free or has no <em>vorticity</em>. By definition, all <em>potential flows</em> satisfy irrotationality. All irrotational <em>velocity fields</em> will have a scalar potential $\phi$ that satisfy $\nabla \phi = \textbf{v}$ (see proof).
     .pb10
       h2.fw300#velocity-potential Velocity Potential
-      p The velocity potential is represented as \phi, and exists for a flow when the velocity field is <em>irrotational</em>. The potential is defined so that \del phi = 0.
+      p The velocity potential is represented as $\phi$, and exists for a flow when the velocity field is <em>irrotational</em>. The potential is defined so that $\nabla \phi = 0$.
     .pb10
       h2.fw300#ideal-fluid Ideal Fluid
       p An ideal fluid is one that is both <em>incompressible</em> and <em>inviscid</em>. Although in reality, all fluids are <em>real</em> and therefore are to some degree <em>compressible</em> and have some <em>viscosity</em>, fluids like air and water often behave ideal when they flow. <em>Potential flow</em> always assumes that the fluid is ideal.
@@ -19,12 +19,12 @@ block content
       p An inviscid flow is a flow in which the effects from <em>viscosity</em> are negligible. In reality, all fluids have viscosity, but fluids like air and water often flow in a way that is indistinguishable from an ideally inviscid fluid and this is considered inviscid flow.
     .pb10
       h2.fw300#viscosity Viscosity
-      p Viscosity is a property of a fluid that relates the shear force that develops in the flow as a result of the shear in velocity, which is also know as the strain rate. The precise definition of dynamic viscosity (\mu) is:
-      div Tau ij = \mu \partial vi/\partial xj
-      p Kinematic viscosity is defined: \mu/\rho where \rho is the density of the fluid. In an inviscid flow it is assumed that \mu = 0. Some typical values of viscosity are listed below: (viscosity of air, water, seawater, …)
+      p Viscosity is a property of a fluid that relates the shear force that develops in the flow as a result of the shear in velocity, which is also know as the strain rate. The precise definition of dynamic viscosity ($\mu$) is:
+      p.pl50 $\tau_{ij} = \mu \frac{\partial v_{i}}{\partial x_{j}}$
+      p Kinematic viscosity is defined: $\frac{\mu}{\rho}$ where $\rho$ is the density of the fluid. In an inviscid flow it is assumed that $\mu = 0$. Some typical values of viscosity are listed below: (viscosity of air, water, seawater, …)
     .pb10
       h2.fw300#incompressible-flow Incompressible Flow
-      p Incompressible flow is a flow in which any change in density in the fluid is negligible. When considering the flow as a group of many small individual fluid particles, these individual fluid particles do not undergo any volume change in an incompressible flow. Effects of compressibility occur at high speeds in flow, and therefore the Mach number of the flow can be used to estimate if the assumption of incompressibility is valid. At Mach numbers of Ma &lt; 0.3 flows are incompressible (cite source). The fact that sound can propagate through fluids proves they must be compressible in reality because sound is a compression wave. However, all fluids behave as incompressible at speeds that are small relative to the speed of sound.
+      p Incompressible flow is a flow in which any change in density in the fluid is negligible. When considering the flow as a group of many small individual fluid particles, these individual fluid particles do not undergo any volume change in an incompressible flow. Effects of compressibility occur at high speeds in flow, and therefore the Mach number of the flow can be used to estimate if the assumption of incompressibility is valid. At Mach numbers of $\textrm{Ma} \lt 0.3$ flows are incompressible (cite source). The fact that sound can propagate through fluids proves they must be compressible in reality because sound is a compression wave. However, all fluids behave as incompressible at speeds that are small relative to the speed of sound.
     .pb10
       h2.fw300#real-fluid Real Fluid
       p A real fluid is a fluid that is compressible and has nonzero viscosity. All fluids are real, however, there are many cases when they can be modeled as ideal fluids with negligible error.
@@ -33,7 +33,7 @@ block content
       p The continuum assumption, also known as the continuum hypothesis, is an idealization of fluid mechanics that presumes that the properties of a fluid, like velocity, pressure, and density can be defined at any infinitesimal point. Fluids are actually comprised of individual molecules, each with their own motion, but above the microscopic scale these velocities are averaged and the fluid properties can be defined continuously from point to point. [Insert picture here showing a flow and a zoomed in view of water molecules with erratic motion at scale of mean free path]
     .pb10
       h2.fw300#velocity-field Velocity Field
-      p The velocity field is a continuous function, v(x,y,z,t) in 3D or v(x,y,t) in 2D, that defines the velocity vector of the flow at every point in the fluid domain in accordance with the continuum assumption. The concept of defining the fluid velocity with a field is fundamental to potential flow theory.  The velocity field must be continuous because it must have a finite derivative, and therefore finite acceleration, if the internal forces are finite in accordance with Newton’s 2<sup>nd</sup> law: F = ma. [Picture or gif of velocity vector field here]
+      p The velocity field is a continuous function, $v(x,y,z,t)$ in 3D or $v(x,y,t)$ in 2D, that defines the velocity vector of the flow at every point in the fluid domain in accordance with the continuum assumption. The concept of defining the fluid velocity with a field is fundamental to potential flow theory.  The velocity field must be continuous because it must have a finite derivative, and therefore finite acceleration, if the internal forces are finite in accordance with Newton’s 2<sup>nd</sup> law: $\textbf{F} = m\textbf{a}$. [Picture or gif of velocity vector field here]
     .pb10
       h2.fw300#differential-analysis Differential Analysis
       p A field based, or <em>Eulerian</em>, description of fluid mechanics allows for a point to point description of a flow and its properties. Differential analysis involves the applications of the conservation laws of mass, momentum, and energy to each point in this field description of the flow.
@@ -42,16 +42,16 @@ block content
       p As opposed to differential analysis, control volume analysis is concerned with the application of conservation laws within and across the boundaries of a closed surface. In this case the fluid is not defined from point to point, but is instead defined macroscopically.
     .pb10
       h2.fw300#conservation-of-mass Conservation of Mass
-      p A fundamental principle of classical mechanics is that matter can neither be created nor destroyed. When applied using differential analysis conservation of mass takes on the form: d rho/dt + del dot rho v = 0. Potential flow assumes an incompressible flow with rho = constant and therefore d rho/dt = 0, so conservation of mass simplifies to del dot v = 0, which can also be stated as the divergence of the velocity field is zero or the velocity field is divergence free.
+      p A fundamental principle of classical mechanics is that matter can neither be created nor destroyed. When applied using differential analysis conservation of mass takes on the form: $\frac{d\rho}{dt} + \nabla \cdot \rho \textbf{v} = 0$. Potential flow assumes an incompressible flow with rho = constant and therefore $\frac{d\rho}{dt} = 0$, so conservation of mass simplifies to $\nabla \cdot \textbf{v} = 0$, which can also be stated as the divergence of the velocity field is zero or the velocity field is divergence free.
     .pb10
       h2.fw300#laplaces-equation Laplace's Equation
-      p Laplace’s equation is a 2<sup>nd</sup> order linear PDE: del^2 phi = 0. Del^2 is also called the Laplace operator or Laplacian which is: d^2/dx^2… It is also sometimes denoted as (upside down del). This equation is a statement of mass conservation for an incompressible and irrotational flow (potential flow). It only has 6?? known solutions, which are the building blocks of potential flow.
+      p Laplace’s equation is a 2<sup>nd</sup> order linear PDE: $\nabla^{2} \phi = 0$. $\nabla^{2}$ is also called the Laplace operator or Laplacian which is: $\frac{d^{2}}{dx^{2}}$… It is also sometimes denoted as $\Delta$. This equation is a statement of mass conservation for an incompressible and irrotational flow (potential flow). It only has 6?? known solutions, which are the building blocks of potential flow.
     .pb10
       h2.fw300#vorticity Vorticity
-      p Vorticity (\omega) is defined as the curl of a velocity field: \omega = \del cross v. It is a vector defined at every point in the velocity field, and in a 2D flow, it’s vector direction is always into or out of the page. Intuitively this is related to rotation in the flow, and if you dropped an object into the flow vorticity would cause the object to spin. The precise definition for <em>rotation</em> is half of the vorticity.
+      p Vorticity ($\boldsymbol{\omega}$) is defined as the curl of a velocity field: $\boldsymbol{\omega} = \nabla \times \textbf{v}$. It is a vector defined at every point in the velocity field, and in a 2D flow, it’s vector direction is always into or out of the page. Intuitively this is related to rotation in the flow, and if you dropped an object into the flow vorticity would cause the object to spin. The precise definition for <em>rotation</em> is half of the vorticity.
     .pb10
       h2.fw300#rotation Rotation
-      p Rotation in a fluid flow is defined as ½ \del cross v or half of the <em>vorticity</em>. Just like <em>vorticity</em>, it is a vector defined at every point in the flow.
+      p Rotation in a fluid flow is defined as $\frac{1}{2}\nabla \times \textbf{v}$ or half of the <em>vorticity</em>. Just like <em>vorticity</em>, it is a vector defined at every point in the flow.
     .pb10
       h2.fw300#fluid Fluid
       p A fluid is a state of matter that encompasses both liquids and gases. Fluids are distinguished from solids by their behavior when subjected to small shear forces: a solid statically deforms in response to a shear force, and a fluid responds by continuously flowing in response to a shear force.
@@ -61,3 +61,6 @@ block content
     .pb10
       h2.fw300#streamlines Streamlines
       p A streamline is a theoretical line that is instantaneously tangent to the velocity of the flow everywhere. Each streamline only exist for one snapshot in time, and may change completely in the next instant, unless the flow is <em>steady</em> in which case the streamlines remain the same over time. Streamlines are an <em>Eulerian</em> concept because they are based on the velocity field.
+block scripts
+  script(type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML")
+  script(src="/js/mathjax-config.js")
