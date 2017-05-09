@@ -3,5 +3,6 @@ MathJax.Hub.Config({
   showMathMenu: false,
   showMathMenuMSIE: false,
   showProcessingMessages: false,
-  tex2jax: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+  tex2jax: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+  //menuSettings: { inTabOrder: false }
 });

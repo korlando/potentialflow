@@ -2,6 +2,49 @@ extends ./layout
 block content
   .container.pt50.pb50
     h1.pb30 Definitions
+    p
+      strong Contents
+    .flexbox.flex-wrap.pb30
+      ul.flex0(style="list-style:none;margin-bottom:0;")
+        li
+          a(href="#potential-flow") Potential Flow
+        li
+          a(href="#irrotational-flow") Irrotational Flow
+        li
+          a(href="#velocity-potential") Velocity Potential
+        li
+          a(href="#ideal-fluid") Ideal Fluid
+        li
+          a(href="#inviscid-flow") Inviscid Flow
+        li
+          a(href="#viscosity") Viscosity
+        li
+          a(href="#incompressible-flow") Incompressible Flow
+        li
+          a(href="#real-fluid") Real Fluid
+        li
+          a(href="#continuum-assumption") Continuum Assumption
+        li
+          a(href="#velocity-field") Velocity Field
+      ul.flex0(style="list-style:none;")
+        li
+          a(href="#differential-analysis") Differential Analysis
+        li
+          a(href="#control-volume-analysis") Control Volume Analysis
+        li
+          a(href="#conservation-of-mass") Conservation of Mass
+        li
+          a(href="#laplaces-equation") Laplace's Equation
+        li
+          a(href="#vorticity") Vorticity
+        li
+          a(href="#rotation") Rotation
+        li
+          a(href="#fluid") Fluid
+        li
+          a(href="#steady-flow") Steady Flow
+        li
+          a(href="#streamlines") Streamlines
     .pb10
       h2.fw300#potential-flow Potential Flow
       p Potential flow is an idealized model of fluid flow that occurs in the case of <em>incompressible</em>, <em>inviscid</em>, and <em>irrotational</em> flow. The velocity field of a potential flow satisfies <em>Laplace’s equation</em>: $\nabla^{2} \textbf{v} = 0$ (proof here).
@@ -48,7 +91,7 @@ block content
       p Laplace’s equation is a 2<sup>nd</sup> order linear PDE: $\nabla^{2} \phi = 0$. $\nabla^{2}$ is also called the Laplace operator or Laplacian which is: $\frac{d^{2}}{dx^{2}}$… It is also sometimes denoted as $\Delta$. This equation is a statement of mass conservation for an incompressible and irrotational flow (potential flow). It only has 6?? known solutions, which are the building blocks of potential flow.
     .pb10
       h2.fw300#vorticity Vorticity
-      p Vorticity ($\boldsymbol{\omega}$) is defined as the curl of a velocity field: $\boldsymbol{\omega} = \nabla \times \textbf{v}$. It is a vector defined at every point in the velocity field, and in a 2D flow, it’s vector direction is always into or out of the page. Intuitively this is related to rotation in the flow, and if you dropped an object into the flow vorticity would cause the object to spin. The precise definition for <em>rotation</em> is half of the vorticity.
+      p Vorticity ($\vec{\omega}$) is defined as the curl of a velocity field: $\vec{\omega} = \nabla \times \textbf{v}$. It is a vector defined at every point in the velocity field, and in a 2D flow, it’s vector direction is always into or out of the page. Intuitively this is related to rotation in the flow, and if you dropped an object into the flow vorticity would cause the object to spin. The precise definition for <em>rotation</em> is half of the vorticity.
     .pb10
       h2.fw300#rotation Rotation
       p Rotation in a fluid flow is defined as $\frac{1}{2}\nabla \times \textbf{v}$ or half of the <em>vorticity</em>. Just like <em>vorticity</em>, it is a vector defined at every point in the flow.
