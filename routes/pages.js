@@ -15,7 +15,7 @@ module.exports = {
   },
   'story': {
     title: 'The Story of Potential Flow - Potential Flow',
-    description: '',
+    description: 'Potential flow is an idealized model of fluid dynamics that applies when a flow is inviscid, incompressible, and irrotational.',
     url: `${DOMAIN}/story`
   },
   'definitions': {
