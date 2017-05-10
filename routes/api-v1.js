@@ -23,5 +23,11 @@ module.exports = () => {
     res.status(200).end();
   });
 
+  router.get('/logout', (req, res) => {
+    req.session.destroy((err) => {
+      res.status(200).end();
+    });
+  });
+
   return router;
 };

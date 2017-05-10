@@ -6,6 +6,17 @@ const helmet = require('helmet');
 const http = require('http');
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
+/*const crypto = require('crypto');
+
+crypto.randomBytes(64, (err, bytes) => {
+  if(err) bytes = crypto.pseudoRandomBytes(64);
+  const salt = bytes.toString('hex');
+  const hash = crypto
+               .createHash('sha512')
+               .update('' + salt)
+               .digest('hex');
+  console.log(hash + '/' + salt);
+});*/
 
 if(cluster.isMaster) {
   cluster.fork();
