@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { addFlow } from '../util';
 import TeX from './TeX';
 import Nav from './Nav';
@@ -243,8 +244,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-@connect(mapStateToProps)
-export default class App extends Component {
+class App extends Component {
   constructor(props) {
     super(props);
 
@@ -333,7 +333,7 @@ export default class App extends Component {
               padding: '10px'
             }}>
               { flowStr &&
-                <div className="flow-eq main-flow-eq">
+                <div className="flow-eq main-flow-eq flexbox align-items-center">
                   <TeX value={flowStr}/>
                 </div>
               }
@@ -354,7 +354,7 @@ export default class App extends Component {
                 );
               })}
             </div>
-            
+
             <div style={{ padding: '12px', minHeight: '500px' }}>
               <div className={addMode !== 'preset' && 'display-none'}>
                 <RankineHalfbody/>
@@ -442,3 +442,5 @@ export default class App extends Component {
     );
   };
 };
+
+export default withRouter(connect(mapStateToProps)(App));

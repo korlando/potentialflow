@@ -161,10 +161,11 @@ export default (state = defaultState, action) => {
       if(parentId !== undefined) {
         const parentFlow = state.activeFlowMap[parentId];
         historyEntry = {
+          activeFlowIds: state.activeFlowIds,
           activeFlowMap: Object.assign({}, state.activeFlowMap, {
             [parentId]: Object.assign({}, parentFlow, {
               flowIds: parentFlow.flowIds.filter(id => id !== action.flowId)
-            })
+            }),
           }),
           name: historyName
         };
