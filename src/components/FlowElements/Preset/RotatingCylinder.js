@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import PresetFlow from './PresetFlow';
 import { UNIFORM, DIPOLE, POINT_VORTEX } from '../../../constants/flowTypes';
 
-import { makeUniformFlowFcns, uniformFlowStrs } from '../Uniform';
-import { makeDipoleFlowFcns, dipoleFlowStrs } from '../Dipole';
-import { makePointVortexFlowFcns, pointVortexFlowStrs } from '../PointVortex';
+import { makeUniformFlowFcns,
+         uniformFlowStrs,
+         makeDipoleFlowFcns,
+         dipoleFlowStrs,
+         makePointVortexFlowFcns,
+         pointVortexFlowStrs } from '../../../util';
 
 const uniformInputs = {
   U: -1, V: 0

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { addFlow } from '../util';
+import { bootstrapFlows,
+         encodeSearchString, 
+         decodeSearchString } from '../util';
 import TeX from './TeX';
 import Nav from './Nav';
 import ActiveFlowsPanel from './ActiveFlowsPanel';
@@ -19,7 +21,7 @@ import RotatingCylinder from './FlowElements/Preset/RotatingCylinder';
 import { UNIFORM,
          POINT_SOURCE,
          POINT_VORTEX,
-         DIPOLE} from '../constants/flowTypes';
+         DIPOLE } from '../constants/flowTypes';
 import flowToTeX from '../constants/flowToTeX';
 
 const SIZE = 100;
@@ -230,10 +232,20 @@ const makeData = (zData, flowView) => {
 const layout = {
   margin: {
     t: 40,
-    l: 30,
+    l: 35,
     r: 20,
     b: 20
   }
+};
+
+const config = {
+  modeBarButtonsToRemove: [
+    'toggleSpikelines',
+    'hoverClosestCartesian',
+    'hoverCompareCartesian',
+  ],
+  displaylogo: false,
+  displayModeBar: true,
 };
 
 const mapStateToProps = (state) => {
@@ -259,13 +271,21 @@ class App extends Component {
       density: 0
     };
     this.activeFlowTimer = null;
+    this.applyData = this.applyData.bind(this);
     this.handleResize = this.handleResize.bind(this);
   };
 
   componentDidMount() {
-    const zData = makeZData(() => 0, xCoords, yCoords);
-    const data = makeData(zData, this.props.flowView);
-    this.renderNewPlot(this.graph, data, layout);
+    const { location, flowView } = this.props;
+    if(location.search) {
+      const decoded = decodeSearchString(location.search.replace('?', ''));
+      const { flowIds, flowMap, maxIndex } = decoded;
+      bootstrapFlows(flowIds, flowMap, maxIndex);
+    } else {
+      const zData = makeZData(() => 0, xCoords, yCoords);
+      const data = makeData(zData, this.props.flowView);
+      this.renderNewPlot(this.graph, data, layout);
+    }
     window.addEventListener('resize', this.handleResize);
   };
 
@@ -274,7 +294,10 @@ class App extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    const { activeFlowIds, activeFlowMap, flowView } = nextProps;
+    const { activeFlowIds,
+            activeFlowMap,
+            flowView,
+            history } = nextProps;
     
     if(activeFlowIds !== this.props.activeFlowIds ||
       activeFlowMap !== this.props.activeFlowMap ||
@@ -282,16 +305,26 @@ class App extends Component {
       clearTimeout(this.activeFlowTimer);
       
       this.activeFlowTimer = setTimeout(() => {
-        const flowFcnMap = makeFlowFcnMap(activeFlowIds, activeFlowMap);
-        const flowFcn = flowFcnMap[flowView];
-        const zData = makeZData(flowFcn, xCoords, yCoords);
-        const newData = makeData(zData, flowView);
-        this.renderNewPlot(this.graph, newData, layout);
+        this.applyData(flowView, activeFlowIds, activeFlowMap);
 
-        const flowStr = makeFlowStr(flowView, activeFlowIds, activeFlowMap);
-        this.setState({ flowStr, flowFcnMap });
+        if(activeFlowIds.length === 0) {
+          history.push('/');
+        } else {
+          history.push(`/?${encodeSearchString(activeFlowIds, activeFlowMap)}`);
+        }
       }, 300);
     }
+  };
+
+  applyData(flowView, flowIds, flowMap) {
+    const flowFcnMap = makeFlowFcnMap(flowIds, flowMap);
+    const flowFcn = flowFcnMap[flowView];
+    const zData = makeZData(flowFcn, xCoords, yCoords);
+    const newData = makeData(zData, flowView);
+    this.renderNewPlot(this.graph, newData, layout);
+
+    const flowStr = makeFlowStr(flowView, flowIds, flowMap);
+    this.setState({ flowStr, flowFcnMap });
   };
 
   handleResize() {
@@ -301,7 +334,7 @@ class App extends Component {
   };
 
   renderNewPlot(node, data, layout) {
-    Plotly.newPlot(node, data, layout);
+    Plotly.newPlot(node, data, layout, config);
   };
 
   render() {

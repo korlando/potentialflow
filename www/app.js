@@ -3029,7 +3029,9 @@ if(__webpack_require__(13)){
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.over2Pi = exports.getRadius = exports.getRadiusSq = exports.over2PiTeX = exports.radiusTeX = exports.radiusSqTeX = exports.sqrtTeX = exports.fracTeX = exports.diffTeX = exports.redoFlowHistory = exports.undoFlowHistory = exports.editFlowView = exports.removeFlow = exports.editFlowForm = exports.editFlow = exports.addBulkFlows = exports.addFlow = undefined;
+exports.decodeSearchString = exports.encodeSearchString = exports.dipoleFlowStrs = exports.makeDipoleFlowFcns = exports.pointVortexFlowStrs = exports.makePointVortexFlowFcns = exports.pointSourceFlowStrs = exports.makePointSourceFlowFcns = exports.uniformFlowStrs = exports.makeUniformFlowFcns = exports.dipoleEqs = exports.pointVortexEqs = exports.pointSourceEqs = exports.uniformEqs = exports.dipoleFcns = exports.pointVortexFcns = exports.pointSourceFcns = exports.uniformFcns = exports.over2Pi = exports.getRadius = exports.getRadiusSq = exports.over2PiTeX = exports.radiusTeX = exports.radiusSqTeX = exports.sqrtTeX = exports.fracTeX = exports.diffTeX = exports.redoFlowHistory = exports.undoFlowHistory = exports.editFlowView = exports.removeAllFlows = exports.removeFlow = exports.editFlowForm = exports.editFlow = exports.addBulkFlows = exports.addFlow = exports.bootstrapFlows = undefined;
+
+var _mapFlowsLongToShort;
 
 var _flowActions = __webpack_require__(259);
 
@@ -3038,6 +3040,8 @@ var flowActions = _interopRequireWildcard(_flowActions);
 var _store = __webpack_require__(107);
 
 var _store2 = _interopRequireDefault(_store);
+
+var _flowTypes = __webpack_require__(33);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -3054,6 +3058,18 @@ function _interopRequireWildcard(obj) {
     }newObj.default = obj;return newObj;
   }
 }
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
+  } else {
+    obj[key] = value;
+  }return obj;
+}
+
+var bootstrapFlows = exports.bootstrapFlows = function bootstrapFlows(flowIds, flowMap, maxIndex) {
+  _store2.default.dispatch(flowActions.bootstrapFlows(flowIds, flowMap, maxIndex));
+};
 
 var addFlow = exports.addFlow = function addFlow(type, inputs, flowFcns, flowStrs) {
   _store2.default.dispatch(flowActions.addFlow({ type: type, inputs: inputs, flowFcns: flowFcns, flowStrs: flowStrs }));
@@ -3073,6 +3089,10 @@ var editFlowForm = exports.editFlowForm = function editFlowForm(flowType, inputC
 
 var removeFlow = exports.removeFlow = function removeFlow(flowId) {
   _store2.default.dispatch(flowActions.removeFlow(flowId));
+};
+
+var removeAllFlows = exports.removeAllFlows = function removeAllFlows() {
+  _store2.default.dispatch(flowActions.removeAllFlows());
 };
 
 var editFlowView = exports.editFlowView = function editFlowView(view) {
@@ -3126,6 +3146,539 @@ var getRadius = exports.getRadius = function getRadius(xDiff, yDiff) {
 
 var over2Pi = exports.over2Pi = function over2Pi(x) {
   return x / (2 * Math.PI);
+};
+
+var uniformFcns = exports.uniformFcns = {
+  vp: function vp(U, V) {
+    return function (x, y) {
+      return U * x + V * y;
+    };
+  },
+  vpTeX: function vpTeX(U, V) {
+    var VStr = V < 0 ? '- ' + -V : '+ ' + V;
+    return U + 'x ' + VStr + 'y';
+  },
+  stream: function stream(U, V) {
+    return function (x, y) {
+      return -V * x + U * y;
+    };
+  },
+  streamTeX: function streamTeX(U, V) {
+    var VStr = V < 0 ? -V : '-' + V;
+    var UStr = U < 0 ? ' - ' + -U : '+ ' + U;
+    return VStr + 'x ' + UStr + 'y';
+  },
+  xVel: function xVel(U, V) {
+    return function (x, y) {
+      return U;
+    };
+  },
+  xVelTeX: function xVelTeX(U, V) {
+    return U;
+  },
+  yVel: function yVel(U, V) {
+    return function (x, y) {
+      return V;
+    };
+  },
+  yVelTeX: function yVelTeX(U, V) {
+    return V;
+  }
+};
+
+var pointSourceFcns = exports.pointSourceFcns = {
+  vp: function vp(m, x0, y0) {
+    return function (x, y) {
+      var radius = getRadius(x - x0, y - y0);
+      if (radius === 0) {
+        return -Infinity;
+      }
+      return over2Pi(m) * Math.log(radius);
+    };
+  },
+  vpTeX: function vpTeX(m, x0, y0) {
+    return over2PiTeX(m) + 'ln(' + radiusTeX(x0, y0) + ')';
+  },
+  stream: function stream(m, x0, y0) {
+    return function (x, y) {
+      return over2Pi(m) * Math.atan2(y - y0, x - x0);
+    };
+  },
+  streamTeX: function streamTeX(m, x0, y0) {
+    return over2PiTeX(m) + 'atan2(' + diffTeX('y', y0) + ', ' + diffTeX('x', x0) + ')';
+  },
+  xVel: function xVel(m, x0, y0) {
+    return function (x, y) {
+      var xDiff = x - x0;
+      var yDiff = y - y0;
+      var radiusSq = getRadiusSq(xDiff, yDiff);
+      if (radiusSq === 0) {
+        return Infinity;
+      }
+
+      return over2Pi(m) * xDiff / radiusSq;
+    };
+  },
+  xVelTeX: function xVelTeX(m, x0, y0) {
+    return over2PiTeX(m) + fracTeX(diffTeX('x', x0), radiusSqTeX(x0, y0));
+  },
+  yVel: function yVel(m, x0, y0) {
+    return function (x, y) {
+      var xDiff = x - x0;
+      var yDiff = y - y0;
+      var radiusSq = getRadiusSq(xDiff, yDiff);
+      if (radiusSq === 0) {
+        return Infinity;
+      }
+
+      return over2Pi(m) * yDiff / radiusSq;
+    };
+  },
+  yVelTeX: function yVelTeX(m, x0, y0) {
+    return over2PiTeX(m) + fracTeX(diffTeX('y', y0), radiusSqTeX(x0, y0));
+  }
+};
+
+var pointVortexFcns = exports.pointVortexFcns = {
+  vp: function vp(gamma, x0, y0) {
+    return function (x, y) {
+      return over2Pi(gamma) * Math.atan2(y - y0, x - x0);
+    };
+  },
+  vpTeX: function vpTeX(gamma, x0, y0) {
+    return over2PiTeX(gamma) + 'atan2(' + diffTeX('y', y0) + ', ' + diffTeX('x', x0) + ')';
+  },
+  stream: function stream(gamma, x0, y0) {
+    return function (x, y) {
+      return over2Pi(gamma) * Math.log(getRadius(x - x0, y - y0));
+    };
+  },
+  streamTeX: function streamTeX(gamma, x0, y0) {
+    return over2PiTeX(gamma) + 'ln(' + radiusTeX(x0, y0) + ')';
+  },
+  xVel: function xVel(gamma, x0, y0) {
+    return function (x, y) {
+      var xDiff = x - x0;
+      var yDiff = y - y0;
+      var radiusSq = getRadiusSq(xDiff, yDiff);
+      if (radiusSq === 0) {
+        return Infinity;
+      }
+
+      return over2Pi(gamma) * -yDiff / radiusSq;
+    };
+  },
+  xVelTeX: function xVelTeX(gamma, x0, y0) {
+    return over2PiTeX(gamma) + fracTeX('-(' + diffTeX('y', y0) + ')', radiusSqTeX(x0, y0));
+  },
+  yVel: function yVel(gamma, x0, y0) {
+    return function (x, y) {
+      var xDiff = x - x0;
+      var yDiff = y - y0;
+      var radiusSq = getRadiusSq(xDiff, yDiff);
+      if (radiusSq === 0) {
+        return Infinity;
+      }
+
+      return over2Pi(gamma) * xDiff / radiusSq;
+    };
+  },
+  yVelTeX: function yVelTeX(gamma, x0, y0) {
+    return over2PiTeX(gamma) + fracTeX(diffTeX('x', x0), radiusSqTeX(x0, y0));
+  }
+};
+
+var dipoleFcns = exports.dipoleFcns = {
+  vp: function vp(mu, x0, y0, alpha) {
+    return function (x, y) {
+      var xDiff = x - x0;
+      var yDiff = y - y0;
+      var radiusSq = getRadiusSq(xDiff, yDiff);
+      if (radiusSq === 0) {
+        // handle divide by 0
+        return Infinity;
+      }
+
+      return over2Pi(-mu) * (xDiff * Math.cos(alpha) + yDiff * Math.sin(alpha)) / radiusSq;
+    };
+  },
+  vpTeX: function vpTeX(mu, x0, y0, alpha) {
+    var muStr = typeof mu === 'string' ? '-' + mu : -mu;
+    return over2PiTeX(muStr) + fracTeX(diffTeX('x', x0) + 'cos(' + alpha + ') + ' + diffTeX('y', y0) + 'sin(' + alpha + ')', radiusSqTeX(x0, y0));
+  },
+  stream: function stream(mu, x0, y0, alpha) {
+    return function (x, y) {
+      var xDiff = x - x0;
+      var yDiff = y - y0;
+      var radiusSq = getRadiusSq(xDiff, yDiff);
+      if (radiusSq === 0) {
+        return Infinity;
+      }
+
+      return over2Pi(mu) * (xDiff * Math.sin(alpha) + yDiff * Math.cos(alpha)) / radiusSq;
+    };
+  },
+  streamTeX: function streamTeX(mu, x0, y0, alpha) {
+    return over2PiTeX(mu) + fracTeX(diffTeX('x', x0) + 'sin(' + alpha + ') + ' + diffTeX('y', y0) + 'cos(' + alpha + ')', radiusSqTeX(x0, y0));
+  },
+  xVel: function xVel(mu, x0, y0, alpha) {
+    return function (x, y) {
+      var xDiff = x - x0;
+      var yDiff = y - y0;
+      var radiusSq = getRadiusSq(xDiff, yDiff);
+      if (radiusSq === 0) {
+        return Infinity;
+      }
+
+      var sinA = Math.sin(alpha);
+      var cosA = Math.cos(alpha);
+      return (radiusSq * cosA - 2 * xDiff * (xDiff * cosA + yDiff * sinA)) / Math.pow(radiusSq, 2);
+    };
+  },
+  xVelTeX: function xVelTeX(mu, x0, y0, alpha) {
+    var xDiff = diffTeX('x', x0);
+    var yDiff = diffTeX('y', y0);
+    var radiusSq = radiusSqTeX(x0, y0);
+    var sinA = 'sin(' + alpha + ')';
+    var cosA = 'cos(' + alpha + ')';
+    return fracTeX('(' + radiusSq + ')' + cosA + ' - 2(' + xDiff + ')((' + xDiff + ')' + cosA + ' + (' + yDiff + ')' + sinA + ')', '(' + radiusSq + ')^2');
+  },
+  yVel: function yVel(mu, x0, y0, alpha) {
+    return function (x, y) {
+      var xDiff = x - x0;
+      var yDiff = y - y0;
+      var radiusSq = getRadiusSq(xDiff, yDiff);
+      if (radiusSq === 0) {
+        return Infinity;
+      }
+
+      var sinA = Math.sin(alpha);
+      var cosA = Math.cos(alpha);
+      return (radiusSq * sinA - 2 * yDiff * (xDiff * cosA + yDiff * sinA)) / Math.pow(radiusSq, 2);
+    };
+  },
+  yVelTeX: function yVelTeX(mu, x0, y0, alpha) {
+    var xDiff = diffTeX('x', x0);
+    var yDiff = diffTeX('y', y0);
+    var radiusSq = radiusSqTeX(x0, y0);
+    var sinA = 'sin(' + alpha + ')';
+    var cosA = 'cos(' + alpha + ')';
+    return fracTeX('(' + radiusSq + ')' + sinA + ' - 2(' + yDiff + ')((' + xDiff + ')' + cosA + ' + (' + yDiff + ')' + sinA + ')', '(' + radiusSq + ')^2');
+  }
+};
+
+var uniformEqs = exports.uniformEqs = {
+  vp: uniformFcns.vpTeX('U', 'V'),
+  stream: uniformFcns.streamTeX('U', 'V'),
+  xVel: uniformFcns.xVelTeX('U', 'V'),
+  yVel: uniformFcns.yVelTeX('U', 'V')
+};
+
+var pointSourceEqs = exports.pointSourceEqs = {
+  vp: pointSourceFcns.vpTeX('m', 'x_0', 'y_0'),
+  stream: pointSourceFcns.streamTeX('m', 'x_0', 'y_0'),
+  xVel: pointSourceFcns.xVelTeX('m', 'x_0', 'y_0'),
+  yVel: pointSourceFcns.yVelTeX('m', 'x_0', 'y_0')
+};
+
+var pointVortexEqs = exports.pointVortexEqs = {
+  vp: pointVortexFcns.vpTeX('\\Gamma', 'x_0', 'y_0'),
+  stream: pointVortexFcns.streamTeX('\\Gamma', 'x_0', 'y_0'),
+  xVel: pointVortexFcns.xVelTeX('\\Gamma', 'x_0', 'y_0'),
+  yVel: pointVortexFcns.yVelTeX('\\Gamma', 'x_0', 'y_0')
+};
+
+var dipoleEqs = exports.dipoleEqs = {
+  vp: dipoleFcns.vpTeX('\\mu', 'x_0', 'y_0', '\\alpha'),
+  stream: dipoleFcns.streamTeX('\\mu', 'x_0', 'y_0', '\\alpha'),
+  xVel: dipoleFcns.xVelTeX('\\mu', 'x_0', 'y_0', '\\alpha'),
+  yVel: dipoleFcns.yVelTeX('\\mu', 'x_0', 'y_0', '\\alpha')
+};
+
+var makeUniformFlowFcns = exports.makeUniformFlowFcns = function makeUniformFlowFcns(inputs) {
+  var vp = uniformFcns.vp,
+      stream = uniformFcns.stream,
+      xVel = uniformFcns.xVel,
+      yVel = uniformFcns.yVel;
+  var U = inputs.U,
+      V = inputs.V;
+
+  return {
+    vp: vp(U, V),
+    stream: stream(U, V),
+    xVel: xVel(U, V),
+    yVel: yVel(U, V)
+  };
+};
+
+var uniformFlowStrs = exports.uniformFlowStrs = function uniformFlowStrs(inputs) {
+  var vpTeX = uniformFcns.vpTeX,
+      streamTeX = uniformFcns.streamTeX,
+      xVelTeX = uniformFcns.xVelTeX,
+      yVelTeX = uniformFcns.yVelTeX;
+  var U = inputs.U,
+      V = inputs.V;
+
+  return {
+    vp: vpTeX(U, V),
+    stream: streamTeX(U, V),
+    xVel: xVelTeX(U, V),
+    yVel: yVelTeX(U, V)
+  };
+};
+
+var makePointSourceFlowFcns = exports.makePointSourceFlowFcns = function makePointSourceFlowFcns(inputs) {
+  var vp = pointSourceFcns.vp,
+      stream = pointSourceFcns.stream,
+      xVel = pointSourceFcns.xVel,
+      yVel = pointSourceFcns.yVel;
+  var m = inputs.m,
+      x0 = inputs.x0,
+      y0 = inputs.y0;
+
+  return {
+    vp: vp(m, x0, y0),
+    stream: stream(m, x0, y0),
+    xVel: xVel(m, x0, y0),
+    yVel: yVel(m, x0, y0)
+  };
+};
+
+var pointSourceFlowStrs = exports.pointSourceFlowStrs = function pointSourceFlowStrs(inputs) {
+  var vpTeX = pointSourceFcns.vpTeX,
+      streamTeX = pointSourceFcns.streamTeX,
+      xVelTeX = pointSourceFcns.xVelTeX,
+      yVelTeX = pointSourceFcns.yVelTeX;
+  var m = inputs.m,
+      x0 = inputs.x0,
+      y0 = inputs.y0;
+
+  return {
+    vp: vpTeX(m, x0, y0),
+    stream: streamTeX(m, x0, y0),
+    xVel: xVelTeX(m, x0, y0),
+    yVel: yVelTeX(m, x0, y0)
+  };
+};
+
+var makePointVortexFlowFcns = exports.makePointVortexFlowFcns = function makePointVortexFlowFcns(inputs) {
+  var vp = pointVortexFcns.vp,
+      stream = pointVortexFcns.stream,
+      xVel = pointVortexFcns.xVel,
+      yVel = pointVortexFcns.yVel;
+  var gamma = inputs.gamma,
+      x0 = inputs.x0,
+      y0 = inputs.y0;
+
+  return {
+    vp: vp(gamma, x0, y0),
+    stream: stream(gamma, x0, y0),
+    xVel: xVel(gamma, x0, y0),
+    yVel: yVel(gamma, x0, y0)
+  };
+};
+
+var pointVortexFlowStrs = exports.pointVortexFlowStrs = function pointVortexFlowStrs(inputs) {
+  var vpTeX = pointVortexFcns.vpTeX,
+      streamTeX = pointVortexFcns.streamTeX,
+      xVelTeX = pointVortexFcns.xVelTeX,
+      yVelTeX = pointVortexFcns.yVelTeX;
+  var gamma = inputs.gamma,
+      x0 = inputs.x0,
+      y0 = inputs.y0;
+
+  return {
+    vp: vpTeX(gamma, x0, y0),
+    stream: streamTeX(gamma, x0, y0),
+    xVel: xVelTeX(gamma, x0, y0),
+    yVel: yVelTeX(gamma, x0, y0)
+  };
+};
+
+var makeDipoleFlowFcns = exports.makeDipoleFlowFcns = function makeDipoleFlowFcns(inputs) {
+  var vp = dipoleFcns.vp,
+      stream = dipoleFcns.stream,
+      xVel = dipoleFcns.xVel,
+      yVel = dipoleFcns.yVel;
+  var mu = inputs.mu,
+      x0 = inputs.x0,
+      y0 = inputs.y0,
+      alpha = inputs.alpha;
+
+  return {
+    vp: vp(mu, x0, y0, alpha),
+    stream: stream(mu, x0, y0, alpha),
+    xVel: xVel(mu, x0, y0, alpha),
+    yVel: yVel(mu, x0, y0, alpha)
+  };
+};
+
+var dipoleFlowStrs = exports.dipoleFlowStrs = function dipoleFlowStrs(inputs) {
+  var vpTeX = dipoleFcns.vpTeX,
+      streamTeX = dipoleFcns.streamTeX,
+      xVelTeX = dipoleFcns.xVelTeX,
+      yVelTeX = dipoleFcns.yVelTeX;
+  var mu = inputs.mu,
+      x0 = inputs.x0,
+      y0 = inputs.y0,
+      alpha = inputs.alpha;
+
+  return {
+    vp: vpTeX(mu, x0, y0, alpha),
+    stream: streamTeX(mu, x0, y0, alpha),
+    xVel: xVelTeX(mu, x0, y0, alpha),
+    yVel: yVelTeX(mu, x0, y0, alpha)
+  };
+};
+
+var mapFlowsToFcns = _defineProperty({}, _flowTypes.UNIFORM, uniformFcns);
+
+var mapFlowsLongToShort = (_mapFlowsLongToShort = {}, _defineProperty(_mapFlowsLongToShort, _flowTypes.UNIFORM, 'U'), _defineProperty(_mapFlowsLongToShort, _flowTypes.POINT_SOURCE, 'PS'), _defineProperty(_mapFlowsLongToShort, _flowTypes.POINT_VORTEX, 'PV'), _defineProperty(_mapFlowsLongToShort, _flowTypes.DIPOLE, 'D'), _mapFlowsLongToShort);
+var mapFlowsShortToLong = {
+  'U': _flowTypes.UNIFORM,
+  'PS': _flowTypes.POINT_SOURCE,
+  'PV': _flowTypes.POINT_VORTEX,
+  'D': _flowTypes.DIPOLE
+};
+var mapGroupsLongToShort = {
+  'Rankine Halfbody': 'RH',
+  'Rankine Oval': 'RO',
+  'Cylinder': 'C',
+  'Rotating Cylinder': 'RC'
+};
+var mapGroupsShortToLong = {
+  'RH': 'Rankine Halfbody',
+  'RO': 'Rankine Oval',
+  'C': 'Cylinder',
+  'RC': 'Rotating Cylinder'
+};
+
+// encode helper function
+function getFlowComponents(flow, parentId) {
+  // flow type
+  var components = ['i=' + flow.flowId, 't=' + mapFlowsLongToShort[flow.type]];
+  if (parentId !== undefined) {
+    components.push('p=' + parentId);
+  }
+  Object.keys(flow.inputs).forEach(function (key) {
+    components.push(key + '=' + flow.inputs[key]);
+  });
+
+  return components;
+};
+
+var encodeSearchString = exports.encodeSearchString = function encodeSearchString(flowIds, flowMap) {
+  var searchData = [];
+  flowIds.forEach(function (id) {
+    var flow = flowMap[id];
+    var components = void 0;
+    if (flow.group) {
+      flow.flowIds.forEach(function (subId) {
+        searchData.push(getFlowComponents(flowMap[subId], id).join('&'));
+      });
+      components = ['i=' + flow.flowId, 'n=' + mapGroupsLongToShort[flow.name], // name
+      'c=' + flow.flowIds.join('+')];
+    } else {
+      components = getFlowComponents(flow);
+    }
+    searchData.push(components.join('&'));
+  });
+
+  return searchData.join(',');
+};
+
+function resolveId(id, index, usedIndexes) {
+  var flowId = Number(id);
+  if (Number.isNaN(flowId)) {
+    while (usedIndexes.includes(index)) {
+      index += 1;
+    }
+    flowId = index;
+  } else {
+    index = flowId;
+  }
+  return { flowId: flowId, index: index };
+};
+
+var decodeSearchString = exports.decodeSearchString = function decodeSearchString(str) {
+  var flowIds = [];
+  var flowMap = {};
+  var flowsStrs = str.split(',');
+  var usedIndexes = [];
+  var index = 0;
+  var maxIndex = 0;
+
+  flowsStrs.forEach(function (flowStr) {
+    var components = flowStr.split('&');
+    var map = components.reduce(function (m, c) {
+      var pieces = c.split('=');
+      if (pieces.length !== 2) return m;
+      m[pieces[0]] = pieces[1];
+      return m;
+    }, {});
+    var resolved = resolveId(map.i, index, usedIndexes);
+    index = resolved.index;
+    var flow = { flowId: resolved.flowId };
+    usedIndexes.push(flow.flowId);
+    var addToMain = true;
+
+    if (map.c) {
+      // flow group
+      flow.group = true;
+      flow.name = mapGroupsShortToLong[map.n];
+      flow.flowIds = map.c.split('+').reduce(function (arr, subId) {
+        var subResolved = resolveId(subId);
+        arr.push(subResolved.flowId);
+        return arr;
+      }, []);
+      if (flow.flowIds.length === 0) {
+        return;
+      }
+    } else if (map.t) {
+      flow.type = mapFlowsShortToLong[map.t];
+      if (map.p !== undefined) {
+        addToMain = false;
+        var parentResolved = resolveId(map.p);
+        flow.parentId = parentResolved.flowId;
+      }
+      delete map.i;
+      delete map.t;
+      delete map.p;
+      var inputs = Object.keys(map).reduce(function (newMap, key) {
+        newMap[key] = Number(map[key]) || 0;
+        return newMap;
+      }, {});
+      flow.inputs = inputs;
+      switch (flow.type) {
+        case _flowTypes.UNIFORM:
+          flow.flowFcns = makeUniformFlowFcns(inputs);
+          flow.flowStrs = uniformFlowStrs(inputs);
+          break;
+        case _flowTypes.POINT_SOURCE:
+          flow.flowFcns = makePointSourceFlowFcns(inputs);
+          flow.flowStrs = pointSourceFlowStrs(inputs);
+          break;
+        case _flowTypes.POINT_VORTEX:
+          flow.flowFcns = makePointVortexFlowFcns(inputs);
+          flow.flowStrs = pointVortexFlowStrs(inputs);
+          break;
+        case _flowTypes.DIPOLE:
+          flow.flowFcns = makeDipoleFlowFcns(inputs);
+          flow.flowStrs = dipoleFlowStrs(inputs);
+          break;
+      }
+    } else {
+      return;
+    }
+    flowMap[flow.flowId] = flow;
+    if (addToMain) {
+      flowIds.push(flow.flowId);
+    }
+
+    maxIndex = Math.max(flow.flowId, maxIndex);
+  });
+
+  return { flowIds: flowIds, flowMap: flowMap, maxIndex: maxIndex };
 };
 
 /***/ }),
@@ -4331,12 +4884,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 "use strict";
 
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.uniformEqs = exports.uniformFlowStrs = exports.makeUniformFlowFcns = undefined;
 
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
@@ -4348,16 +4898,6 @@ var _extends = Object.assign || function (target) {
   }return target;
 };
 
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
 var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
@@ -4368,140 +4908,20 @@ var _Flow2 = _interopRequireDefault(_Flow);
 
 var _flowTypes = __webpack_require__(33);
 
+var _util = __webpack_require__(47);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
 
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-// velocity potential
-var vp = function vp(U, V) {
-  return function (x, y) {
-    return U * x + V * y;
-  };
+exports.default = function (props) {
+  return _react2.default.createElement(_Flow2.default, _extends({}, props, {
+    name: 'Uniform',
+    type: _flowTypes.UNIFORM,
+    makeFlowFcns: _util.makeUniformFlowFcns,
+    makeFlowStrs: _util.uniformFlowStrs,
+    eqs: _util.uniformEqs }));
 };
-
-var vpTeX = function vpTeX(U, V) {
-  var VStr = V < 0 ? '- ' + -V : '+ ' + V;
-  return U + 'x ' + VStr + 'y';
-};
-
-var vpTeXEq = vpTeX('U', 'V');
-
-// stream function
-var stream = function stream(U, V) {
-  return function (x, y) {
-    return -V * x + U * y;
-  };
-};
-
-var streamTeX = function streamTeX(U, V) {
-  var VStr = V < 0 ? -V : '-' + V;
-  var UStr = U < 0 ? ' - ' + -U : '+ ' + U;
-  return VStr + 'x ' + UStr + 'y';
-};
-
-var streamTeXEq = streamTeX('U', 'V');
-
-// x velocity
-var xVel = function xVel(U, V) {
-  return function (x, y) {
-    return U;
-  };
-};
-
-var xVelTeX = function xVelTeX(U, V) {
-  return U;
-};
-
-var xVelTeXEq = xVelTeX('U', 'V');
-
-// y velocity
-var yVel = function yVel(U, V) {
-  return function (x, y) {
-    return V;
-  };
-};
-
-var yVelTeX = function yVelTeX(U, V) {
-  return V;
-};
-
-var yVelTeXEq = yVelTeX('U', 'V');
-
-var makeUniformFlowFcns = exports.makeUniformFlowFcns = function makeUniformFlowFcns(inputs) {
-  var U = inputs.U,
-      V = inputs.V;
-
-  return {
-    vp: vp(U, V),
-    stream: stream(U, V),
-    xVel: xVel(U, V),
-    yVel: yVel(U, V)
-  };
-};
-
-var uniformFlowStrs = exports.uniformFlowStrs = function uniformFlowStrs(inputs) {
-  var U = inputs.U,
-      V = inputs.V;
-
-  return {
-    vp: vpTeX(U, V),
-    stream: streamTeX(U, V),
-    xVel: xVelTeX(U, V),
-    yVel: yVelTeX(U, V)
-  };
-};
-
-var uniformEqs = exports.uniformEqs = {
-  vp: vpTeXEq,
-  stream: streamTeXEq,
-  xVel: xVelTeXEq,
-  yVel: yVelTeXEq
-};
-
-var Uniform = function (_Component) {
-  _inherits(Uniform, _Component);
-
-  function Uniform(props) {
-    _classCallCheck(this, Uniform);
-
-    return _possibleConstructorReturn(this, (Uniform.__proto__ || Object.getPrototypeOf(Uniform)).call(this, props));
-  }
-
-  _createClass(Uniform, [{
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(_Flow2.default, _extends({}, this.props, {
-        name: 'Uniform',
-        type: _flowTypes.UNIFORM,
-        makeFlowFcns: makeUniformFlowFcns,
-        makeFlowStrs: uniformFlowStrs,
-        eqs: uniformEqs }));
-    }
-  }]);
-
-  return Uniform;
-}(_react.Component);
-
-exports.default = Uniform;
-;
 
 /***/ }),
 /* 68 */
@@ -6026,12 +6446,9 @@ var createPath = exports.createPath = function createPath(location) {
 "use strict";
 
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.dipoleEqs = exports.dipoleFlowStrs = exports.makeDipoleFlowFcns = undefined;
 
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
@@ -6042,16 +6459,6 @@ var _extends = Object.assign || function (target) {
     }
   }return target;
 };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
 
 var _react = __webpack_require__(4);
 
@@ -6069,181 +6476,14 @@ function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
 
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-// velocity potential
-var vp = function vp(mu, x0, y0, alpha) {
-  return function (x, y) {
-    var xDiff = x - x0;
-    var yDiff = y - y0;
-    var radiusSq = (0, _util.getRadiusSq)(xDiff, yDiff);
-    if (radiusSq === 0) {
-      // handle divide by 0
-      return Infinity;
-    }
-
-    return (0, _util.over2Pi)(-mu) * (xDiff * Math.cos(alpha) + yDiff * Math.sin(alpha)) / radiusSq;
-  };
+exports.default = function (props) {
+  return _react2.default.createElement(_Flow2.default, _extends({}, props, {
+    name: 'Dipole',
+    type: _flowTypes.DIPOLE,
+    makeFlowFcns: _util.makeDipoleFlowFcns,
+    makeFlowStrs: _util.dipoleFlowStrs,
+    eqs: _util.dipoleEqs }));
 };
-
-var vpTeX = function vpTeX(mu, x0, y0, alpha) {
-  var muStr = typeof mu === 'string' ? '-' + mu : -mu;
-  return (0, _util.over2PiTeX)(muStr) + (0, _util.fracTeX)((0, _util.diffTeX)('x', x0) + 'cos(' + alpha + ') + ' + (0, _util.diffTeX)('y', y0) + 'sin(' + alpha + ')', (0, _util.radiusSqTeX)(x0, y0));
-};
-
-var vpTeXEq = vpTeX('\\mu', 'x_0', 'y_0', '\\alpha');
-
-// stream function
-var stream = function stream(mu, x0, y0, alpha) {
-  return function (x, y) {
-    var xDiff = x - x0;
-    var yDiff = y - y0;
-    var radiusSq = (0, _util.getRadiusSq)(xDiff, yDiff);
-    if (radiusSq === 0) {
-      return Infinity;
-    }
-
-    return (0, _util.over2Pi)(mu) * (xDiff * Math.sin(alpha) + yDiff * Math.cos(alpha)) / radiusSq;
-  };
-};
-
-var streamTeX = function streamTeX(mu, x0, y0, alpha) {
-  return (0, _util.over2PiTeX)(mu) + (0, _util.fracTeX)((0, _util.diffTeX)('x', x0) + 'sin(' + alpha + ') + ' + (0, _util.diffTeX)('y', y0) + 'cos(' + alpha + ')', (0, _util.radiusSqTeX)(x0, y0));
-};
-
-var streamTeXEq = streamTeX('\\mu', 'x_0', 'y_0', '\\alpha');
-
-// x velocity
-var xVel = function xVel(mu, x0, y0, alpha) {
-  return function (x, y) {
-    var xDiff = x - x0;
-    var yDiff = y - y0;
-    var radiusSq = (0, _util.getRadiusSq)(xDiff, yDiff);
-    if (radiusSq === 0) {
-      return Infinity;
-    }
-
-    var sinA = Math.sin(alpha);
-    var cosA = Math.cos(alpha);
-    return (radiusSq * cosA - 2 * xDiff * (xDiff * cosA + yDiff * sinA)) / Math.pow(radiusSq, 2);
-  };
-};
-
-var xVelTeX = function xVelTeX(mu, x0, y0, alpha) {
-  var xDiff = (0, _util.diffTeX)('x', x0);
-  var yDiff = (0, _util.diffTeX)('y', y0);
-  var radiusSq = (0, _util.radiusSqTeX)(x0, y0);
-  var sinA = 'sin(' + alpha + ')';
-  var cosA = 'cos(' + alpha + ')';
-  return (0, _util.fracTeX)('(' + radiusSq + ')' + cosA + ' - 2(' + xDiff + ')((' + xDiff + ')' + cosA + ' + (' + yDiff + ')' + sinA + ')', '(' + radiusSq + ')^2');
-};
-
-var xVelTeXEq = xVelTeX('\\mu', 'x_0', 'y_0', '\\alpha');
-
-// y velocity
-var yVel = function yVel(mu, x0, y0, alpha) {
-  return function (x, y) {
-    var xDiff = x - x0;
-    var yDiff = y - y0;
-    var radiusSq = (0, _util.getRadiusSq)(xDiff, yDiff);
-    if (radiusSq === 0) {
-      return Infinity;
-    }
-
-    var sinA = Math.sin(alpha);
-    var cosA = Math.cos(alpha);
-    return (radiusSq * sinA - 2 * yDiff * (xDiff * cosA + yDiff * sinA)) / Math.pow(radiusSq, 2);
-  };
-};
-
-var yVelTeX = function yVelTeX(mu, x0, y0, alpha) {
-  var xDiff = (0, _util.diffTeX)('x', x0);
-  var yDiff = (0, _util.diffTeX)('y', y0);
-  var radiusSq = (0, _util.radiusSqTeX)(x0, y0);
-  var sinA = 'sin(' + alpha + ')';
-  var cosA = 'cos(' + alpha + ')';
-  return (0, _util.fracTeX)('(' + radiusSq + ')' + sinA + ' - 2(' + yDiff + ')((' + xDiff + ')' + cosA + ' + (' + yDiff + ')' + sinA + ')', '(' + radiusSq + ')^2');
-};
-
-var yVelTeXEq = yVelTeX('\\mu', 'x_0', 'y_0', '\\alpha');
-
-var makeDipoleFlowFcns = exports.makeDipoleFlowFcns = function makeDipoleFlowFcns(inputs) {
-  var mu = inputs.mu,
-      x0 = inputs.x0,
-      y0 = inputs.y0,
-      alpha = inputs.alpha;
-
-  return {
-    vp: vp(mu, x0, y0, alpha),
-    stream: stream(mu, x0, y0, alpha),
-    xVel: xVel(mu, x0, y0, alpha),
-    yVel: yVel(mu, x0, y0, alpha)
-  };
-};
-
-var dipoleFlowStrs = exports.dipoleFlowStrs = function dipoleFlowStrs(inputs) {
-  var mu = inputs.mu,
-      x0 = inputs.x0,
-      y0 = inputs.y0,
-      alpha = inputs.alpha;
-
-  return {
-    vp: vpTeX(mu, x0, y0, alpha),
-    stream: streamTeX(mu, x0, y0, alpha),
-    xVel: xVelTeX(mu, x0, y0, alpha),
-    yVel: yVelTeX(mu, x0, y0, alpha)
-  };
-};
-
-var dipoleEqs = exports.dipoleEqs = {
-  vp: vpTeXEq,
-  stream: streamTeXEq,
-  xVel: xVelTeXEq,
-  yVel: yVelTeXEq
-};
-
-var Dipole = function (_Component) {
-  _inherits(Dipole, _Component);
-
-  function Dipole(props) {
-    _classCallCheck(this, Dipole);
-
-    return _possibleConstructorReturn(this, (Dipole.__proto__ || Object.getPrototypeOf(Dipole)).call(this, props));
-  }
-
-  _createClass(Dipole, [{
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(_Flow2.default, _extends({}, this.props, {
-        name: 'Dipole',
-        type: _flowTypes.DIPOLE,
-        makeFlowFcns: makeDipoleFlowFcns,
-        makeFlowStrs: dipoleFlowStrs,
-        eqs: dipoleEqs }));
-    }
-  }]);
-
-  return Dipole;
-}(_react.Component);
-
-exports.default = Dipole;
-;
 
 /***/ }),
 /* 87 */
@@ -6344,6 +6584,7 @@ var Flow = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = func
 
     _this.handleChange = _this.handleChange.bind(_this);
     _this.handleSubmit = _this.handleSubmit.bind(_this);
+    _this.handleRemove = _this.handleRemove.bind(_this);
     return _this;
   }
 
@@ -6386,6 +6627,14 @@ var Flow = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = func
       }
     }
   }, {
+    key: 'handleRemove',
+    value: function handleRemove(flowId) {
+      (0, _util.removeFlow)(flowId);
+      var name = this.props.name;
+
+      (0, _alert.addAlert)('Removed "' + name + '" Flow', true, 10 * 1000);
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
@@ -6405,7 +6654,7 @@ var Flow = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_class = func
         style: { marginBottom: '10px' } }, _react2.default.createElement('label', { className: 'flex0' }, name), _react2.default.createElement('div', { className: 'flex0' }, _react2.default.createElement('img', { src: 'images/' + type + '.svg', width: '40', height: '40' })), _react2.default.createElement('div', { className: 'flex1' }), flowId !== undefined && _react2.default.createElement(_CloseButton2.default, {
         className: 'flex0',
         onClick: function onClick() {
-          return (0, _util.removeFlow)(flowId);
+          return _this2.handleRemove(flowId);
         } })), _react2.default.createElement('div', { className: 'flow-eq text-center' }, Object.keys(eqs).map(function (key) {
         return _react2.default.createElement('div', { key: key,
           className: flowView === key ? '' : 'display-none' }, _react2.default.createElement(_TeX2.default, { value: _flowToTeX2.default[key] + '(x, y) = ' + eqs[key] }));
@@ -6436,12 +6685,9 @@ exports.default = Flow;
 "use strict";
 
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.pointSourceEqs = exports.pointSourceFlowStrs = exports.makePointSourceFlowFcns = undefined;
 
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
@@ -6452,16 +6698,6 @@ var _extends = Object.assign || function (target) {
     }
   }return target;
 };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
 
 var _react = __webpack_require__(4);
 
@@ -6479,153 +6715,14 @@ function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
 
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-// velocity potential
-var vp = function vp(m, x0, y0) {
-  return function (x, y) {
-    var radius = (0, _util.getRadius)(x - x0, y - y0);
-    if (radius === 0) {
-      return -Infinity;
-    }
-    return (0, _util.over2Pi)(m) * Math.log(radius);
-  };
+exports.default = function (props) {
+  return _react2.default.createElement(_Flow2.default, _extends({}, props, {
+    name: 'Point Source/Sink',
+    type: _flowTypes.POINT_SOURCE,
+    makeFlowFcns: _util.makePointSourceFlowFcns,
+    makeFlowStrs: _util.pointSourceFlowStrs,
+    eqs: _util.pointSourceEqs }));
 };
-
-var vpTeX = function vpTeX(m, x0, y0) {
-  return (0, _util.over2PiTeX)(m) + 'ln(' + (0, _util.radiusTeX)(x0, y0) + ')';
-};
-
-var vpTeXEq = vpTeX('m', 'x_0', 'y_0');
-
-// stream function
-var stream = function stream(m, x0, y0) {
-  return function (x, y) {
-    return (0, _util.over2Pi)(m) * Math.atan2(y - y0, x - x0);
-  };
-};
-
-var streamTeX = function streamTeX(m, x0, y0) {
-  return (0, _util.over2PiTeX)(m) + 'atan2(' + (0, _util.diffTeX)('y', y0) + ', ' + (0, _util.diffTeX)('x', x0) + ')';
-};
-
-var streamTeXEq = streamTeX('m', 'x_0', 'y_0');
-
-// x velocity
-var xVel = function xVel(m, x0, y0) {
-  return function (x, y) {
-    var xDiff = x - x0;
-    var yDiff = y - y0;
-    var radiusSq = (0, _util.getRadiusSq)(xDiff, yDiff);
-    if (radiusSq === 0) {
-      return Infinity;
-    }
-
-    return (0, _util.over2Pi)(m) * xDiff / radiusSq;
-  };
-};
-
-var xVelTeX = function xVelTeX(m, x0, y0) {
-  return (0, _util.over2PiTeX)(m) + (0, _util.fracTeX)((0, _util.diffTeX)('x', x0), (0, _util.radiusSqTeX)(x0, y0));
-};
-
-var xVelTeXEq = xVelTeX('m', 'x_0', 'y_0');
-
-// y velocity
-var yVel = function yVel(m, x0, y0) {
-  return function (x, y) {
-    var xDiff = x - x0;
-    var yDiff = y - y0;
-    var radiusSq = (0, _util.getRadiusSq)(xDiff, yDiff);
-    if (radiusSq === 0) {
-      return Infinity;
-    }
-
-    return (0, _util.over2Pi)(m) * yDiff / radiusSq;
-  };
-};
-
-var yVelTeX = function yVelTeX(m, x0, y0) {
-  return (0, _util.over2PiTeX)(m) + (0, _util.fracTeX)((0, _util.diffTeX)('y', y0), (0, _util.radiusSqTeX)(x0, y0));
-};
-
-var yVelTeXEq = yVelTeX('m', 'x_0', 'y_0');
-
-var makePointSourceFlowFcns = exports.makePointSourceFlowFcns = function makePointSourceFlowFcns(inputs) {
-  var m = inputs.m,
-      x0 = inputs.x0,
-      y0 = inputs.y0;
-
-  return {
-    vp: vp(m, x0, y0),
-    stream: stream(m, x0, y0),
-    xVel: xVel(m, x0, y0),
-    yVel: yVel(m, x0, y0)
-  };
-};
-
-var pointSourceFlowStrs = exports.pointSourceFlowStrs = function pointSourceFlowStrs(inputs) {
-  var m = inputs.m,
-      x0 = inputs.x0,
-      y0 = inputs.y0;
-
-  return {
-    vp: vpTeX(m, x0, y0),
-    stream: streamTeX(m, x0, y0),
-    xVel: xVelTeX(m, x0, y0),
-    yVel: yVelTeX(m, x0, y0)
-  };
-};
-
-var pointSourceEqs = exports.pointSourceEqs = {
-  vp: vpTeXEq,
-  stream: streamTeXEq,
-  xVel: xVelTeXEq,
-  yVel: yVelTeXEq
-};
-
-var PointSource = function (_Component) {
-  _inherits(PointSource, _Component);
-
-  function PointSource(props) {
-    _classCallCheck(this, PointSource);
-
-    return _possibleConstructorReturn(this, (PointSource.__proto__ || Object.getPrototypeOf(PointSource)).call(this, props));
-  }
-
-  _createClass(PointSource, [{
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(_Flow2.default, _extends({}, this.props, {
-        name: 'Point Source/Sink',
-        type: _flowTypes.POINT_SOURCE,
-        makeFlowFcns: makePointSourceFlowFcns,
-        makeFlowStrs: pointSourceFlowStrs,
-        eqs: pointSourceEqs }));
-    }
-  }]);
-
-  return PointSource;
-}(_react.Component);
-
-exports.default = PointSource;
-;
 
 /***/ }),
 /* 89 */
@@ -7740,12 +7837,9 @@ exports.default = CloseButton;
 "use strict";
 
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.pointVortexEqs = exports.pointVortexFlowStrs = exports.makePointVortexFlowFcns = undefined;
 
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
@@ -7756,16 +7850,6 @@ var _extends = Object.assign || function (target) {
     }
   }return target;
 };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
 
 var _react = __webpack_require__(4);
 
@@ -7783,149 +7867,14 @@ function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
 
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-// velocity potential
-var vp = function vp(gamma, x0, y0) {
-  return function (x, y) {
-    return (0, _util.over2Pi)(gamma) * Math.atan2(y - y0, x - x0);
-  };
+exports.default = function (props) {
+  return _react2.default.createElement(_Flow2.default, _extends({}, props, {
+    name: 'Point Vortex',
+    type: _flowTypes.POINT_VORTEX,
+    makeFlowFcns: _util.makePointVortexFlowFcns,
+    makeFlowStrs: _util.pointVortexFlowStrs,
+    eqs: _util.pointVortexEqs }));
 };
-
-var vpTeX = function vpTeX(gamma, x0, y0) {
-  return (0, _util.over2PiTeX)(gamma) + 'atan2(' + (0, _util.diffTeX)('y', y0) + ', ' + (0, _util.diffTeX)('x', x0) + ')';
-};
-
-var vpTeXEq = vpTeX('\\Gamma', 'x_0', 'y_0');
-
-// stream function
-var stream = function stream(gamma, x0, y0) {
-  return function (x, y) {
-    return (0, _util.over2Pi)(gamma) * Math.log((0, _util.getRadius)(x - x0, y - y0));
-  };
-};
-
-var streamTeX = function streamTeX(gamma, x0, y0) {
-  return (0, _util.over2PiTeX)(gamma) + 'ln(' + (0, _util.radiusTeX)(x0, y0) + ')';
-};
-
-var streamTeXEq = streamTeX('\\Gamma', 'x_0', 'y_0');
-
-// x velocity
-var xVel = function xVel(gamma, x0, y0) {
-  return function (x, y) {
-    var xDiff = x - x0;
-    var yDiff = y - y0;
-    var radiusSq = (0, _util.getRadiusSq)(xDiff, yDiff);
-    if (radiusSq === 0) {
-      return Infinity;
-    }
-
-    return (0, _util.over2Pi)(gamma) * -yDiff / radiusSq;
-  };
-};
-
-var xVelTeX = function xVelTeX(gamma, x0, y0) {
-  return (0, _util.over2PiTeX)(gamma) + (0, _util.fracTeX)('-(' + (0, _util.diffTeX)('y', y0) + ')', (0, _util.radiusSqTeX)(x0, y0));
-};
-
-var xVelTeXEq = xVelTeX('\\Gamma', 'x_0', 'y_0');
-
-// y velocity
-var yVel = function yVel(gamma, x0, y0) {
-  return function (x, y) {
-    var xDiff = x - x0;
-    var yDiff = y - y0;
-    var radiusSq = (0, _util.getRadiusSq)(xDiff, yDiff);
-    if (radiusSq === 0) {
-      return Infinity;
-    }
-
-    return (0, _util.over2Pi)(gamma) * xDiff / radiusSq;
-  };
-};
-
-var yVelTeX = function yVelTeX(gamma, x0, y0) {
-  return (0, _util.over2PiTeX)(gamma) + (0, _util.fracTeX)((0, _util.diffTeX)('x', x0), (0, _util.radiusSqTeX)(x0, y0));
-};
-
-var yVelTeXEq = yVelTeX('\\Gamma', 'x_0', 'y_0');
-
-var makePointVortexFlowFcns = exports.makePointVortexFlowFcns = function makePointVortexFlowFcns(inputs) {
-  var gamma = inputs.gamma,
-      x0 = inputs.x0,
-      y0 = inputs.y0;
-
-  return {
-    vp: vp(gamma, x0, y0),
-    stream: stream(gamma, x0, y0),
-    xVel: xVel(gamma, x0, y0),
-    yVel: yVel(gamma, x0, y0)
-  };
-};
-
-var pointVortexFlowStrs = exports.pointVortexFlowStrs = function pointVortexFlowStrs(inputs) {
-  var gamma = inputs.gamma,
-      x0 = inputs.x0,
-      y0 = inputs.y0;
-
-  return {
-    vp: vpTeX(gamma, x0, y0),
-    stream: streamTeX(gamma, x0, y0),
-    xVel: xVelTeX(gamma, x0, y0),
-    yVel: yVelTeX(gamma, x0, y0)
-  };
-};
-
-var pointVortexEqs = exports.pointVortexEqs = {
-  vp: vpTeXEq,
-  stream: streamTeXEq,
-  xVel: xVelTeXEq,
-  yVel: yVelTeXEq
-};
-
-var PointVortex = function (_Component) {
-  _inherits(PointVortex, _Component);
-
-  function PointVortex(props) {
-    _classCallCheck(this, PointVortex);
-
-    return _possibleConstructorReturn(this, (PointVortex.__proto__ || Object.getPrototypeOf(PointVortex)).call(this, props));
-  }
-
-  _createClass(PointVortex, [{
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(_Flow2.default, _extends({}, this.props, {
-        name: 'Point Vortex',
-        type: _flowTypes.POINT_VORTEX,
-        makeFlowFcns: makePointVortexFlowFcns,
-        makeFlowStrs: pointVortexFlowStrs,
-        eqs: pointVortexEqs }));
-    }
-  }]);
-
-  return PointVortex;
-}(_react.Component);
-
-exports.default = PointVortex;
-;
 
 /***/ }),
 /* 111 */
@@ -19661,10 +19610,16 @@ var makeData = function makeData(zData, flowView) {
 var layout = {
   margin: {
     t: 40,
-    l: 30,
+    l: 35,
     r: 20,
     b: 20
   }
+};
+
+var config = {
+  modeBarButtonsToRemove: ['toggleSpikelines', 'hoverClosestCartesian', 'hoverCompareCartesian'],
+  displaylogo: false,
+  displayModeBar: true
 };
 
 var mapStateToProps = function mapStateToProps(state) {
@@ -19694,6 +19649,7 @@ var App = function (_Component) {
       density: 0
     };
     _this.activeFlowTimer = null;
+    _this.applyData = _this.applyData.bind(_this);
     _this.handleResize = _this.handleResize.bind(_this);
     return _this;
   }
@@ -19701,11 +19657,24 @@ var App = function (_Component) {
   _createClass(App, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var zData = makeZData(function () {
-        return 0;
-      }, xCoords, yCoords);
-      var data = makeData(zData, this.props.flowView);
-      this.renderNewPlot(this.graph, data, layout);
+      var _props = this.props,
+          location = _props.location,
+          flowView = _props.flowView;
+
+      if (location.search) {
+        var decoded = (0, _util.decodeSearchString)(location.search.replace('?', ''));
+        var flowIds = decoded.flowIds,
+            flowMap = decoded.flowMap,
+            maxIndex = decoded.maxIndex;
+
+        (0, _util.bootstrapFlows)(flowIds, flowMap, maxIndex);
+      } else {
+        var zData = makeZData(function () {
+          return 0;
+        }, xCoords, yCoords);
+        var data = makeData(zData, this.props.flowView);
+        this.renderNewPlot(this.graph, data, layout);
+      }
       window.addEventListener('resize', this.handleResize);
     }
   }, {
@@ -19720,22 +19689,34 @@ var App = function (_Component) {
 
       var activeFlowIds = nextProps.activeFlowIds,
           activeFlowMap = nextProps.activeFlowMap,
-          flowView = nextProps.flowView;
+          flowView = nextProps.flowView,
+          history = nextProps.history;
 
       if (activeFlowIds !== this.props.activeFlowIds || activeFlowMap !== this.props.activeFlowMap || flowView !== this.props.flowView) {
         clearTimeout(this.activeFlowTimer);
 
         this.activeFlowTimer = setTimeout(function () {
-          var flowFcnMap = makeFlowFcnMap(activeFlowIds, activeFlowMap);
-          var flowFcn = flowFcnMap[flowView];
-          var zData = makeZData(flowFcn, xCoords, yCoords);
-          var newData = makeData(zData, flowView);
-          _this2.renderNewPlot(_this2.graph, newData, layout);
+          _this2.applyData(flowView, activeFlowIds, activeFlowMap);
 
-          var flowStr = makeFlowStr(flowView, activeFlowIds, activeFlowMap);
-          _this2.setState({ flowStr: flowStr, flowFcnMap: flowFcnMap });
+          if (activeFlowIds.length === 0) {
+            history.push('/');
+          } else {
+            history.push('/?' + (0, _util.encodeSearchString)(activeFlowIds, activeFlowMap));
+          }
         }, 300);
       }
+    }
+  }, {
+    key: 'applyData',
+    value: function applyData(flowView, flowIds, flowMap) {
+      var flowFcnMap = makeFlowFcnMap(flowIds, flowMap);
+      var flowFcn = flowFcnMap[flowView];
+      var zData = makeZData(flowFcn, xCoords, yCoords);
+      var newData = makeData(zData, flowView);
+      this.renderNewPlot(this.graph, newData, layout);
+
+      var flowStr = makeFlowStr(flowView, flowIds, flowMap);
+      this.setState({ flowStr: flowStr, flowFcnMap: flowFcnMap });
     }
   }, {
     key: 'handleResize',
@@ -19749,17 +19730,17 @@ var App = function (_Component) {
   }, {
     key: 'renderNewPlot',
     value: function renderNewPlot(node, data, layout) {
-      Plotly.newPlot(node, data, layout);
+      Plotly.newPlot(node, data, layout, config);
     }
   }, {
     key: 'render',
     value: function render() {
       var _this4 = this;
 
-      var _props = this.props,
-          activeFlowIds = _props.activeFlowIds,
-          activeFlowMap = _props.activeFlowMap,
-          flowView = _props.flowView;
+      var _props2 = this.props,
+          activeFlowIds = _props2.activeFlowIds,
+          activeFlowMap = _props2.activeFlowMap,
+          flowView = _props2.flowView;
       var _state = this.state,
           flowStr = _state.flowStr,
           flowFcnMap = _state.flowFcnMap,
@@ -19978,6 +19959,15 @@ var removeAlert = exports.removeAlert = function removeAlert(id) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+var bootstrapFlows = exports.bootstrapFlows = function bootstrapFlows(flowIds, flowMap, maxIndex) {
+  return {
+    type: 'BOOTSTRAP_FLOWS',
+    flowIds: flowIds,
+    flowMap: flowMap,
+    maxIndex: maxIndex
+  };
+};
+
 var addFlow = exports.addFlow = function addFlow(flow) {
   return {
     type: 'ADD_FLOW',
@@ -20014,6 +20004,12 @@ var removeFlow = exports.removeFlow = function removeFlow(flowId) {
   return {
     type: 'REMOVE_FLOW',
     flowId: flowId
+  };
+};
+
+var removeAllFlows = exports.removeAllFlows = function removeAllFlows() {
+  return {
+    type: 'REMOVE_ALL_FLOWS'
   };
 };
 
@@ -20062,23 +20058,11 @@ var _createClass = function () {
 
 var _dec, _class;
 
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }return target;
-};
-
 var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(66);
-
-var _util = __webpack_require__(47);
 
 var _reactFlipMove = __webpack_require__(555);
 
@@ -20103,6 +20087,10 @@ var _PointVortex2 = _interopRequireDefault(_PointVortex);
 var _Dipole = __webpack_require__(86);
 
 var _Dipole2 = _interopRequireDefault(_Dipole);
+
+var _util = __webpack_require__(47);
+
+var _alert = __webpack_require__(108);
 
 var _flowTypes = __webpack_require__(33);
 
@@ -20131,13 +20119,13 @@ function _inherits(subClass, superClass) {
 var getFlowComponent = function getFlowComponent(flow, id) {
   switch (flow.type) {
     case _flowTypes.UNIFORM:
-      return _react2.default.createElement(_Uniform2.default, _extends({ key: id }, flow));
+      return _react2.default.createElement('div', { key: id }, _react2.default.createElement(_Uniform2.default, flow));
     case _flowTypes.POINT_SOURCE:
-      return _react2.default.createElement(_PointSource2.default, _extends({ key: id }, flow));
+      return _react2.default.createElement('div', { key: id }, _react2.default.createElement(_PointSource2.default, flow));
     case _flowTypes.POINT_VORTEX:
-      return _react2.default.createElement(_PointVortex2.default, _extends({ key: id }, flow));
+      return _react2.default.createElement('div', { key: id }, _react2.default.createElement(_PointVortex2.default, flow));
     case _flowTypes.DIPOLE:
-      return _react2.default.createElement(_Dipole2.default, _extends({ key: id }, flow));
+      return _react2.default.createElement('div', { key: id }, _react2.default.createElement(_Dipole2.default, flow));
     default:
       return null;
   }
@@ -20166,7 +20154,14 @@ var ActiveFlowsPanel = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_
           activeFlowIds = _props.activeFlowIds,
           activeFlowMap = _props.activeFlowMap;
 
-      return _react2.default.createElement('div', { className: 'flex0 active-flows' }, _react2.default.createElement('h4', null, 'Current Flows \xB7 ', activeFlowIds.length), _react2.default.createElement(_reactFlipMove2.default, {
+      var hasFlows = activeFlowIds.length > 0;
+
+      return _react2.default.createElement('div', { className: 'flex0 active-flows' }, _react2.default.createElement('div', { className: 'flexbox align-items-center',
+        style: { marginBottom: '10px' } }, _react2.default.createElement('h4', { className: 'flex1', style: { margin: 0 } }, 'Flows \xB7 ', activeFlowIds.length), hasFlows && _react2.default.createElement('div', { className: 'flex0 text-light hover-dark',
+        onClick: function onClick() {
+          (0, _util.removeAllFlows)();
+          (0, _alert.addAlert)('Removed all flows', true, 10 * 1000);
+        } }, 'Remove All')), !hasFlows && _react2.default.createElement('div', { className: 'text-light' }, _react2.default.createElement('p', null, 'None yet!'), _react2.default.createElement('p', { style: { fontSize: '14px' } }, 'You can add preset or custom flow elements to visualize their behavior.')), _react2.default.createElement(_reactFlipMove2.default, {
         enterAnimation: 'fade',
         leaveAnimation: 'fade',
         staggerDurationBy: 10 }, activeFlowIds.map(function (id, i) {
@@ -20175,7 +20170,8 @@ var ActiveFlowsPanel = (_dec = (0, _reactRedux.connect)(mapStateToProps), _dec(_
           return _react2.default.createElement('div', { key: id, className: 'flow-group' }, _react2.default.createElement('div', { className: 'flexbox align-items-center title' }, _react2.default.createElement('label', { className: 'flex1' }, flow.name), _react2.default.createElement(_CloseButton2.default, {
             className: 'flex0',
             onClick: function onClick() {
-              return (0, _util.removeFlow)(flow.flowId);
+              (0, _util.removeFlow)(flow.flowId);
+              (0, _alert.addAlert)('Removed "' + flow.name + '"', true, 10 * 1000);
             } })), flow.flowIds.map(function (flowId, j) {
             return getFlowComponent(activeFlowMap[flowId], flowId);
           }));
@@ -20225,9 +20221,7 @@ var _PresetFlow2 = _interopRequireDefault(_PresetFlow);
 
 var _flowTypes = __webpack_require__(33);
 
-var _Uniform = __webpack_require__(67);
-
-var _Dipole = __webpack_require__(86);
+var _util = __webpack_require__(47);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -20261,14 +20255,14 @@ var flows = [{
   type: _flowTypes.UNIFORM,
   name: 'Uniform Stream',
   inputs: uniformInputs,
-  flowFcns: (0, _Uniform.makeUniformFlowFcns)(uniformInputs),
-  flowStrs: (0, _Uniform.uniformFlowStrs)(uniformInputs)
+  flowFcns: (0, _util.makeUniformFlowFcns)(uniformInputs),
+  flowStrs: (0, _util.uniformFlowStrs)(uniformInputs)
 }, {
   type: _flowTypes.DIPOLE,
   name: 'Dipole',
   inputs: dipoleInputs,
-  flowFcns: (0, _Dipole.makeDipoleFlowFcns)(dipoleInputs),
-  flowStrs: (0, _Dipole.dipoleFlowStrs)(dipoleInputs)
+  flowFcns: (0, _util.makeDipoleFlowFcns)(dipoleInputs),
+  flowStrs: (0, _util.dipoleFlowStrs)(dipoleInputs)
 }];
 
 var Cylinder = function (_Component) {
@@ -20327,9 +20321,7 @@ var _PresetFlow2 = _interopRequireDefault(_PresetFlow);
 
 var _flowTypes = __webpack_require__(33);
 
-var _Uniform = __webpack_require__(67);
-
-var _PointSource = __webpack_require__(88);
+var _util = __webpack_require__(47);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -20363,14 +20355,14 @@ var flows = [{
   type: _flowTypes.UNIFORM,
   name: 'Uniform Stream',
   inputs: uniformInputs,
-  flowFcns: (0, _Uniform.makeUniformFlowFcns)(uniformInputs),
-  flowStrs: (0, _Uniform.uniformFlowStrs)(uniformInputs)
+  flowFcns: (0, _util.makeUniformFlowFcns)(uniformInputs),
+  flowStrs: (0, _util.uniformFlowStrs)(uniformInputs)
 }, {
   type: _flowTypes.POINT_SOURCE,
   name: 'Point Source',
   inputs: pointSourceInputs,
-  flowFcns: (0, _PointSource.makePointSourceFlowFcns)(pointSourceInputs),
-  flowStrs: (0, _PointSource.pointSourceFlowStrs)(pointSourceInputs)
+  flowFcns: (0, _util.makePointSourceFlowFcns)(pointSourceInputs),
+  flowStrs: (0, _util.pointSourceFlowStrs)(pointSourceInputs)
 }];
 
 var RankineHalfbody = function (_Component) {
@@ -20429,9 +20421,7 @@ var _PresetFlow2 = _interopRequireDefault(_PresetFlow);
 
 var _flowTypes = __webpack_require__(33);
 
-var _Uniform = __webpack_require__(67);
-
-var _PointSource = __webpack_require__(88);
+var _util = __webpack_require__(47);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -20468,20 +20458,20 @@ var flows = [{
   type: _flowTypes.UNIFORM,
   name: 'Uniform Stream',
   inputs: uniformInputs,
-  flowFcns: (0, _Uniform.makeUniformFlowFcns)(uniformInputs),
-  flowStrs: (0, _Uniform.uniformFlowStrs)(uniformInputs)
+  flowFcns: (0, _util.makeUniformFlowFcns)(uniformInputs),
+  flowStrs: (0, _util.uniformFlowStrs)(uniformInputs)
 }, {
   type: _flowTypes.POINT_SOURCE,
   name: 'Point Source',
   inputs: pointSourceInputs,
-  flowFcns: (0, _PointSource.makePointSourceFlowFcns)(pointSourceInputs),
-  flowStrs: (0, _PointSource.pointSourceFlowStrs)(pointSourceInputs)
+  flowFcns: (0, _util.makePointSourceFlowFcns)(pointSourceInputs),
+  flowStrs: (0, _util.pointSourceFlowStrs)(pointSourceInputs)
 }, {
   type: _flowTypes.POINT_SOURCE,
   name: 'Point Sink',
   inputs: pointSinkInputs,
-  flowFcns: (0, _PointSource.makePointSourceFlowFcns)(pointSinkInputs),
-  flowStrs: (0, _PointSource.pointSourceFlowStrs)(pointSinkInputs)
+  flowFcns: (0, _util.makePointSourceFlowFcns)(pointSinkInputs),
+  flowStrs: (0, _util.pointSourceFlowStrs)(pointSinkInputs)
 }];
 
 var RankineOval = function (_Component) {
@@ -20540,11 +20530,7 @@ var _PresetFlow2 = _interopRequireDefault(_PresetFlow);
 
 var _flowTypes = __webpack_require__(33);
 
-var _Uniform = __webpack_require__(67);
-
-var _Dipole = __webpack_require__(86);
-
-var _PointVortex = __webpack_require__(110);
+var _util = __webpack_require__(47);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -20581,20 +20567,20 @@ var flows = [{
   type: _flowTypes.UNIFORM,
   name: 'Uniform Stream',
   inputs: uniformInputs,
-  flowFcns: (0, _Uniform.makeUniformFlowFcns)(uniformInputs),
-  flowStrs: (0, _Uniform.uniformFlowStrs)(uniformInputs)
+  flowFcns: (0, _util.makeUniformFlowFcns)(uniformInputs),
+  flowStrs: (0, _util.uniformFlowStrs)(uniformInputs)
 }, {
   type: _flowTypes.DIPOLE,
   name: 'Dipole',
   inputs: dipoleInputs,
-  flowFcns: (0, _Dipole.makeDipoleFlowFcns)(dipoleInputs),
-  flowStrs: (0, _Dipole.dipoleFlowStrs)(dipoleInputs)
+  flowFcns: (0, _util.makeDipoleFlowFcns)(dipoleInputs),
+  flowStrs: (0, _util.dipoleFlowStrs)(dipoleInputs)
 }, {
   type: _flowTypes.POINT_VORTEX,
   name: 'Point Vortex',
   inputs: pointVortexInputs,
-  flowFcns: (0, _PointVortex.makePointVortexFlowFcns)(pointVortexInputs),
-  flowStrs: (0, _PointVortex.pointVortexFlowStrs)(pointVortexInputs)
+  flowFcns: (0, _util.makePointVortexFlowFcns)(pointVortexInputs),
+  flowStrs: (0, _util.pointVortexFlowStrs)(pointVortexInputs)
 }];
 
 var RotatingCylinder = function (_Component) {
@@ -20968,6 +20954,16 @@ exports.default = function () {
       historyIndex = void 0;
 
   switch (action.type) {
+    case 'BOOTSTRAP_FLOWS':
+      return Object.assign({}, state, {
+        activeFlowIds: action.flowIds,
+        activeFlowMap: action.flowMap,
+        index: action.maxIndex + 1,
+        history: [{
+          activeFlowIds: action.flowIds,
+          activeFlowMap: action.flowMap
+        }]
+      });
     case 'ADD_FLOW':
       index = state.index;
       var newFlow = Object.assign({}, action.flow, {
@@ -21063,6 +21059,19 @@ exports.default = function () {
           name: historyName
         };
       }
+      historyIndex = state.historyIndex + 1;
+      history = [].concat(_toConsumableArray(state.history.slice(0, historyIndex)), [historyEntry]);
+      return Object.assign({}, state, historyEntry, {
+        historyIndex: historyIndex,
+        history: history
+      });
+
+    case 'REMOVE_ALL_FLOWS':
+      historyEntry = {
+        activeFlowIds: [],
+        activeFlowMap: {},
+        name: 'remove all flows'
+      };
       historyIndex = state.historyIndex + 1;
       history = [].concat(_toConsumableArray(state.history.slice(0, historyIndex)), [historyEntry]);
       return Object.assign({}, state, historyEntry, {
@@ -25260,7 +25269,7 @@ exports = module.exports = __webpack_require__(454)();
 
 
 // module
-exports.push([module.i, ".flexbox {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex; }\n\n.flex-wrap {\n  flex-wrap: wrap; }\n\n.flex-wrap-reverse {\n  flex-wrap: wrap-reverse; }\n\n.flex0 {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto; }\n\n.flex1 {\n  -webkit-box-flex: 1 1 auto;\n  -moz-box-flex: 1 1 auto;\n  -webkit-flex: 1 1 auto;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto; }\n\n.align-items-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.justify-content-center {\n  -webkit-box-pack: center;\n  -moz-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center; }\n\n.text-grey {\n  color: #51586a; }\n\nbody {\n  font-family: 'Open Sans', sans-serif;\n  color: #252830; }\n\n.nav-controls {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  padding: 6px 12px;\n  background: #f1f4f9;\n  z-index: 1002; }\n\n.alert-box-enter {\n  opacity: 0;\n  transform: translateX(-50%) translateY(-100%) !important; }\n\n.alert-box-enter.alert-box-enter-active {\n  transition: all 0.2s;\n  opacity: 1;\n  transform: translateX(-50%) translateY(-50%) !important; }\n\n.alert-box-leave {\n  opacity: 1;\n  transform: translateX(-50%) translateY(-50%) !important; }\n\n.alert-box-leave.alert-box-leave-active {\n  transition: all 0.2s;\n  opacity: 0;\n  transform: translateX(-50%) translateY(-100%) !important; }\n\n.alert-box {\n  background: #69f;\n  padding: 0 12px;\n  color: white;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translateX(-50%) translateY(-50%);\n  border-radius: 3px; }\n  .alert-box .undo {\n    cursor: pointer;\n    font-size: 14px;\n    font-weight: bold;\n    opacity: 0.8;\n    transition: opacity 0.2s;\n    margin-right: 15px; }\n    .alert-box .undo:hover {\n      text-decoration: underline;\n      opacity: 1; }\n  .alert-box .close-x {\n    padding: 3px; }\n    .alert-box .close-x svg {\n      stroke: #e6eeff; }\n\n.display-none {\n  display: none; }\n\nbutton {\n  cursor: pointer; }\n  button.history-btn {\n    background: transparent;\n    border: none;\n    font-size: 20px; }\n    button.history-btn[disabled] {\n      cursor: default; }\n\n.close-x {\n  display: inline-block;\n  padding: 0;\n  cursor: pointer;\n  border-radius: 3px;\n  background: transparent;\n  border: none;\n  outline: 0;\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s;\n  stroke: #747e95; }\n  .close-x:hover {\n    transform: scale(1.05); }\n  .close-x:active {\n    transition: 0;\n    background: rgba(0, 0, 0, 0.1); }\n  .close-x svg {\n    stroke: inherit;\n    stroke-width: 1.5px;\n    stroke-linecap: round;\n    display: block; }\n\n.flow-nav {\n  border-bottom: 2px solid #eaeef6; }\n  .flow-nav .option {\n    font-size: 18px;\n    padding: 5px 10px;\n    padding-top: 7px;\n    border-top-left-radius: 4px;\n    border-top-right-radius: 4px;\n    border-top: 2px solid transparent;\n    border-right: 2px solid transparent;\n    border-left: 2px solid transparent;\n    color: #51586a;\n    cursor: pointer; }\n    .flow-nav .option:hover {\n      text-decoration: underline; }\n    .flow-nav .option:first-child {\n      margin-left: 12px; }\n    .flow-nav .option.active {\n      border-top: 2px solid #eaeef6;\n      border-right: 2px solid #eaeef6;\n      border-left: 2px solid #eaeef6;\n      background: white;\n      transform: translateY(2px);\n      padding-top: 5px;\n      color: #252830;\n      cursor: default; }\n      .flow-nav .option.active:hover {\n        text-decoration: none; }\n\n.flow-eq {\n  border: 2px solid #b3ccff;\n  background: #e6eeff;\n  overflow-x: auto;\n  border-radius: 3px;\n  padding: 5px 8px; }\n\n.input-group-addon {\n  background-color: #eaeef6; }\n\n.flow-element {\n  display: inline-block;\n  vertical-align: top;\n  max-width: 100%;\n  border-radius: 3px;\n  border: 2px solid #eaeef6;\n  background: #f1f4f9;\n  padding: 10px;\n  margin-bottom: 8px;\n  margin-right: 6px; }\n  .flow-element:last-child {\n    margin-bottom: 0; }\n  .flow-element .close-x {\n    padding: 2px; }\n  .flow-element .input-group {\n    margin-bottom: 4px; }\n  .flow-element .input-group-addon {\n    width: 30px; }\n  .flow-element label {\n    margin: 0;\n    font-size: 20px;\n    margin-right: 5px; }\n  .flow-element .flow-eq {\n    color: #51586a;\n    margin-bottom: 5px;\n    font-size: 12px; }\n\n.flow-group {\n  padding: 10px;\n  border: 2px solid #fc6;\n  background: #fff7e6;\n  border-radius: 3px;\n  margin-bottom: 15px; }\n  .flow-group .title {\n    margin-bottom: 10px; }\n    .flow-group .title label {\n      margin: 0; }\n\n.view-container {\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  padding-top: 50px; }\n\n.main-panel {\n  width: 70%;\n  position: relative; }\n\n.active-flows {\n  padding: 12px;\n  width: 30%;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  border-left: 2px solid #eaeef6; }\n  .active-flows .flow-element {\n    margin-right: 0;\n    width: 100%; }\n  .active-flows h4 {\n    margin-bottom: 20px; }\n\n@media screen and (max-width: 768px) {\n  .main-panel {\n    width: 100%; }\n  .active-flows {\n    width: 100%;\n    border-left: none;\n    border-top: 2px solid #eaeef6;\n    height: auto;\n    min-height: 100px; }\n  .app-container {\n    display: block !important; }\n  .view-container {\n    height: auto; }\n  .flow-nav .option {\n    font-size: 14px; } }\n\n.main-flow-eq {\n  border-radius: 3px;\n  padding: 4px 10px;\n  margin-right: 10px;\n  max-width: 800px; }\n\n.inspect-flows label {\n  font-size: 12px;\n  margin-bottom: 2px; }\n", ""]);
+exports.push([module.i, ".flexbox {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex; }\n\n.flex-wrap {\n  flex-wrap: wrap; }\n\n.flex-wrap-reverse {\n  flex-wrap: wrap-reverse; }\n\n.flex0 {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto; }\n\n.flex1 {\n  -webkit-box-flex: 1 1 auto;\n  -moz-box-flex: 1 1 auto;\n  -webkit-flex: 1 1 auto;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto; }\n\n.align-items-center {\n  -webkit-box-align: center;\n  -moz-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center; }\n\n.justify-content-center {\n  -webkit-box-pack: center;\n  -moz-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center; }\n\n.text-grey {\n  color: #51586a; }\n\n.text-light {\n  color: #747e95; }\n\n.hover-dark {\n  cursor: pointer; }\n  .hover-dark:hover {\n    color: #252830;\n    text-decoration: underline; }\n\nbody {\n  font-family: 'Open Sans', sans-serif;\n  color: #252830; }\n\n.nav-controls {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  padding: 6px 12px;\n  background: #f1f4f9;\n  z-index: 1002; }\n\n.alert-box-enter {\n  opacity: 0;\n  transform: translateX(-50%) translateY(-100%) !important; }\n\n.alert-box-enter.alert-box-enter-active {\n  transition: all 0.2s;\n  opacity: 1;\n  transform: translateX(-50%) translateY(-50%) !important; }\n\n.alert-box-leave {\n  opacity: 1;\n  transform: translateX(-50%) translateY(-50%) !important; }\n\n.alert-box-leave.alert-box-leave-active {\n  transition: all 0.2s;\n  opacity: 0;\n  transform: translateX(-50%) translateY(-100%) !important; }\n\n.alert-box {\n  background: #51586a;\n  padding: 1px 12px;\n  color: white;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translateX(-50%) translateY(-50%);\n  border-radius: 3px;\n  font-size: 14px; }\n  .alert-box .undo {\n    cursor: pointer;\n    font-size: 14px;\n    font-weight: bold;\n    color: #bcdeff;\n    opacity: 0.8;\n    transition: all 0.2s;\n    margin-right: 15px; }\n    .alert-box .undo:hover {\n      text-decoration: underline;\n      color: white;\n      opacity: 1; }\n  .alert-box .close-x {\n    padding: 3px; }\n    .alert-box .close-x svg {\n      stroke: #e6eeff; }\n\n.display-none {\n  display: none; }\n\nbutton {\n  cursor: pointer; }\n  button.history-btn {\n    background: transparent;\n    border: none;\n    font-size: 20px; }\n    button.history-btn[disabled] {\n      cursor: default; }\n\n.close-x {\n  display: inline-block;\n  padding: 0;\n  cursor: pointer;\n  border-radius: 3px;\n  background: transparent;\n  border: none;\n  outline: 0;\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s;\n  stroke: #747e95; }\n  .close-x:hover {\n    transform: scale(1.05); }\n  .close-x:active {\n    transition: 0;\n    background: rgba(0, 0, 0, 0.1); }\n  .close-x svg {\n    stroke: inherit;\n    stroke-width: 1.5px;\n    stroke-linecap: round;\n    display: block; }\n\n.flow-nav {\n  border-bottom: 2px solid #eaeef6; }\n  .flow-nav .option {\n    font-size: 18px;\n    padding: 5px 10px;\n    padding-top: 7px;\n    border-top-left-radius: 4px;\n    border-top-right-radius: 4px;\n    border-top: 2px solid transparent;\n    border-right: 2px solid transparent;\n    border-left: 2px solid transparent;\n    color: #51586a;\n    cursor: pointer; }\n    .flow-nav .option:hover {\n      text-decoration: underline; }\n    .flow-nav .option:first-child {\n      margin-left: 12px; }\n    .flow-nav .option.active {\n      border-top: 2px solid #eaeef6;\n      border-right: 2px solid #eaeef6;\n      border-left: 2px solid #eaeef6;\n      background: white;\n      transform: translateY(2px);\n      padding-top: 5px;\n      color: #252830;\n      cursor: default; }\n      .flow-nav .option.active:hover {\n        text-decoration: none; }\n\n.flow-eq {\n  border: 2px solid #b3ccff;\n  background: #e6eeff;\n  overflow-x: auto;\n  border-radius: 3px;\n  padding: 5px 8px; }\n\n.input-group-addon {\n  background-color: #eaeef6; }\n\n.flow-element {\n  display: inline-block;\n  vertical-align: top;\n  max-width: 100%;\n  border-radius: 3px;\n  border: 2px solid #eaeef6;\n  background: #f1f4f9;\n  padding: 10px;\n  margin-bottom: 8px;\n  margin-right: 6px; }\n  .flow-element .close-x {\n    padding: 2px; }\n  .flow-element .input-group {\n    margin-bottom: 4px; }\n  .flow-element .input-group-addon {\n    width: 30px; }\n  .flow-element label {\n    margin: 0;\n    font-size: 20px;\n    margin-right: 5px; }\n  .flow-element .flow-eq {\n    color: #51586a;\n    margin-bottom: 5px;\n    font-size: 12px; }\n\n.flow-group {\n  padding: 10px;\n  border: 2px solid #fc6;\n  background: #fff7e6;\n  border-radius: 3px;\n  margin-bottom: 15px; }\n  .flow-group .title {\n    margin-bottom: 10px; }\n    .flow-group .title label {\n      margin: 0; }\n\n.view-container {\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  padding-top: 50px; }\n\n.main-panel {\n  width: 70%;\n  position: relative; }\n\n.active-flows {\n  padding: 12px 15px;\n  width: 30%;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  border-left: 2px solid #eaeef6; }\n  .active-flows .flow-element {\n    margin-right: 0;\n    width: 100%; }\n  .active-flows h4 {\n    margin-bottom: 20px; }\n\n@media screen and (max-width: 768px) {\n  .main-panel {\n    width: 100%; }\n  .active-flows {\n    width: 100%;\n    border-left: none;\n    border-top: 2px solid #eaeef6;\n    height: auto;\n    min-height: 100px; }\n  .app-container {\n    display: block !important; }\n  .view-container {\n    height: auto; }\n  .flow-nav .option {\n    font-size: 14px; } }\n\n.main-flow-eq {\n  border-radius: 3px;\n  padding: 4px 10px;\n  margin-right: 10px;\n  max-width: 800px; }\n\n.inspect-flows label {\n  font-size: 12px;\n  margin-bottom: 2px; }\n", ""]);
 
 // exports
 

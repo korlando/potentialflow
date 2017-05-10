@@ -59,8 +59,14 @@ $blue: #69f;
 .justify-content-center {
   @include justifyContent(center);
 }
-.text-grey {
-  color: $grey;
+.text-grey { color: $grey; }
+.text-light { color: $light; }
+.hover-dark {
+  cursor: pointer;
+  &:hover {
+    color: $dark;
+    text-decoration: underline;
+  }
 }
 
 body {
@@ -96,23 +102,26 @@ body {
   transform: translateX(-50%) translateY(-100%) !important;
 }
 .alert-box {
-  background: $blue;
-  padding: 0 12px;
+  background: $grey;
+  padding: 1px 12px;
   color: white;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
   border-radius: 3px;
+  font-size: 14px;
   .undo {
     cursor: pointer;
     font-size: 14px;
     font-weight: bold;
+    color: #bcdeff;
     opacity: 0.8;
-    transition: opacity 0.2s;
+    transition: all 0.2s;
     margin-right: 15px;
     &:hover {
       text-decoration: underline;
+      color: white;
       opacity: 1;
     }
   }
@@ -223,9 +232,6 @@ button {
   padding: 10px;
   margin-bottom: 8px;
   margin-right: 6px;
-  &:last-child {
-    margin-bottom: 0;
-  }
   .close-x {
     padding: 2px;
   }
@@ -274,7 +280,7 @@ button {
 }
 
 .active-flows {
-  padding: 12px;
+  padding: 12px 15px;
   width: 30%;
   height: 100vh;
   overflow-y: auto;

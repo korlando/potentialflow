@@ -76,6 +76,16 @@ export default (state = defaultState, action) => {
   let flow, index, history, historyEntry, historyIndex;
 
   switch(action.type) {
+    case 'BOOTSTRAP_FLOWS':
+      return Object.assign({}, state, {
+        activeFlowIds: action.flowIds,
+        activeFlowMap: action.flowMap,
+        index: action.maxIndex + 1,
+        history: [{
+          activeFlowIds: action.flowIds,
+          activeFlowMap: action.flowMap,
+        }],
+      });
     case 'ADD_FLOW':
       index = state.index;
       const newFlow = Object.assign({}, action.flow, {
@@ -178,6 +188,19 @@ export default (state = defaultState, action) => {
           name: historyName
         };
       }
+      historyIndex = state.historyIndex + 1;
+      history = [...state.history.slice(0, historyIndex), historyEntry];
+      return Object.assign({}, state, historyEntry, {
+        historyIndex,
+        history
+      });
+
+    case 'REMOVE_ALL_FLOWS':
+      historyEntry = {
+        activeFlowIds: [],
+        activeFlowMap: {},
+        name: 'remove all flows',
+      };
       historyIndex = state.historyIndex + 1;
       history = [...state.history.slice(0, historyIndex), historyEntry];
       return Object.assign({}, state, historyEntry, {

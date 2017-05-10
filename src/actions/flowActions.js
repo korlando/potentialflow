@@ -1,3 +1,12 @@
+export const bootstrapFlows = (flowIds, flowMap, maxIndex) => {
+  return {
+    type: 'BOOTSTRAP_FLOWS',
+    flowIds,
+    flowMap,
+    maxIndex,
+  };
+};
+
 export const addFlow = (flow) => {
   return {
     type: 'ADD_FLOW',
@@ -34,6 +43,12 @@ export const removeFlow = (flowId) => {
   return {
     type: 'REMOVE_FLOW',
     flowId
+  };
+};
+
+export const removeAllFlows = () => {
+  return {
+    type: 'REMOVE_ALL_FLOWS',
   };
 };
 

@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import PresetFlow from './PresetFlow';
 import { UNIFORM, DIPOLE } from '../../../constants/flowTypes';
 
-import { makeUniformFlowFcns, uniformFlowStrs } from '../Uniform';
-import { makeDipoleFlowFcns, dipoleFlowStrs } from '../Dipole';
+import { makeUniformFlowFcns,
+         uniformFlowStrs,
+         makeDipoleFlowFcns,
+         dipoleFlowStrs } from '../../../util';
 
 const uniformInputs = {
   U: -1, V: 0

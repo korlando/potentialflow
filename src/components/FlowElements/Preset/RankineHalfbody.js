@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import PresetFlow from './PresetFlow';
 import { UNIFORM, POINT_SOURCE } from '../../../constants/flowTypes';
 
-import { makeUniformFlowFcns, uniformFlowStrs } from '../Uniform';
-import { makePointSourceFlowFcns, pointSourceFlowStrs } from '../PointSource';
+import { makeUniformFlowFcns,
+         uniformFlowStrs,
+         makePointSourceFlowFcns,
+         pointSourceFlowStrs } from '../../../util';
 
 const uniformInputs = {
   U: 1, V: 0

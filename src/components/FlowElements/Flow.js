@@ -23,6 +23,7 @@ export default class Flow extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
   };
 
   handleChange(key, value) {
@@ -59,6 +60,12 @@ export default class Flow extends Component {
     }
   };
 
+  handleRemove(flowId) {
+    removeFlow(flowId);
+    const { name } = this.props;
+    addAlert(`Removed "${name}" Flow`, true, 10 * 1000);
+  };
+
   render() {
     const { name,
             type,
@@ -82,7 +89,7 @@ export default class Flow extends Component {
           { flowId !== undefined &&
             <CloseButton
               className="flex0"
-              onClick={() => removeFlow(flowId)}/>
+              onClick={() => this.handleRemove(flowId)}/>
           }
         </div>
 
