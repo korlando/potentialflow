@@ -8,7 +8,9 @@ html
   body(style="font-family: 'Open Sans', sans-serif;background:#f1f4f9;")
     .container(style="padding-top:70px;padding-bottom:70px;")
       div(style="width:400px;max-width:100%;margin:auto;background:white;border:2px solid #d6deed;padding:20px;")
-        h1.text-center(style="margin-bottom:20px;") PotentialFlow.com
+        .text-center
+          img(src="/images/pf-logo.svg" width="100" style="margin-bottom:10px;")
+        h1.text-center(style="margin-bottom:20px;font-size:30px;") PotentialFlow.com
         form
           .input-group(style="margin-bottom:10px;")
             span.input-group-addon
@@ -33,7 +35,7 @@ html
             data: JSON.stringify({ p: p }),
             processData: false,
             error: function(jqXHR, textStatus, errorThrown) {
-              $error.text(errorThrown);
+              $error.text((jqXHR.responseJSON && jqXHR.responseJSON.message) || errorThrown);
               $error.slideDown();
             },
             success: function(data, textStatus, jqXHR) {

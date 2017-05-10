@@ -14,6 +14,12 @@ router.get('/', (req, res, next) => {
   res.render('home', pages.home);
 });
 
+router.get('/logout', (req, res, next) => {
+  req.session.destroy((err) => {
+    res.redirect('/');
+  });
+});
+
 router.get('/:page', (req, res, next) => {
   const pageName = req.params.page;
   const pageInfo = pages[pageName];
