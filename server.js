@@ -33,10 +33,10 @@ if(cluster.isMaster) {
 
   const argv = require('minimist')(process.argv.slice(2));
   const PORT = Number(argv.p) || Number(argv.port) || 3000;
-  const PRODUCTION = Boolean(argv.production);
+  const production = Boolean(argv.production);
   app.set('port', PORT);
 
-  if(!PRODUCTION) {
+  if(!production) {
     app.use(require('morgan')('dev'));
   }
 
@@ -67,7 +67,7 @@ if(cluster.isMaster) {
   }));
 
   app.use('/api/v1', require('./routes/api-v1')());
-  app.use('/', require('./routes/routes'));
+  app.use('/', require('./routes/routes')(production));
 
   // error handling
   app.use((req, res, next) => {
