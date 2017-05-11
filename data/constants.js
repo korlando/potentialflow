@@ -1,3 +1,3 @@
 module.exports = {
-  DOMAIN: 'http://potentialflow.com'
+  DOMAIN: 'https://potentialflow.com'
 };

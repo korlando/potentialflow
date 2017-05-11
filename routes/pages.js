@@ -19,12 +19,12 @@ module.exports = {
     url: `${DOMAIN}/story`
   },
   'definitions': {
-    title: '',
+    title: 'Definitions - Potential Flow',
     description: '',
     url: `${DOMAIN}/definitions`
   },
   'derivations': {
-    title: '',
+    title: 'Derivations - Potential Flow',
     description: '',
     url: `${DOMAIN}/derivations`
   },
@@ -39,7 +39,7 @@ module.exports = {
     url: `${DOMAIN}/equations`
   },
   'references': {
-    title: '',
+    title: 'References - Potential Flow',
     description: '',
     url: `${DOMAIN}/references`
   },
