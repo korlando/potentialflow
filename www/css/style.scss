@@ -178,3 +178,13 @@ footer.main-footer {
   color: $lighterGrey;
   font-size: 14px;
 }
+.definitions {
+  a, a:visited, a:active, a:link {
+    color: $darkGrey;
+    font-style: italic;
+  }
+  a:hover {
+    color: $darkGrey;
+    text-decoration: underline;
+  }
+}

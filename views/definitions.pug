@@ -4,23 +4,23 @@ block content
     const contents = [{
       id: 'potential-flow',
       name: 'Potential Flow',
-      value: 'Potential flow is an idealized model of fluid flow that occurs in the case of <em>incompressible</em>, <em>inviscid</em>, and <em>irrotational</em> flow. The velocity field of a potential flow satisfies <em>Laplace’s equation</em>: $\\nabla^{2} \\vec{v} = 0$ (proof here).',
+      value: 'Potential flow is an idealized model of fluid flow that occurs in the case of <a href="#incompressible">incompressible</a>, <a href="#inviscid">inviscid</a>, and <a href="#irrotational">irrotational</a> flow. The velocity field of a potential flow satisfies <a href="#laplaces-equation">Laplace’s equation</a>: $\\nabla^{2} \\vec{v} = 0$ (proof here).',
     }, {
-      id: 'irrotational-flow',
+      id: 'irrotational',
       name: 'Irrotational Flow',
-      value: 'Irrotational flow is defined by having a <em>velocity field</em> that satisfies $\\nabla \\times \\vec{v} = 0$ everywhere in the flow except for in some cases singularities may exist, which are single points that violate this statement. An equivalent statement is that the <em>velocity field</em> is curl free or has no <em>vorticity</em>. By definition, all <em>potential flows</em> satisfy irrotationality. All irrotational <em>velocity fields</em> will have a scalar potential $\\phi$ that satisfy $\\nabla \\phi = \\vec{v}$ (see proof).',
+      value: 'Irrotational flow is defined by having a <a href="#velocity-field">velocity field</a> that satisfies $\\nabla \\times \\vec{v} = 0$ everywhere in the flow except for in some cases singularities may exist, which are single points that violate this statement. An equivalent statement is that the <a href="#velocity-field">velocity field</a> is curl free or has no <a href="#vorticity">vorticity</a>. By definition, all <a href="#potential-flow">potential flows</a> satisfy irrotationality. All irrotational <a href="#velocity-field">velocity fields</a> will have a scalar potential $\\phi$ that satisfy $\\nabla \\phi = \\vec{v}$ (see proof).',
     }, {
       id: 'velocity-potential',
       name: 'Velocity Potential',
-      value: 'The velocity potential is represented as $\\phi$, and exists for a flow when the velocity field is <em>irrotational</em>. The potential is defined so that $\\nabla \\phi = 0$.',
+      value: 'The velocity potential is represented as $\\phi$, and exists for a flow when the velocity field is <a href="#irrotational">irrotational</a>. The potential is defined so that $\\nabla \\phi = 0$.',
     }, {
       id: 'ideal-fluid',
       name: 'Ideal Fluid',
-      value: 'An ideal fluid is one that is both <em>incompressible</em> and <em>inviscid</em>. Although in reality, all fluids are <em>real</em> and therefore are to some degree <em>compressible</em> and have some <em>viscosity</em>, fluids like air and water often behave ideal when they flow. <em>Potential flow</em> always assumes that the fluid is ideal.',
+      value: 'An ideal fluid is one that is both <a href="#incompressible">incompressible</a> and <a href="#inviscid">inviscid</a>. Although in reality, all fluids are <a href="#real-fluid">real</a> and therefore are to some degree compressible and have some <a href="#viscosity">viscosity</a>, fluids like air and water often behave ideal when they flow. <a href="#potential-flow">Potential flow</a> always assumes that the fluid is ideal.',
     }, {
-      id: 'inviscid-flow',
+      id: 'inviscid',
       name: 'Inviscid Flow',
-      value: 'An inviscid flow is a flow in which the effects from <em>viscosity</em> are negligible. In reality, all fluids have viscosity, but fluids like air and water often flow in a way that is indistinguishable from an ideally inviscid fluid and this is considered inviscid flow.',
+      value: 'An inviscid flow is a flow in which the effects from <a href="#viscosity">viscosity</a> are negligible. In reality, all fluids have viscosity, but fluids like air and water often flow in a way that is indistinguishable from an ideally inviscid fluid and this is considered inviscid flow.',
     }, {
       id: 'viscosity',
       name: 'Viscosity',
@@ -28,7 +28,7 @@ block content
         <div class="pl50 pt10 pb10">$\\tau_{ij} = \\mu \\frac{\\partial v_{i}}{\\partial x_{j}}$</div>
         <div>Kinematic viscosity is defined: $\\frac{\\mu}{\\rho}$ where $\\rho$ is the density of the fluid. In an inviscid flow it is assumed that $\\mu = 0$. Some typical values of viscosity are listed below: (viscosity of air, water, seawater, …)</div>`,
     }, {
-      id: 'incompressible-flow',
+      id: 'incompressible',
       name: 'Incompressible Flow',
       value: 'Incompressible flow is a flow in which any change in density in the fluid is negligible. When considering the flow as a group of many small individual fluid particles, these individual fluid particles do not undergo any volume change in an incompressible flow. Effects of compressibility occur at high speeds in flow, and therefore the Mach number of the flow can be used to estimate if the assumption of incompressibility is valid. At Mach numbers of $\\textrm{Ma} \\lt 0.3$ flows are incompressible (cite source). The fact that sound can propagate through fluids proves they must be compressible in reality because sound is a compression wave. However, all fluids behave as incompressible at speeds that are small relative to the speed of sound.',
     }, {
@@ -66,7 +66,7 @@ block content
     }, {
       id: 'rotation',
       name: 'Rotation',
-      value: 'Rotation in a fluid flow is defined as $\\frac{1}{2}\\nabla \\times \\vec{v}$ or half of the <em>vorticity</em>. Just like <em>vorticity</em>, it is a vector defined at every point in the flow.',
+      value: 'Rotation in a fluid flow is defined as $\\frac{1}{2}\\nabla \\times \\vec{v}$ or half of the <a href="#vorticity">vorticity</a>. Just like <a href="#vorticity">vorticity</a>, it is a vector defined at every point in the flow.',
     }, {
       id: 'fluid',
       name: 'Fluid',
@@ -74,7 +74,7 @@ block content
     }, {
       id: 'steady-flow',
       name: 'Steady Flow',
-      value: 'Steady flow is constant through time or time independent. All the <em>streamlines</em> in the flow remain fixed. This is an <em>Eulerian</em> concept because field vectors are constant, but individual fluid particles may experience changes in velocity as time progresses.',
+      value: 'Steady flow is constant through time or time independent. All the <a href="#streamlines">streamlines</a> in the flow remain fixed. This is an <em>Eulerian</em> concept because field vectors are constant, but individual fluid particles may experience changes in velocity as time progresses.',
     }, {
       id: 'streamlines',
       name: 'Streamlines',
@@ -98,10 +98,11 @@ block content
           each item in contents.slice(block.start, block.end)
             li
               a(href=`#${item.id}`)=item.name
-    each item in contents
-      .pb10
-        h2.fw300(id=item.id)=item.name
-        p!=item.value
+    .definitions
+      each item in contents
+        .pb10
+          h2.fw300(id=item.id)=item.name
+          p!=item.value
 block scripts
   script(type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML")
   script(src="/js/mathjax-config.js")

@@ -86,7 +86,7 @@ if(cluster.isMaster) {
 
   const server = http.createServer(app);
   server.listen(PORT);
-  server.on('error', () => {
+  server.on('error', (err) => {
     if(err.syscall !== 'listen') {
       throw err;
     }
