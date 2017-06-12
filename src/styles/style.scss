@@ -19,20 +19,6 @@ $blue: #69f;
   -ms-flex: $values;
   flex: $values;
 }
-@mixin justifyContent($value) {
-  -webkit-box-pack: $value;
-  -moz-box-pack: $value;
-  -webkit-justify-content: $value;
-  -ms-flex-pack: $value;
-  justify-content: $value;
-}
-@mixin alignItems($value) {
-  -webkit-box-align: $value;
-  -moz-box-align: $value;
-  -webkit-align-items: $value;
-  -ms-flex-align: $value;
-  align-items: $value;
-}
 @mixin flexDirection($value) {
   -webkit-flex-direction: $value;
   -ms-flex-direction: $value;
@@ -40,9 +26,6 @@ $blue: #69f;
 }
 .flexbox {
   @include flexbox();
-}
-.flex-wrap {
-  flex-wrap: wrap;
 }
 .flex-wrap-reverse {
   flex-wrap: wrap-reverse;
@@ -52,12 +35,6 @@ $blue: #69f;
 }
 .flex1 {
   @include flex(1 1 auto);
-}
-.align-items-center {
-  @include alignItems(center);
-}
-.justify-content-center {
-  @include justifyContent(center);
 }
 .text-grey { color: $grey; }
 .text-light { color: $light; }
@@ -139,7 +116,7 @@ body {
 
 button {
   cursor: pointer;
-  &.history-btn {
+  &.blank {
     background: transparent;
     border: none;
     font-size: 20px;
@@ -232,6 +209,9 @@ button {
   padding: 10px;
   margin-bottom: 8px;
   margin-right: 6px;
+  @media screen and (max-width: 768px) {
+    width: 100%;
+  }
   .close-x {
     padding: 2px;
   }

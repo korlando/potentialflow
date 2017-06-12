@@ -18,15 +18,13 @@ const mapStateToProps = (state) => {
 
 @connect(mapStateToProps)
 export default class Nav extends Component {
-  constructor(props) {
-    super(props);
-  };
-
   render() {
-    const { historyIndex,
-            history,
-            alerts,
-            flowView } = this.props;
+    const {
+      historyIndex,
+      history,
+      alerts,
+      flowView,
+    } = this.props;
     const disableUndo = historyIndex <= 0;
     const disableRedo = historyIndex >= history.length - 1;
 
@@ -67,14 +65,14 @@ export default class Nav extends Component {
             );
           })}
         </ReactCSSTransitionGroup>
-        <button className="history-btn flex0"
+        <button className="blank flex0"
           title="Undo"
           disabled={disableUndo}
           onClick={undoFlowHistory}
           title={disableUndo ? '' : `Undo ${history[historyIndex].name}`}>
           <span className="lnr lnr-undo"></span>
         </button>
-        <button className="history-btn flex0"
+        <button className="blank flex0"
           title="Redo"
           disabled={disableRedo}
           onClick={redoFlowHistory}

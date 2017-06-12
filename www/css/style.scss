@@ -17,20 +17,6 @@ $lighterGrey: #b7bccc;
   -ms-flex: $values;
   flex: $values;
 }
-@mixin justifyContent($value) {
-  -webkit-box-pack: $value;
-  -moz-box-pack: $value;
-  -webkit-justify-content: $value;
-  -ms-flex-pack: $value;
-  justify-content: $value;
-}
-@mixin alignItems($value) {
-  -webkit-box-align: $value;
-  -moz-box-align: $value;
-  -webkit-align-items: $value;
-  -ms-flex-align: $value;
-  align-items: $value;
-}
 @mixin flexDirection($value) {
   -webkit-flex-direction: $value;
   -ms-flex-direction: $value;
@@ -41,9 +27,6 @@ $lighterGrey: #b7bccc;
 }
 .flex-column {
   @include flexDirection(column);
-}
-.flex-wrap {
-  flex-wrap: wrap;
 }
 .flex0 {
   @include flex(0 0 auto);

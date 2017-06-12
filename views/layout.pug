@@ -10,23 +10,23 @@ html(lang="en")
     meta(property="og:description" content=description)
     link(rel="canonical" href=url)
     link(rel="icon" href="/images/pf-logo.png" type="image/x-icon")
-    link(href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet")
-    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous")
-    link(rel="stylesheet" href="/css/style.css?v=0")
+    link(href="//fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet")
+    link(rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous")
+    link(rel="stylesheet" href="/css/style.css?v=1")
     block head
   body.flexbox.flex-column
     include ./includes/nav
     .flex1
       block content
     include ./includes/footer
-    script(src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous")
+    script(src="//code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous")
     script.
       $(function() {
-        var threshold = 900;
-        var loaded = false;
-        var $window = $(window);
-        var $navLinks = $('ul.nav-links');
-        var $hamburger = $('button.hamburger');
+        var threshold = 900,
+            loaded = false,
+            $window = $(window),
+            $navLinks = $('ul.nav-links'),
+            $hamburger = $('button.hamburger');
         var handleResize = function() {
           if($window.width() < threshold) {
             $hamburger.show();

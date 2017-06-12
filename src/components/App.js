@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { bootstrapFlows,
-         encodeSearchString, 
-         decodeSearchString } from '../util';
+import {
+  bootstrapFlows,
+  encodeSearchString, 
+  decodeSearchString,
+} from '../util';
 import TeX from './TeX';
 import Nav from './Nav';
 import ActiveFlowsPanel from './ActiveFlowsPanel';
@@ -18,26 +20,28 @@ import RankineOval from './FlowElements/Preset/RankineOval';
 import Cylinder from './FlowElements/Preset/Cylinder';
 import RotatingCylinder from './FlowElements/Preset/RotatingCylinder';
 
-import { UNIFORM,
-         POINT_SOURCE,
-         POINT_VORTEX,
-         DIPOLE } from '../constants/flowTypes';
+import {
+  UNIFORM,
+  POINT_SOURCE,
+  POINT_VORTEX,
+  DIPOLE,
+} from '../constants/flowTypes';
 import flowToTeX from '../constants/flowToTeX';
 
 const SIZE = 100;
 const flowViewColorScales = {
   vp: 'YIOrRd',
-  stream: 'YIGnBu'
+  stream: 'YIGnBu',
 };
 const flowNavOptions = [{
   name: 'Add Preset',
-  value: 'preset'
+  value: 'preset',
 }, {
   name: 'Add Custom',
   value: 'custom'
 }, {
   name: 'Inspect Flows',
-  value: 'inspect'
+  value: 'inspect',
 }];
 
 /**
@@ -67,8 +71,8 @@ const generateXY = (xSize, ySize) => {
   };
 };
 
-const coordinates = generateXY(SIZE, SIZE);
-const { xCoords, yCoords } = coordinates;
+let coordinates = generateXY(SIZE, SIZE);
+let { xCoords, yCoords } = coordinates;
 
 /**
  * Generate the overall active flow function given a key.
@@ -217,15 +221,15 @@ const makeData = (zData, flowView) => {
     y: yCoords,
     type: 'contour',
     contours: {
-      coloring: 'lines'
+      coloring: 'lines',
     },
     ncontours: 80,
     colorscale: flowViewColorScales[flowView],
     line: {
       smoothing: 1.3,
-      width: 1.5
+      width: 1.5,
     },
-    connectgaps: true
+    connectgaps: true,
   }]
 };
 
@@ -234,8 +238,8 @@ const layout = {
     t: 40,
     l: 35,
     r: 20,
-    b: 20
-  }
+    b: 20,
+  },
 };
 
 const config = {
@@ -287,6 +291,7 @@ class App extends Component {
       this.renderNewPlot(this.graph, data, layout);
     }
     window.addEventListener('resize', this.handleResize);
+    this.handleResize();
   };
 
   componentWillUnmount() {
@@ -294,10 +299,12 @@ class App extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    const { activeFlowIds,
-            activeFlowMap,
-            flowView,
-            history } = nextProps;
+    const {
+      activeFlowIds,
+      activeFlowMap,
+      flowView,
+      history,
+    } = nextProps;
     
     if(activeFlowIds !== this.props.activeFlowIds ||
       activeFlowMap !== this.props.activeFlowMap ||
@@ -328,6 +335,7 @@ class App extends Component {
   };
 
   handleResize() {
+    this.setState({ graphSize: this.graph.clientWidth - 80 });
     setTimeout(() => {
       Plotly.Plots.resize(this.graph);
     });
@@ -335,29 +343,56 @@ class App extends Component {
 
   renderNewPlot(node, data, layout) {
     Plotly.newPlot(node, data, layout, config);
+    node.on('plotly_relayout', (e) => {
+      let sizeX, sizeY;
+      if(e['xaxis.autorange'] && e['yaxis.autorange']) {
+        sizeX = SIZE;
+        sizeY = SIZE;
+      } else {
+        const x1 = e['xaxis.range[1]'];
+        const x0 = e['xaxis.range[0]'];
+        const y1 = e['yaxis.range[1]'];
+        const y0 = e['yaxis.range[0]'];
+        if(Math.abs(Math.abs(x1) - Math.abs(x0)) <= 2 && Math.abs(Math.abs(y1) - Math.abs(y0)) <= 2) {
+          sizeX = x1 - x0;
+          sizeY = y1 - y0;
+        }
+      }
+      if(!sizeX && !sizeY) return;
+      coordinates = generateXY(sizeX, sizeY);
+      xCoords = coordinates.xCoords;
+      yCoords = coordinates.yCoords;
+      const { flowView, activeFlowIds, activeFlowMap } = this.props;
+      this.applyData(flowView, activeFlowIds, activeFlowMap);
+    });
   };
 
   render() {
-    const { activeFlowIds,
-            activeFlowMap,
-            flowView } = this.props;
-    const { flowStr,
-            flowFcnMap,
-            addMode,
-            inspectX,
-            inspectY,
-            farFieldPressure,
-            density } = this.state;
+    const {
+      activeFlowIds,
+      activeFlowMap,
+      flowView,
+    } = this.props;
+    const {
+      flowStr,
+      flowFcnMap,
+      addMode,
+      inspectX,
+      inspectY,
+      farFieldPressure,
+      density,
+      graphSize,
+    } = this.state;
 
     return (
       <div className="flexbox app-container">
         <div className="flex0 main-panel">
           <Nav/>
           <div className="view-container">
-            <div ref={div => this.graph = div}
+            <div id="graph" ref={node => this.graph = node}
               style={{
                 width: '100%',
-                height: '500px',
+                height: graphSize + 'px',
                 margin: 'auto'
               }}></div>
 
