@@ -42,6 +42,7 @@ h1 {
 .pt10 { padding-top: 10px; }
 .pt50 { padding-top: 50px; }
 .pb10 { padding-bottom: 10px; }
+.pb20 { padding-bottom: 20px; }
 .pb30 { padding-bottom: 30px; }
 .pb50 { padding-bottom: 50px; }
 .pl50 { padding-left: 50px; }
@@ -162,6 +163,8 @@ footer.main-footer {
   font-size: 14px;
 }
 .definitions {
+  width: 650px;
+  max-width: 100%;
   a, a:visited, a:active, a:link {
     color: $darkGrey;
     font-style: italic;
