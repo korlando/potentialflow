@@ -46,6 +46,7 @@ h1 {
 .pb30 { padding-bottom: 30px; }
 .pb50 { padding-bottom: 50px; }
 .pl50 { padding-left: 50px; }
+.mb5 { margin-bottom: 5px; }
 
 button.hamburger {
   display: inline-block;
@@ -147,12 +148,19 @@ ul.nav-links {
       background: lighten($darkGrey, 3%);
     }
   }
+  @media screen and (max-width: 1020px) {
+    a {
+      font-size: 12px;
+      padding: 15px 10px;
+    }
+  }
   @media screen and (max-width: 900px) {
     li, a {
       display: block;
     }
     a {
       padding-left: 15px;
+      font-size: 14px;
     }
   }
 }

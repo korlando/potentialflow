@@ -1,5 +1,6 @@
 module.exports = {
   DOMAIN: 'https://potentialflow.com',
+  SITE_NAME: 'Potential Flow',
   DEFINITIONS: [{
     id: 'potential-flow',
     name: 'Potential Flow',

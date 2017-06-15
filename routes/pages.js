@@ -1,5 +1,4 @@
-const constants = require('../data/constants');
-const { DOMAIN } = constants;
+const { DOMAIN, SITE_NAME } = require('../data/constants');
 
 // map page pathname to metadata
 module.exports = {
@@ -17,6 +16,10 @@ module.exports = {
     title: 'The Story of Potential Flow - Potential Flow',
     description: 'Potential flow is an idealized model of fluid dynamics that applies when a flow is inviscid, incompressible, and irrotational.',
     url: `${DOMAIN}/story`
+  },
+  'flow-elements': {
+    title: 'Flow Elements - ' + SITE_NAME,
+    url: DOMAIN + '/flow-elements',
   },
   'definitions': {
     title: 'Definitions - Potential Flow',
