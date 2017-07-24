@@ -1,2 +1,47 @@
 extends ./layout
 block content
+  .container.pt50.pb50
+    h1 Derivations
+    .pb10
+      p
+        strong A velocity field that is a gradient of a scalar potential field is irrotational
+      p It is a direct result from vector calculus that the curl of the gradient of a scalar is always zero, $\nabla \times \nabla \phi = 0$:
+      .pl50.pb10
+        div $\nabla \times \nabla \phi = \nabla \times (\frac{\partial \phi}{\partial x} + \frac{\partial \phi}{\partial y} + \frac{\partial \phi}{\partial z})$
+        div $\nabla \times \nabla \phi = (\frac{\partial^{2} \phi}{\partial z \partial y} - \frac{\partial^{2} \phi}{\partial y \partial z})\hat{i} - (\frac{\partial^{2} \phi}{\partial z \partial x} - \frac{\partial^{2} \phi}{\partial x \partial z})\hat{j} + (\frac{\partial^{2} \phi}{\partial y \partial x} - \frac{\partial^{2} \phi}{\partial x \partial y})\hat{k}$
+    .pb10
+      p
+        strong Incompressible flow is divergence free
+      p By definition, small fluid elements in an incompressible flow do not change in density. Therefore the <em>material derivative</em> of density is zero in an incompressible flow: $\frac{D \rho}{Dt} = 0$.
+      p The differential statement of conservation of mass is:
+      .pl50.pb10 $\frac{D \rho}{Dt} + \nabla \cdot \rho \vec{v} = 0$
+      p The first term is zero for an incompressible flow, which leads to:
+      .pl50.pb10
+        .mb5 $\nabla \cdot \vec{v} = 0$
+        .mb5 $\rho(\nabla \cdot \vec{v}) = 0$
+        div $\nabla \cdot \vec{v} = 0$
+      p A divergence free velocity field is an equivalent statement of conservation of mass for an incompressible flow.
+    .pb10
+      p
+        strong Bernoulli's equation is valid in the full fluid domain in potential flow
+      p The Euler equations are a statement of conservation of momentum in an inviscid flow:
+      .pl50.pb10 $\rho \frac{\partial \vec{v}}{\partial t} + \rho(\vec{v} \cdot \nabla)\vec{v} + \nabla p + g \nabla z = 0$
+      p The second term can be rewritten through a vector identity:
+      .pl50.pb10 $(\vec{v} \cdot \nabla)\vec{v} = -\vec{v} \times \omega + \nabla (\frac{| \vec{v} |^{2} }{2})$
+      p Vorticity is zero in irrotational flow, so Euler's equation simplifies to:
+      .pl50.pb10
+        .mb5 $\rho \frac{\partial \nabla \phi}{\partial t} + \rho \nabla(\frac{| \vec{v} | ^{2}}{2}) + \nabla p + \rho g \nabla z$
+        .mb5 $\nabla(\rho \frac{\partial \phi}{\partial t} + \rho(\frac{| \vec{v} |^{2}}{2}) + p + \rho gz) = 0$
+        div $\rho \frac{\partial \phi}{\partial t} + \rho(\frac{| \vec{v} |^{2}}{2}) + p + \rho gz = constant$
+      p This is a statement of the unsteady version of Bernoulli's equation, which is valid not just along streamlines, but between points anywhere in the fluid domain.
+    .pb10
+      p
+        strong A dipole flow element is a combination of a point source and sink
+      p Combine the potentials of a source and sink, both strength $m$ and located on the x-axis separated by distance $2a$:
+      .pl50.pb10
+        .mb5 $\phi = \frac{m}{2\pi}[ln(\sqrt{(x - a)^{2} + y^{2}}) - ln(\sqrt{(x + a)^{2} + y^{2}})]$
+        div $\phi = \frac{m}{2\pi} \frac{x}{x^{2} + y^{2}}$
+      p This same methodology can be used to prove a more general case of a dipole at any angle.
+block scripts
+  script(type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML")
+  script(src="/js/mathjax-config.js")
