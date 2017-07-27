@@ -54,37 +54,37 @@ export const diffTeX = (first, second) => {
   return `${first} - ${second}`;
 };
 
-export const fracTeX = (numerator, denominator) => {
-  return `\\frac{${numerator}}{${denominator}}`;
-};
+export const fracTeX = (numerator, denominator) => (
+  `\\frac{${numerator}}{${denominator}}`
+);
 
-export const sqrtTeX = (x) => {
-  return `\\sqrt[]{${x}}`;
-};
+export const sqrtTeX = (x) => (
+  `\\sqrt[]{${x}}`
+);
 
-export const radiusSqTeX = (x0, y0) => {
-  return `(${diffTeX('x', x0)})^2 + (${diffTeX('y', y0)})^2`;
-};
+export const radiusSqTeX = (x0, y0) => (
+  `(${diffTeX('x', x0)})^2 + (${diffTeX('y', y0)})^2`
+);
 
-export const radiusTeX = (x0, y0) => {
-  return sqrtTeX(radiusSqTeX(x0, y0));
-};
+export const radiusTeX = (x0, y0) => (
+  sqrtTeX(radiusSqTeX(x0, y0))
+);
 
-export const over2PiTeX = (x) => {
-  return fracTeX(x, '2\\pi');
-};
+export const over2PiTeX = (x) => (
+  fracTeX(x, '2\\pi')
+);
 
-export const getRadiusSq = (xDiff, yDiff) => {
-  return Math.pow(xDiff, 2) + Math.pow(yDiff, 2);
-};
+export const getRadiusSq = (xDiff, yDiff) => (
+  Math.pow(xDiff, 2) + Math.pow(yDiff, 2)
+);
 
-export const getRadius = (xDiff, yDiff) => {
-  return Math.sqrt(getRadiusSq(xDiff, yDiff));
-};
+export const getRadius = (xDiff, yDiff) => (
+  Math.sqrt(getRadiusSq(xDiff, yDiff))
+);
 
-export const over2Pi = (x) => {
-  return x / (2 * Math.PI);
-};
+export const over2Pi = (x) => (
+  x / (2 * Math.PI)
+);
 
 export const uniformFcns = {
   vp: (U, V) => {
@@ -111,17 +111,13 @@ export const uniformFcns = {
       return U;
     };
   },
-  xVelTeX: (U, V) => {
-    return U;
-  },
+  xVelTeX: (U, V) => U,
   yVel: (U, V) => {
     return (x, y) => {
       return V;
     };
   },
-  yVelTeX: (U, V) => {
-    return V;
-  },
+  yVelTeX: (U, V) => V,
 };
 
 export const pointSourceFcns = {

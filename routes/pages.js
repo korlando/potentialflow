@@ -7,10 +7,10 @@ module.exports = {
     description: '',
     url: `${DOMAIN}`
   },
-  'about': {
-    title: 'About - Potential Flow',
+  'contact': {
+    title: 'Contact - Potential Flow',
     description: '',
-    url: `${DOMAIN}/about`
+    url: `${DOMAIN}/contact`
   },
   'story': {
     title: 'The Story of Potential Flow - Potential Flow',

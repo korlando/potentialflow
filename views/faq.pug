@@ -1,6 +1,7 @@
 extends ./layout
 block content
   .container.pt50.pb50
+    h1.pb20 Common Questions
     .pb10
       p
         strong Why is potential flow a relevant model of fluid flow?
@@ -26,5 +27,4 @@ block content
         strong How to find a potential from a velocity field?
       p The scalar potential can be derived from the velocity field by integrating the velocity components in accordance with the Cauchy-Riemann equations.
 block scripts
-  script(type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML")
-  script(src="/js/mathjax-config.js")
+  include ./includes/mathjax

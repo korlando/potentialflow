@@ -1,2 +1,74 @@
 extends ./layout
 block content
+  .container.pt50.pb50
+    h1.pb20 Equations
+    .pb20
+      p
+        strong Material Derivative
+      .pl50 $\frac{Df}{Dt} = \frac{\partial f}{\partial t} + \vec{v} \cdot \nabla f$
+    .pb20
+      p
+        strong Conservation of Mass
+      .pl50 $\frac{D \rho}{Dt} + \nabla \cdot \rho \vec{v} = 0$
+    .pb20
+      p
+        strong Navier-Stokes Equations
+      .pl50 $\frac{\partial \vec{v}}{\partial t} + (\vec{v} \cdot \nabla)\vec{v} = -\frac{\nabla p}{\rho} + \nu \nabla^{2} \vec{v} + g \nabla z$
+    .pb20
+      p
+        strong Euler Equations
+      .pl50 $\frac{\partial \vec{v}}{\partial t} + (\vec{v} \cdot \nabla)\vec{v} = -\frac{\nabla p}{\rho} + g \nabla z$
+    .pb20
+      p
+        strong Kelvin's Theorem
+      .pl50 $\frac{d \Gamma}{dt} = 0$
+    .pb20
+      p
+        strong Bernoulli's Equation
+      .pl50 $\rho \frac{\partial \phi}{\partial t} + \rho(\frac{| \vec{v} |^{2}}{2}) + p + \rho gz = constant$
+    .pb20
+      p
+        strong Incompressible Flow
+      .pl50 $\nabla \cdot \vec{v} = 0$
+    .pb20
+      p
+        strong Irrotational Flow
+      .pl50 $\nabla \times \vec{v} = 0$
+    .pb20
+      p
+        strong Laplace's Equation
+      .pl50 $\nabla^{2} \phi = 0$
+    .pb20
+      p
+        strong Point Source/Sink
+      .pl50
+        .mb5 $\phi = \frac{m}{2\pi}ln(\sqrt{(x - x_{0})^{2} + (y - y_{0})^{2}})$
+        .mb5 $\psi = \frac{m}{2\pi}atan2(y - y_{0}, x - x_{0})$
+        .mb5 $v_{x} = \frac{m}{2\pi} \frac{x - x_{0}}{(x - x_{0})^{2} + (y - y_{0})^{2}}$
+        .mb5 $v_{y} = \frac{m}{2\pi} \frac{y - y_{0}}{(x - x_{0})^{2} + (y - y_{0})^{2}}$
+    .pb20
+      p
+        strong Point Vortex
+      .pl50
+        .mb5 $\phi = \frac{\Gamma}{2\pi}atan2(y - y_{0}, x - x_{0})$
+        .mb5 $\psi = \frac{\Gamma}{2\pi}ln(\sqrt{(x - x_{0})^{2} + (y - y_{0})^{2}}$
+        .mb5 $v_{x} = \frac{\Gamma}{2\pi} \frac{-(y - y_{0})}{(x - x_{0})^{2} + (y - y_{0})^{2}}$
+        .mb5 $v_{y} = \frac{\Gamma}{2\pi} \frac{x - x_{0}}{(x - x_{0})^{2} + (y - y_{0})^{2}}$
+    .pb20
+      p
+        strong Dipole
+      .pl50
+        .mb5 $\phi = \frac{-\mu}{2\pi} \frac{x - x_{0}cos(\alpha) + y - y_{0}sin(\alpha)}{(x - x_{0})^{2} + (y - y_{0})^{2}}$
+        .mb5 $\psi = \frac{\mu}{2\pi} \frac{x - x_{0}sin(\alpha) + y - y_{0}cos(\alpha)}{(x - x_{0})^{2} + (y - y_{0})^{2}}$
+        .mb5 $v_{x} = \frac{((x - x_{0})^{2} + (y - y_{0})^{2})cos(\alpha) - 2(x - x_{0})((x - x_{0})cos(\alpha) + (y - y_{0})sin(\alpha))}{((x - x_{0})^{2} + (y - y_{0})^{2})^{2}}$
+        .mb5 $v_{x} = \frac{((x - x_{0})^{2} + (y - y_{0})^{2})sin(\alpha) - 2(y - y_{0})((x - x_{0})cos(\alpha) + (y - y_{0})sin(\alpha))}{((x - x_{0})^{2} + (y - y_{0})^{2})^{2}}$
+    .pb20
+      p
+        strong Corner Flow
+      .pl50
+        .mb5 $\phi = r^{\alpha}cos(\alpha \theta)$
+        .mb5 $\psi = r^{\alpha}sin(\alpha \theta)$
+        .mb5 $u_{r} = \frac{\partial \phi}{\partial r} = \alpha r^{\alpha - 1}cos(\alpha \theta)$
+        .mb5 $u_{\theta} = \frac{1}{r}\frac{\partial \phi}{\partial \theta} = -\alpha r^{\alpha - 1}sin(\alpha \theta)$
+block scripts
+  include ./includes/mathjax
