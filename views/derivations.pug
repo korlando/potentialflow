@@ -2,14 +2,14 @@ extends ./layout
 block content
   .container.pt50.pb50
     h1.pb20 Derivations
-    .pb20
+    .pb20#velocity-field-irrotational
       p
         strong A velocity field that is a gradient of a scalar potential field is irrotational
       p It is a direct result from vector calculus that the curl of the gradient of a scalar is always zero, $\nabla \times \nabla \phi = 0$:
       .pl50.pb10
         div $\nabla \times \nabla \phi = \nabla \times (\frac{\partial \phi}{\partial x} + \frac{\partial \phi}{\partial y} + \frac{\partial \phi}{\partial z})$
         div $\nabla \times \nabla \phi = (\frac{\partial^{2} \phi}{\partial z \partial y} - \frac{\partial^{2} \phi}{\partial y \partial z})\hat{i} - (\frac{\partial^{2} \phi}{\partial z \partial x} - \frac{\partial^{2} \phi}{\partial x \partial z})\hat{j} + (\frac{\partial^{2} \phi}{\partial y \partial x} - \frac{\partial^{2} \phi}{\partial x \partial y})\hat{k}$
-    .pb20
+    .pb20#incompressible-divergence-free
       p
         strong Incompressible flow is divergence free
       p By definition, small fluid elements in an incompressible flow do not change in density. Therefore the <em>material derivative</em> of density is zero in an incompressible flow: $\frac{D \rho}{Dt} = 0$.
