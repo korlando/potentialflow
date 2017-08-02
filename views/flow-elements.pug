@@ -53,6 +53,12 @@ block content
           .mb5 $\Phi(x,y,z) = -\frac{\mu}{4\pi}\frac{x}{(x^{2} + y^{2} + z^{2})^{3/2}}$
       .col-sm-4.text-center
         img(src="/images/DIPOLE.svg" width="50%" style="transform:translateX(-20%)")
+    h2.fw300 Corner Flow
+    .row.pb30
+      .col-sm-8
+        p This flow element mimics the flow around a sharp corner. The angle of the corner is defined by the factor $\alpha$, the orientation is defined by the factor $\theta_0$, and the magnitude by $\beta$. The corner angle in degrees is $\frac{180}{\alpha}$, and the angle $\theta_0$ sets the boundary wall angle relative to the positive x-axis. When alpha is greater than 1, the flow has an exterior corner, when it is greater than 1 the flow has an interior corner. In the case of an exterior corner, the center of the flow is a singularity where the velocity goes to infinity.
+      .col-sm-4.text-center
+        img(src="/images/CORNER.svg" width="50%")
 block scripts
   script(type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML")
   script(src="/js/mathjax-config.js")
