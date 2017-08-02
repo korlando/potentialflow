@@ -14,6 +14,7 @@ import Uniform from './FlowElements/Uniform';
 import PointSource from './FlowElements/PointSource';
 import PointVortex from './FlowElements/PointVortex';
 import Dipole from './FlowElements/Dipole';
+import Corner from './FlowElements/Corner';
 
 import RankineHalfbody from './FlowElements/Preset/RankineHalfbody';
 import RankineOval from './FlowElements/Preset/RankineOval';
@@ -25,6 +26,7 @@ import {
   POINT_SOURCE,
   POINT_VORTEX,
   DIPOLE,
+  CORNER,
 } from '../constants/flowTypes';
 import flowToTeX from '../constants/flowToTeX';
 
@@ -424,55 +426,58 @@ class App extends Component {
             </div>
 
             <div style={{ padding: '12px', minHeight: '500px' }}>
-              <div className={addMode !== 'preset' && 'display-none'}>
+              <div className={`d-flex flex-wrap align-items-stretch ${addMode !== 'preset' ? 'display-none' : ''}`}>
                 <RankineHalfbody/>
                 <RankineOval/>
                 <Cylinder/>
                 <RotatingCylinder/>
               </div>
               
-              <div className={addMode !== 'custom' && 'display-none'}>
+              <div className={`d-flex flex-wrap align-items-stretch ${addMode !== 'custom' ? 'display-none' : ''}`}>
                 <Uniform/>
                 <PointSource/>
                 <PointVortex/>
                 <Dipole/>
+                <Corner/>
               </div>
 
-              <div className={`inspect-flows flexbox ${addMode !== 'inspect' && 'display-none'}`}>
-                <div className="flex0" style={{ paddingRight: '20px' }}>
-                  <label>Enter a point (x, y)</label>
-                  <div className="input-group" style={{ marginBottom: '5px' }}>
-                    <div className="input-group-addon">x</div>
-                    <input type="number"
-                      className="form-control"
-                      value={inspectX}
-                      onChange={e => this.setState({ inspectX: e.target.value })}
-                      placeholder="X position"/>
-                  </div>
+              <div className={`inspect-flows ${addMode !== 'inspect' && 'display-none'}`}>
+                <h5>Flow</h5>
+                <div className="d-flex">
+                  <div className="flex0" style={{ paddingRight: '20px' }}>
+                    <label>Enter a point (x, y)</label>
+                    <div className="input-group" style={{ marginBottom: '5px' }}>
+                      <div className="input-group-addon">x</div>
+                      <input type="number"
+                        className="form-control"
+                        value={inspectX}
+                        onChange={e => this.setState({ inspectX: e.target.value })}
+                        placeholder="X position"/>
+                    </div>
 
-                  <div className="input-group" style={{ marginBottom: '5px' }}>
-                    <div className="input-group-addon">y</div>
-                    <input type="number"
-                      className="form-control"
-                      value={inspectY}
-                      onChange={e => this.setState({ inspectY: e.target.value })}
-                      placeholder="Y position"/>
+                    <div className="input-group" style={{ marginBottom: '5px' }}>
+                      <div className="input-group-addon">y</div>
+                      <input type="number"
+                        className="form-control"
+                        value={inspectY}
+                        onChange={e => this.setState({ inspectY: e.target.value })}
+                        placeholder="Y position"/>
+                    </div>
                   </div>
-                </div>
-
-                <div className="flex0" style={{ paddingRight: '20px' }}>
-                  <label>Flow at ({inspectX}, {inspectY})</label>
-                  <div className="flow-eq">
-                    { Object.keys(flowToTeX).map((key, i) => {
-                      return (
+                  <div className="flex0" style={{ paddingRight: '20px' }}>
+                    <label>Flow at ({inspectX}, {inspectY})</label>
+                    <div className="flow-eq">
+                      { Object.keys(flowToTeX).map((key, i) => (
                         <div key={i} style={{ marginBottom: '5px' }}>
                           <TeX value={`${flowToTeX[key]} = ${flowFcnMap[key](inspectX, inspectY)}`}/>
                         </div>
-                      );
-                    })}
+                      ))}
+                    </div>
                   </div>
                 </div>
-                <div className="flex0">
+
+                <h5 style={{marginTop: '20px'}}>Pressure</h5>
+                <div>
                   <label>Enter far field pressure</label>
                   <div className="input-group">
                     <div className="input-group-addon">

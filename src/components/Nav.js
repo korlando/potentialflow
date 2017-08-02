@@ -2,19 +2,19 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { removeAlert } from '../alert';
-import { undoFlowHistory,
-         redoFlowHistory,
-         editFlowView } from '../util';
+import {
+  undoFlowHistory,
+  redoFlowHistory,
+  editFlowView,
+} from '../util';
 import CloseButton from './CloseButton';
 
-const mapStateToProps = (state) => {
-  return {
-    alerts: state.alert.alerts,
-    historyIndex: state.flow.historyIndex,
-    history: state.flow.history,
-    flowView: state.flow.flowView
-  };
-};
+const mapStateToProps = (state) => ({
+  alerts: state.alert.alerts,
+  historyIndex: state.flow.historyIndex,
+  history: state.flow.history,
+  flowView: state.flow.flowView,
+});
 
 @connect(mapStateToProps)
 export default class Nav extends Component {

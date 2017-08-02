@@ -111,7 +111,7 @@ body {
 }
 
 .display-none {
-  display: none;
+  display: none !important;
 }
 
 button {
@@ -200,8 +200,7 @@ button {
 }
 
 .flow-element {
-  display: inline-block;
-  vertical-align: top;
+  @include flex(0 0 auto);
   max-width: 100%;
   border-radius: 3px;
   border: 2px solid darken($lightest, 2%);

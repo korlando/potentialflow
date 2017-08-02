@@ -1,9 +1,12 @@
 import * as flowActions from './actions/flowActions';
 import store from './store/store';
-import { UNIFORM,
-         POINT_SOURCE,
-         POINT_VORTEX,
-         DIPOLE } from './constants/flowTypes';
+import {
+  UNIFORM,
+  POINT_SOURCE,
+  POINT_VORTEX,
+  DIPOLE,
+  CORNER,
+} from './constants/flowTypes';
 
 export const bootstrapFlows = (flowIds, flowMap, maxIndex) => {
   store.dispatch(flowActions.bootstrapFlows(flowIds, flowMap, maxIndex));
@@ -311,6 +314,62 @@ export const dipoleFcns = {
   },
 };
 
+export const cornerFcns = {
+  vp: (x0, y0, theta0, alpha, beta) => {
+    return (x, y) => {
+      const xDiff = x - x0;
+      const yDiff = y - y0;
+      const radius = getRadius(xDiff, yDiff);
+      return Math.pow(radius, alpha) * Math.cos(alpha * (Math.atan(yDiff / xDiff) - theta0));
+    };
+  },
+  vpTeX: (x0, y0, theta0, alpha, beta) => {
+    const xDiff = diffTeX('x', x0);
+    const yDiff = diffTeX('y', y0);
+    const radius = radiusTeX(x0, y0);
+    return `(${radius})^{${alpha}}cos(${alpha}(tan^{-1}(${fracTeX(yDiff, xDiff)}) - ${theta0}))`;
+  },
+  stream: (x0, y0, theta0, alpha, beta) => {
+    return (x, y) => {
+      const xDiff = x - x0;
+      const yDiff = y - y0;
+      const radius = getRadius(xDiff, yDiff);
+      return Math.pow(radius, alpha) * Math.sin(alpha * (Math.atan(yDiff / xDiff) - theta0));
+    };
+  },
+  streamTeX: (x0, y0, theta0, alpha, beta) => {
+    const xDiff = diffTeX('x', x0);
+    const yDiff = diffTeX('y', y0);
+    return `(${radiusTeX(x0, y0)})^{${alpha}}sin(${alpha}(tan^{-1}(${fracTeX(yDiff, xDiff)}) - ${theta0}))`;
+  },
+  xVel: (x0, y0, theta0, alpha, beta) => {
+    return (x, y) => {
+      const xDiff = x - x0;
+      const yDiff = y - y0;
+      return alpha * Math.pow(getRadiusSq(xDiff, yDiff), (alpha/2) - 1) * (xDiff * Math.cos(alpha * (Math.atan(yDiff/xDiff) - theta0)) + yDiff * Math.sin(alpha * (Math.atan(yDiff, xDiff) - theta0)))
+    };
+  },
+  xVelTeX: (x0, y0, theta0, alpha, beta) => {
+    const xDiff = diffTeX('x', x0);
+    const yDiff = diffTeX('y', y0);
+    const inner = `${alpha}(tan^{-1}(${fracTeX(yDiff, xDiff)}) - ${theta0})`;
+    return `${alpha}(${radiusSqTeX(x0, y0)})^{${fracTeX(alpha, 2)} - 1}[(${xDiff})cos(${inner}) + (${yDiff})sin(${inner})]`;
+  },
+  yVel: (x0, y0, theta0, alpha, beta) => {
+    return (x, y) => {
+      const xDiff = x - x0;
+      const yDiff = y - y0;
+      return alpha * Math.pow(getRadiusSq(xDiff, yDiff), (alpha/2) - 1) * (yDiff * Math.cos(alpha * (Math.atan(yDiff/xDiff) - theta0)) + xDiff * Math.sin(alpha * (Math.atan(yDiff, xDiff) - theta0)))
+    };
+  },
+  yVelTeX: (x0, y0, theta0, alpha, beta) => {
+    const xDiff = diffTeX('x', x0);
+    const yDiff = diffTeX('y', y0);
+    const inner = `${alpha}(tan^{-1}(${fracTeX(yDiff, xDiff)}) - ${theta0})`;
+    return `${alpha}(${radiusSqTeX(x0, y0)})^{${fracTeX(alpha, 2)} - 1}[(${yDiff})cos(${inner}) + (${xDiff})sin(${inner})]`;
+  },
+};
+
 export const uniformEqs = {
   vp: uniformFcns.vpTeX('U', 'V'),
   stream: uniformFcns.streamTeX('U', 'V'),
@@ -337,6 +396,13 @@ export const dipoleEqs = {
   stream: dipoleFcns.streamTeX('\\mu', 'x_0', 'y_0', '\\alpha'),
   xVel: dipoleFcns.xVelTeX('\\mu', 'x_0', 'y_0', '\\alpha'),
   yVel: dipoleFcns.yVelTeX('\\mu', 'x_0', 'y_0', '\\alpha'),
+};
+
+export const cornerEqs = {
+  vp: cornerFcns.vpTeX('x_0', 'y_0', '\\theta_0', '\\alpha', '\\beta'),
+  stream: cornerFcns.streamTeX('x_0', 'y_0', '\\theta_0', '\\alpha', '\\beta'),
+  xVel: cornerFcns.xVelTeX('x_0', 'y_0', '\\theta_0', '\\alpha', '\\beta'),
+  yVel: cornerFcns.yVelTeX('x_0', 'y_0', '\\theta_0', '\\alpha', '\\beta'),
 };
 
 export const makeUniformFlowFcns = (inputs) => {
@@ -435,6 +501,28 @@ export const dipoleFlowStrs = (inputs) => {
   };
 };
 
+export const makeCornerFlowFcns = (inputs) => {
+  const { vp, stream, xVel, yVel } = cornerFcns;
+  const { x0, y0, theta0, alpha, beta } = inputs;
+  return {
+    vp: vp(x0, y0, theta0, alpha, beta),
+    stream: stream(x0, y0, theta0, alpha, beta),
+    xVel: xVel(x0, y0, theta0, alpha, beta),
+    yVel: yVel(x0, y0, theta0, alpha, beta),
+  };
+};
+
+export const cornerFlowStrs = (inputs) => {
+  const { vpTeX, streamTeX, xVelTeX, yVelTeX } = cornerFcns;
+  const { x0, y0, theta0, alpha, beta } = inputs;
+  return {
+    vp: vpTeX(x0, y0, theta0, alpha, beta),
+    stream: streamTeX(x0, y0, theta0, alpha, beta),
+    xVel: xVelTeX(x0, y0, theta0, alpha, beta),
+    yVel: yVelTeX(x0, y0, theta0, alpha, beta),
+  };
+};
+
 const mapFlowsToFcns = {
   [UNIFORM]: uniformFcns
 };
@@ -444,12 +532,14 @@ const mapFlowsLongToShort = {
   [POINT_SOURCE]: 'PS',
   [POINT_VORTEX]: 'PV',
   [DIPOLE]: 'D',
+  [CORNER]: 'C',
 };
 const mapFlowsShortToLong = {
   'U': UNIFORM,
   'PS': POINT_SOURCE,
   'PV': POINT_VORTEX,
   'D': DIPOLE,
+  'C': CORNER,
 };
 const mapGroupsLongToShort = {
   'Rankine Halfbody': 'RH',
@@ -585,6 +675,9 @@ export const decodeSearchString = (str) => {
           flow.flowFcns = makeDipoleFlowFcns(inputs);
           flow.flowStrs = dipoleFlowStrs(inputs);
           break;
+        case CORNER:
+          flow.flowFcns = makeCornerFlowFcns(inputs);
+          flow.flowStrs = cornerFlowStrs(inputs);
       }
     } else {
       return;

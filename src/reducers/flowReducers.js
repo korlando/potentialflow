@@ -1,7 +1,10 @@
-import { UNIFORM,
-         POINT_SOURCE,
-         POINT_VORTEX,
-         DIPOLE} from '../constants/flowTypes';
+import {
+  UNIFORM,
+  POINT_SOURCE,
+  POINT_VORTEX,
+  DIPOLE,
+  CORNER,
+} from '../constants/flowTypes';
 
 const defaultState = {
   activeFlowIds: [],
@@ -16,31 +19,40 @@ const defaultState = {
     [UNIFORM]: {
       inputs: {
         U: 1,
-        V: 1
-      }
+        V: 1,
+      },
     },
     [POINT_SOURCE]: {
       inputs: {
         m: 100,
         x0: 0,
-        y0: 0
-      }
+        y0: 0,
+      },
     },
     [POINT_VORTEX]: {
       inputs: {
         gamma: 100,
         x0: 0,
-        y0: 0
-      }
+        y0: 0,
+      },
     },
     [DIPOLE]: {
       inputs: {
         mu: 100,
         x0: 0,
         y0: 0,
-        alpha: 0
-      }
-    }
+        alpha: 0,
+      },
+    },
+    [CORNER]: {
+      inputs: {
+        x0: 0,
+        y0: 0,
+        theta0: 0,
+        alpha: 3.14,
+        beta: 0,
+      },
+    },
   },
   index: 0
 };
@@ -48,7 +60,8 @@ const defaultState = {
 const flowTypeToName = {
   [UNIFORM]: 'Uniform Flow',
   [POINT_VORTEX]: 'Point Vortex Flow',
-  [DIPOLE]: 'Dipole Flow'
+  [DIPOLE]: 'Dipole Flow',
+  [CORNER]: 'Corner Flow',
 };
 
 const getHistoryName = (flow, prefix) => {

@@ -7,13 +7,17 @@ import Uniform from './FlowElements/Uniform';
 import PointSource from './FlowElements/PointSource';
 import PointVortex from './FlowElements/PointVortex';
 import Dipole from './FlowElements/Dipole';
+import Corner from './FlowElements/Corner';
 
 import { removeFlow, removeAllFlows } from '../util';
 import { addAlert } from '../alert';
-import { UNIFORM,
-         POINT_SOURCE,
-         POINT_VORTEX,
-         DIPOLE} from '../constants/flowTypes';
+import {
+  UNIFORM,
+  POINT_SOURCE,
+  POINT_VORTEX,
+  DIPOLE,
+  CORNER,
+} from '../constants/flowTypes';
 
 const getFlowComponent = (flow, id) => {
   switch(flow.type) {
@@ -25,6 +29,8 @@ const getFlowComponent = (flow, id) => {
       return <div key={id}><PointVortex {...flow}/></div>;
     case DIPOLE:
       return <div key={id}><Dipole {...flow}/></div>;
+    case CORNER:
+      return <div key={id}><Corner {...flow}/></div>;
     default:
       return null;
   }

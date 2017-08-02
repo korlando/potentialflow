@@ -18,6 +18,10 @@ export default {
     name: <Naught symbol="y"/>,
     placeholder: 'y position'
   },
+  theta0: {
+    name: <Naught symbol={<span>&theta;</span>}/>,
+    placeholder: 'offset angle',
+  },
   m: {
     name: 'm',
     placeholder: 'magnitude'
@@ -33,5 +37,9 @@ export default {
   alpha: {
     name: <span>&alpha;</span>,
     placeholder: 'angle'
-  }
+  },
+  beta: {
+    name: <span>&beta;</span>,
+    placeholder: 'magnitude',
+  },
 };

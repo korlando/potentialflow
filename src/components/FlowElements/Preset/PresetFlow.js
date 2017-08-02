@@ -21,10 +21,10 @@ export default class PresetFlow extends Component {
   render() {
     const { name, flows, flowView } = this.props;
     return (
-      <div className="flow-element">
+      <div className="flow-element d-flex flex-column">
         <label>{name}</label>
         <div className="text-grey" style={{ fontSize: '10px' }}>Elements</div>
-        <div className="flow-eq">
+        <div className="flow-eq flex1">
         { flows.map((flow, i) => {
           return (
             <div key={i} className="text-grey"

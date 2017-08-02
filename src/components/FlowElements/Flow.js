@@ -1,37 +1,41 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { addFlow, editFlow, editFlowForm, removeFlow } from '../../util';
+import {
+  addFlow,
+  editFlow,
+  editFlowForm,
+  removeFlow,
+} from '../../util';
 import { addAlert } from '../../alert';
 import variableMeta from '../../constants/variableMeta';
 import flowToTeX from '../../constants/flowToTeX';
 import CloseButton from '../CloseButton';
 import TeX from '../TeX';
 
-const mapStateToProps = (state, ownProps) => {
-  return {
-    flow: ownProps.flowId !== undefined ?
-      state.flow.activeFlowMap[ownProps.flowId] :
-      state.flow.flowForms[ownProps.type],
-    flowView: state.flow.flowView
-  };
-};
+const mapStateToProps = (state, ownProps) => ({
+  flow: ownProps.flowId !== undefined ?
+    state.flow.activeFlowMap[ownProps.flowId] :
+    state.flow.flowForms[ownProps.type],
+  flowView: state.flow.flowView,
+});
 
 @connect(mapStateToProps)
 export default class Flow extends Component {
   constructor(props) {
     super(props);
-
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
   };
 
   handleChange(key, value) {
-    const { flowId,
-            flow,
-            type,
-            makeFlowFcns,
-            makeFlowStrs } = this.props;
+    const {
+      flowId,
+      flow,
+      type,
+      makeFlowFcns,
+      makeFlowStrs,
+    } = this.props;
     const inputChanges = {
       [key]: value === '' ? value : Number.parseFloat(value)
     };
@@ -47,12 +51,14 @@ export default class Flow extends Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    const { flowId,
-            flow,
-            makeFlowFcns,
-            makeFlowStrs,
-            type,
-            name } = this.props;
+    const {
+      flowId,
+      flow,
+      makeFlowFcns,
+      makeFlowStrs,
+      type,
+      name,
+    } = this.props;
     const { inputs } = flow;
     if(flowId === undefined) {
       addFlow(type, inputs, makeFlowFcns(inputs), makeFlowStrs(inputs));
@@ -67,17 +73,21 @@ export default class Flow extends Component {
   };
 
   render() {
-    const { name,
-            type,
-            className,
-            style,
-            flowId,
-            flow,
-            flowView,
-            eqs } = this.props;
+    const {
+      name,
+      type,
+      className,
+      style,
+      flowId,
+      flow,
+      flowView,
+      eqs,
+    } = this.props;
 
     return (
-      <div className={`flow-element ${className || ''}`}
+      <form
+        onSubmit={this.handleSubmit}
+        className={`d-flex flex-column flow-element ${className || ''}`}
         style={style || {}}>
         <div className="flexbox align-items-center"
           style={{ marginBottom: '10px' }}>
@@ -94,17 +104,15 @@ export default class Flow extends Component {
         </div>
 
         <div className="flow-eq text-center">
-          { Object.keys(eqs).map((key) => {
-            return (
-              <div key={key}
-                className={flowView === key ? '' : 'display-none'}>
-                <TeX value={flowToTeX[key] + '(x, y) = ' + eqs[key]}/>
-              </div>
-            );
-          })}
+          { Object.keys(eqs).map((key) => (
+            <div key={key}
+              className={flowView === key ? '' : 'display-none'}>
+              <TeX value={flowToTeX[key] + '(x, y) = ' + eqs[key]}/>
+            </div>
+          ))}
         </div>
 
-        <form onSubmit={this.handleSubmit}>
+        <div className="flex1">
           { flow && Object.keys(flow.inputs).map((key, i) => {
             const variable = variableMeta[key];
             return (
@@ -121,12 +129,12 @@ export default class Flow extends Component {
               </div>
             );
           })}
-          { flowId === undefined &&
-            <button type="submit"
-              className="btn btn-primary btn-block btn-sm">Add</button>
-          }
-        </form>
-      </div>
+        </div>
+        { flowId === undefined &&
+          <button type="submit"
+            className="btn btn-primary btn-block btn-sm">Add</button>
+        }
+      </form>
     );
   };
 };
