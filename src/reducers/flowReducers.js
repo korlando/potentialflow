@@ -50,7 +50,7 @@ const defaultState = {
         y0: 0,
         theta0: 0,
         alpha: 3.14,
-        beta: 0,
+        beta: 1,
       },
     },
   },
