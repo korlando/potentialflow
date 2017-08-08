@@ -254,13 +254,11 @@ const config = {
   displayModeBar: true,
 };
 
-const mapStateToProps = (state) => {
-  return {
-    activeFlowIds: state.flow.activeFlowIds,
-    activeFlowMap: state.flow.activeFlowMap,
-    flowView: state.flow.flowView
-  };
-};
+const mapStateToProps = (state) => ({
+  activeFlowIds: state.flow.activeFlowIds,
+  activeFlowMap: state.flow.activeFlowMap,
+  flowView: state.flow.flowView,
+});
 
 class App extends Component {
   constructor(props) {

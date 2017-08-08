@@ -36,19 +36,13 @@ const getFlowComponent = (flow, id) => {
   }
 };
 
-const mapStateToProps = (state) => {
-  return {
-    activeFlowIds: state.flow.activeFlowIds,
-    activeFlowMap: state.flow.activeFlowMap
-  };
-};
+const mapStateToProps = (state) => ({
+  activeFlowIds: state.flow.activeFlowIds,
+  activeFlowMap: state.flow.activeFlowMap,
+});
 
 @connect(mapStateToProps)
 export default class ActiveFlowsPanel extends Component {
-  constructor(props) {
-    super(props);
-  };
-
   render() {
     const { activeFlowIds, activeFlowMap } = this.props;
     const hasFlows = activeFlowIds.length > 0;
@@ -96,14 +90,13 @@ export default class ActiveFlowsPanel extends Component {
                         addAlert(`Removed "${flow.name}"`, true, 10 * 1000);
                       }}/>
                   </div>
-                  { flow.flowIds.map((flowId, j) => {
-                    return getFlowComponent(activeFlowMap[flowId], flowId);
-                  })}
+                  { flow.flowIds.map((flowId, j) => (
+                    getFlowComponent(activeFlowMap[flowId], flowId)
+                  ))}
                 </div>
               );
-            } else {
-              return getFlowComponent(flow, id);
             }
+            return getFlowComponent(flow, id);
           })}
         </FlipMove>
       </div>

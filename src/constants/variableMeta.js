@@ -4,19 +4,19 @@ import Naught from '../components/Naught';
 export default {
   U: {
     name: 'U',
-    placeholder: 'X strength'
+    placeholder: 'X strength',
   },
   V: {
     name: 'V',
-    placeholder: 'Y strength'
+    placeholder: 'Y strength',
   },
   x0: {
     name: <Naught symbol="x"/>,
-    placeholder: 'X position'
+    placeholder: 'X position',
   },
   y0: {
     name: <Naught symbol="y"/>,
-    placeholder: 'Y position'
+    placeholder: 'Y position',
   },
   theta0: {
     name: <Naught symbol={<span>&theta;</span>}/>,
@@ -24,19 +24,19 @@ export default {
   },
   m: {
     name: 'm',
-    placeholder: 'Magnitude'
+    placeholder: 'Magnitude',
   },
   mu: {
     name: <span>&mu;</span>,
-    placeholder: 'Magnitude'
+    placeholder: 'Magnitude',
   },
   gamma: {
     name: <span>&Gamma;</span>,
-    placeholder: 'Magnitude'
+    placeholder: 'Magnitude',
   },
   alpha: {
     name: <span>&alpha;</span>,
-    placeholder: 'Angle'
+    placeholder: 'Angle',
   },
   beta: {
     name: <span>&beta;</span>,

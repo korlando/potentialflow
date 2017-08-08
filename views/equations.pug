@@ -42,18 +42,16 @@ block content
       p
         strong Point Source/Sink
       .pl50
-        .mb5 $\phi = \frac{m}{2\pi}ln(\sqrt{(x - x_{0})^{2} + (y - y_{0})^{2}})$
-        .mb5 $\psi = \frac{m}{2\pi}atan2(y - y_{0}, x - x_{0})$
-        .mb5 $v_{x} = \frac{m}{2\pi} \frac{x - x_{0}}{(x - x_{0})^{2} + (y - y_{0})^{2}}$
-        .mb5 $v_{y} = \frac{m}{2\pi} \frac{y - y_{0}}{(x - x_{0})^{2} + (y - y_{0})^{2}}$
+        .mb5 $\phi = \frac{m}{2\pi}ln(r)$
+        .mb5 $\psi = \frac{m}{2\pi}\theta$
+        .mb5 $\vec{v} = \frac{m}{2\pi r}\hat{r}$
     .pb20
       p
         strong Point Vortex
       .pl50
-        .mb5 $\phi = \frac{\Gamma}{2\pi}atan2(y - y_{0}, x - x_{0})$
-        .mb5 $\psi = \frac{\Gamma}{2\pi}ln(\sqrt{(x - x_{0})^{2} + (y - y_{0})^{2}})$
-        .mb5 $v_{x} = \frac{\Gamma}{2\pi} \frac{-(y - y_{0})}{(x - x_{0})^{2} + (y - y_{0})^{2}}$
-        .mb5 $v_{y} = \frac{\Gamma}{2\pi} \frac{x - x_{0}}{(x - x_{0})^{2} + (y - y_{0})^{2}}$
+        .mb5 $\phi = \frac{\Gamma}{2\pi}\theta$
+        .mb5 $\psi = -\frac{\Gamma}{2\pi}ln(r)$
+        .mb5 $v_{x} = \frac{\Gamma}{2\pi r}\hat{\theta}$
     .pb20
       p
         strong Dipole
