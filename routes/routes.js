@@ -14,13 +14,6 @@ const definitionsData = Object.assign({}, pages.definitions, {
 });
 
 module.exports = (production) => {
-  router.get('*', (req, res, next) => {
-    if(!req.session.loggedIn) {
-      return res.render('login');
-    }
-    next();
-  });
-
   router.get('/', (req, res, next) => {
     res.render('home', pages.home);
   });

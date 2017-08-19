@@ -52,7 +52,7 @@ export default class ActiveFlowsPanel extends Component {
         <div className="flexbox align-items-center"
           style={{marginBottom: '10px'}}>
           <h4 className="flex1" style={{margin: 0}}>
-            Flows &middot; {activeFlowIds.length}
+            Flow Elements &middot; {activeFlowIds.length}
           </h4>
           { hasFlows &&
             <div className="flex0 text-light hover-dark"
