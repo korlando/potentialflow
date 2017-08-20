@@ -51,7 +51,7 @@ export default class ActiveFlowsPanel extends Component {
       <div className="flex0 active-flows">
         <div className="flexbox align-items-center"
           style={{marginBottom: '10px'}}>
-          <h4 className="flex1" style={{margin: 0}}>
+          <h4 className="flex1" style={{margin: 0, fontSize: '20px'}}>
             Flow Elements &middot; {activeFlowIds.length}
           </h4>
           { hasFlows &&

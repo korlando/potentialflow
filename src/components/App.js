@@ -391,7 +391,8 @@ class App extends Component {
           <div className="view-container">
             <div id="graph" ref={node => this.graph = node}
               style={{
-                width: '100%',
+                width: '700px',
+                maxWidth: '100%',
                 height: graphSize + 'px',
                 margin: 'auto'
               }}></div>
