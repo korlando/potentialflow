@@ -1112,6 +1112,9 @@ var uniformFcns = exports.uniformFcns = {
     };
   },
   vpTeX: function vpTeX(U, V) {
+    if (V === 1) {
+      V = '';
+    }
     if (U === 0 && V === 0) {
       return '0';
     }
@@ -1125,6 +1128,9 @@ var uniformFcns = exports.uniformFcns = {
     };
   },
   streamTeX: function streamTeX(U, V) {
+    if (U === 1) {
+      U = '';
+    }
     if (U === 0 && V === 0) {
       return '0';
     }
@@ -39032,7 +39038,7 @@ exports = module.exports = __webpack_require__(614)(undefined);
 
 
 // module
-exports.push([module.i, ".flexbox {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex; }\n\n.flex-wrap-reverse {\n  flex-wrap: wrap-reverse; }\n\n.flex0 {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto; }\n\n.flex1 {\n  -webkit-box-flex: 1 1 auto;\n  -moz-box-flex: 1 1 auto;\n  -webkit-flex: 1 1 auto;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto; }\n\n.text-grey {\n  color: #51586a; }\n\n.text-light {\n  color: #747e95; }\n\n.hover-dark {\n  cursor: pointer; }\n  .hover-dark:hover {\n    color: #252830;\n    text-decoration: underline; }\n\nbody {\n  font-family: 'Open Sans', sans-serif;\n  color: #252830; }\n\n.nav-controls {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  padding: 6px 12px;\n  background: #f1f4f9;\n  z-index: 1002; }\n\n.alert-box-enter {\n  opacity: 0;\n  transform: translateX(-50%) translateY(-100%) !important; }\n\n.alert-box-enter.alert-box-enter-active {\n  transition: all 0.2s;\n  opacity: 1;\n  transform: translateX(-50%) translateY(-50%) !important; }\n\n.alert-box-leave {\n  opacity: 1;\n  transform: translateX(-50%) translateY(-50%) !important; }\n\n.alert-box-leave.alert-box-leave-active {\n  transition: all 0.2s;\n  opacity: 0;\n  transform: translateX(-50%) translateY(-100%) !important; }\n\n.alert-box {\n  background: #51586a;\n  padding: 1px 12px;\n  color: white;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translateX(-50%) translateY(-50%);\n  border-radius: 3px;\n  font-size: 14px; }\n  .alert-box .undo {\n    cursor: pointer;\n    font-size: 14px;\n    font-weight: bold;\n    color: #bcdeff;\n    opacity: 0.8;\n    transition: all 0.2s;\n    margin-right: 15px; }\n    .alert-box .undo:hover {\n      text-decoration: underline;\n      color: white;\n      opacity: 1; }\n  .alert-box .close-x {\n    padding: 3px; }\n    .alert-box .close-x svg {\n      stroke: #e6eeff; }\n\n.display-none {\n  display: none !important; }\n\nbutton {\n  cursor: pointer; }\n  button.blank {\n    background: transparent;\n    border: none;\n    font-size: 20px; }\n    button.blank[disabled] {\n      cursor: default; }\n\n.close-x {\n  display: inline-block;\n  padding: 0;\n  cursor: pointer;\n  border-radius: 3px;\n  background: transparent;\n  border: none;\n  outline: 0;\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s;\n  stroke: #747e95; }\n  .close-x:hover {\n    transform: scale(1.05); }\n  .close-x:active {\n    transition: 0;\n    background: rgba(0, 0, 0, 0.1); }\n  .close-x svg {\n    stroke: inherit;\n    stroke-width: 1.5px;\n    stroke-linecap: round;\n    display: block; }\n\n.flow-nav {\n  border-bottom: 2px solid #eaeef6; }\n  .flow-nav .option {\n    font-size: 18px;\n    padding: 5px 10px;\n    padding-top: 7px;\n    border-top-left-radius: 4px;\n    border-top-right-radius: 4px;\n    border-top: 2px solid transparent;\n    border-right: 2px solid transparent;\n    border-left: 2px solid transparent;\n    color: #51586a;\n    cursor: pointer; }\n    .flow-nav .option:hover {\n      text-decoration: underline; }\n    .flow-nav .option:first-child {\n      margin-left: 12px; }\n    .flow-nav .option.active {\n      border-top: 2px solid #eaeef6;\n      border-right: 2px solid #eaeef6;\n      border-left: 2px solid #eaeef6;\n      background: white;\n      transform: translateY(2px);\n      padding-top: 5px;\n      color: #252830;\n      cursor: default; }\n      .flow-nav .option.active:hover {\n        text-decoration: none; }\n\n.flow-eq {\n  border: 2px solid #b3ccff;\n  background: #e6eeff;\n  overflow-x: auto;\n  border-radius: 3px;\n  padding: 5px 8px; }\n\n.input-group-addon {\n  background-color: #eaeef6; }\n\n.flow-element {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto;\n  max-width: 100%;\n  border-radius: 3px;\n  border: 2px solid #eaeef6;\n  background: #f1f4f9;\n  padding: 10px;\n  margin-bottom: 8px;\n  margin-right: 6px; }\n  @media screen and (max-width: 768px) {\n    .flow-element {\n      width: 100%; } }\n  .flow-element .close-x {\n    padding: 2px; }\n  .flow-element .input-group {\n    margin-bottom: 4px; }\n  .flow-element .input-group-addon {\n    width: 30px; }\n  .flow-element label {\n    margin: 0;\n    font-size: 20px;\n    margin-right: 5px; }\n  .flow-element .flow-eq {\n    color: #51586a;\n    margin-bottom: 5px;\n    font-size: 12px; }\n\n.flow-group {\n  padding: 10px;\n  border: 2px solid #fc6;\n  background: #fff7e6;\n  border-radius: 3px;\n  margin-bottom: 15px; }\n  .flow-group .title {\n    margin-bottom: 10px; }\n    .flow-group .title label {\n      margin: 0; }\n\n.view-container {\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  padding-top: 50px; }\n\n.main-panel {\n  width: 70%;\n  position: relative; }\n\n.active-flows {\n  padding: 12px 15px;\n  width: 30%;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  border-left: 2px solid #eaeef6; }\n  .active-flows .flow-element {\n    margin-right: 0;\n    width: 100%; }\n  .active-flows h4 {\n    margin-bottom: 20px; }\n\n@media screen and (max-width: 768px) {\n  .main-panel {\n    width: 100%; }\n  .active-flows {\n    width: 100%;\n    border-left: none;\n    border-top: 2px solid #eaeef6;\n    height: auto;\n    min-height: 100px; }\n  .app-container {\n    display: block !important; }\n  .view-container {\n    height: auto; }\n  .flow-nav .option {\n    font-size: 14px; } }\n\n.main-flow-eq {\n  border-radius: 3px;\n  padding: 4px 10px;\n  margin-right: 10px;\n  max-width: 800px; }\n\n.inspect-flows label {\n  font-size: 12px;\n  margin-bottom: 2px; }\n", ""]);
+exports.push([module.i, ".flexbox {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex; }\n\n.flex-wrap-reverse {\n  flex-wrap: wrap-reverse; }\n\n.flex0 {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto; }\n\n.flex1 {\n  -webkit-box-flex: 1 1 auto;\n  -moz-box-flex: 1 1 auto;\n  -webkit-flex: 1 1 auto;\n  -ms-flex: 1 1 auto;\n  flex: 1 1 auto; }\n\n.fs14 {\n  font-size: 14px; }\n\n.text-grey {\n  color: #51586a; }\n\n.text-light {\n  color: #747e95; }\n\n.hover-dark {\n  cursor: pointer; }\n  .hover-dark:hover {\n    color: #252830;\n    text-decoration: underline; }\n\n.w50 {\n  width: 50%; }\n\n.mt16 {\n  margin-top: 16px; }\n\n.mt32 {\n  margin-top: 32px; }\n\n.mb4 {\n  margin-bottom: 4px; }\n\n.mb8 {\n  margin-bottom: 8px; }\n\n.mb16 {\n  margin-bottom: 16px; }\n\n.mb32 {\n  margin-bottom: 32px; }\n\n.p16 {\n  padding: 16px; }\n\n.op6 {\n  opacity: 0.6; }\n\nbody {\n  font-family: 'Open Sans', sans-serif;\n  color: #252830; }\n\n.nav-controls {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  padding: 6px 12px;\n  background: #f1f4f9;\n  z-index: 1002; }\n\n.alert-box-enter {\n  opacity: 0;\n  transform: translateX(-50%) translateY(-100%) !important; }\n\n.alert-box-enter.alert-box-enter-active {\n  transition: all 0.2s;\n  opacity: 1;\n  transform: translateX(-50%) translateY(-50%) !important; }\n\n.alert-box-leave {\n  opacity: 1;\n  transform: translateX(-50%) translateY(-50%) !important; }\n\n.alert-box-leave.alert-box-leave-active {\n  transition: all 0.2s;\n  opacity: 0;\n  transform: translateX(-50%) translateY(-100%) !important; }\n\n.alert-box {\n  background: #51586a;\n  padding: 1px 12px;\n  color: white;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translateX(-50%) translateY(-50%);\n  border-radius: 3px;\n  font-size: 14px; }\n  .alert-box .undo {\n    cursor: pointer;\n    font-size: 14px;\n    font-weight: bold;\n    color: #bcdeff;\n    opacity: 0.8;\n    transition: all 0.2s;\n    margin-right: 15px; }\n    .alert-box .undo:hover {\n      text-decoration: underline;\n      color: white;\n      opacity: 1; }\n  .alert-box .close-x {\n    padding: 3px; }\n    .alert-box .close-x svg {\n      stroke: #e6eeff; }\n\n.display-none {\n  display: none !important; }\n\nbutton {\n  cursor: pointer; }\n  button.blank {\n    background: transparent;\n    border: none;\n    font-size: 20px; }\n    button.blank[disabled] {\n      cursor: default; }\n\n.close-x {\n  display: inline-block;\n  padding: 0;\n  cursor: pointer;\n  border-radius: 3px;\n  background: transparent;\n  border: none;\n  outline: 0;\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s;\n  stroke: #747e95; }\n  .close-x:hover {\n    transform: scale(1.05); }\n  .close-x:active {\n    transition: 0;\n    background: rgba(0, 0, 0, 0.1); }\n  .close-x svg {\n    stroke: inherit;\n    stroke-width: 1.5px;\n    stroke-linecap: round;\n    display: block; }\n\n.flow-nav {\n  border-bottom: 2px solid #eaeef6; }\n  .flow-nav .option {\n    font-size: 18px;\n    padding: 5px 10px;\n    padding-top: 7px;\n    border-top-left-radius: 4px;\n    border-top-right-radius: 4px;\n    border-top: 2px solid transparent;\n    border-right: 2px solid transparent;\n    border-left: 2px solid transparent;\n    color: #51586a;\n    cursor: pointer; }\n    .flow-nav .option:hover {\n      text-decoration: underline; }\n    .flow-nav .option:first-child {\n      margin-left: 12px; }\n    .flow-nav .option.active {\n      border-top: 2px solid #eaeef6;\n      border-right: 2px solid #eaeef6;\n      border-left: 2px solid #eaeef6;\n      background: white;\n      transform: translateY(2px);\n      padding-top: 5px;\n      color: #252830;\n      cursor: default; }\n      .flow-nav .option.active:hover {\n        text-decoration: none; }\n\n.flow-eq {\n  border: 2px solid #b3ccff;\n  background: #e6eeff;\n  overflow-x: auto;\n  border-radius: 3px;\n  padding: 5px 8px; }\n\n.input-group-addon {\n  background-color: #eaeef6; }\n\n.flow-element {\n  -webkit-box-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n  -webkit-flex: 0 0 auto;\n  -ms-flex: 0 0 auto;\n  flex: 0 0 auto;\n  max-width: 100%;\n  border-radius: 3px;\n  border: 2px solid #eaeef6;\n  background: #f1f4f9;\n  padding: 10px;\n  margin-bottom: 8px;\n  margin-right: 6px; }\n  @media screen and (max-width: 768px) {\n    .flow-element {\n      width: 100%; } }\n  .flow-element .close-x {\n    padding: 2px; }\n  .flow-element .input-group {\n    margin-bottom: 4px; }\n  .flow-element .input-group-addon {\n    width: 30px; }\n  .flow-element label {\n    margin: 0;\n    font-size: 20px;\n    margin-right: 5px; }\n  .flow-element .flow-eq {\n    color: #51586a;\n    margin-bottom: 5px;\n    font-size: 12px; }\n\n.flow-group {\n  padding: 10px;\n  border: 2px solid #fc6;\n  background: #fff7e6;\n  border-radius: 3px;\n  margin-bottom: 15px; }\n  .flow-group .title {\n    margin-bottom: 10px; }\n    .flow-group .title label {\n      margin: 0; }\n\n.view-container {\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  padding-top: 50px; }\n\n.main-panel {\n  width: 70%;\n  position: relative; }\n\n.active-flows {\n  padding: 12px 15px;\n  width: 30%;\n  height: 100vh;\n  overflow-y: auto;\n  overflow-x: hidden;\n  border-left: 2px solid #eaeef6; }\n  .active-flows .flow-element {\n    margin-right: 0;\n    width: 100%; }\n  .active-flows h4 {\n    margin-bottom: 20px; }\n\n@media screen and (max-width: 768px) {\n  .main-panel {\n    width: 100%; }\n  .active-flows {\n    width: 100%;\n    border-left: none;\n    border-top: 2px solid #eaeef6;\n    height: auto;\n    min-height: 100px; }\n  .app-container {\n    display: block !important; }\n  .view-container {\n    height: auto; }\n  .flow-nav .option {\n    font-size: 14px; } }\n\n.main-flow-eq {\n  border-radius: 3px;\n  padding: 4px 10px;\n  margin-right: 10px;\n  max-width: 800px; }\n\n.inspect-flows label {\n  font-size: 12px;\n  margin-bottom: 2px; }\n\n.optional-container {\n  position: relative; }\n  .optional-container .optional-text {\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    transform: translateX(-50%) translateY(-50%);\n    background: white;\n    padding: 0 16px;\n    color: #747e95;\n    font-size: 12px;\n    font-weight: bold; }\n", ""]);
 
 // exports
 
@@ -39670,7 +39676,7 @@ var flowNavOptions = [{
   name: 'Add Custom',
   value: 'custom'
 }, {
-  name: 'Inspect Flows',
+  name: 'Inspect Flow',
   value: 'inspect'
 }];
 
@@ -39882,6 +39888,12 @@ var config = {
   displayModeBar: true
 };
 
+var hasActiveCornerFlow = function hasActiveCornerFlow(flowIds, flowMap) {
+  return flowIds.find(function (id) {
+    return flowMap[id].type === _flowTypes.CORNER;
+  }) !== undefined;
+};
+
 var mapStateToProps = function mapStateToProps(state) {
   return {
     activeFlowIds: state.flow.activeFlowIds,
@@ -39906,6 +39918,10 @@ var App = function (_Component) {
       inspectX: 0,
       inspectY: 0,
       farFieldPressure: 0,
+      farFieldActive: false,
+      referencePressure: 0,
+      referencePressureX: 0,
+      referencePressureY: 0,
       density: 0
     };
     _this.activeFlowTimer = null;
@@ -39953,6 +39969,11 @@ var App = function (_Component) {
           flowView = nextProps.flowView,
           history = nextProps.history;
 
+      // disable farFieldPressure if a corner flow was added
+
+      if (this.state.farFieldActive && hasActiveCornerFlow(activeFlowIds, activeFlowMap) && !hasActiveCornerFlow(this.props.activeFlowIds, this.props.activeFlowMap)) {
+        this.setState({ farFieldActive: false });
+      }
 
       if (activeFlowIds !== this.props.activeFlowIds || activeFlowMap !== this.props.activeFlowMap || flowView !== this.props.flowView) {
         clearTimeout(this.activeFlowTimer);
@@ -40040,13 +40061,18 @@ var App = function (_Component) {
           inspectX = _state.inspectX,
           inspectY = _state.inspectY,
           farFieldPressure = _state.farFieldPressure,
+          farFieldActive = _state.farFieldActive,
+          referencePressure = _state.referencePressure,
+          referencePressureX = _state.referencePressureX,
+          referencePressureY = _state.referencePressureY,
           density = _state.density,
           graphSize = _state.graphSize;
 
+      var hasCornerFlow = hasActiveCornerFlow(activeFlowIds, activeFlowMap);
 
       return _react2.default.createElement(
         'div',
-        { className: 'flexbox app-container' },
+        { className: 'd-flex app-container' },
         _react2.default.createElement(
           'div',
           { className: 'flex0 main-panel' },
@@ -40065,13 +40091,13 @@ var App = function (_Component) {
               } }),
             _react2.default.createElement(
               'div',
-              { className: 'flexbox justify-content-center', style: {
+              { className: 'd-flex justify-content-center', style: {
                   minHeight: '60px',
                   padding: '10px'
                 } },
               flowStr && _react2.default.createElement(
                 'div',
-                { className: 'flow-eq main-flow-eq flexbox align-items-center' },
+                { className: 'flow-eq main-flow-eq d-flex align-items-center' },
                 _react2.default.createElement(_TeX2.default, { value: flowStr })
               )
             ),
@@ -40082,7 +40108,7 @@ var App = function (_Component) {
             ),
             _react2.default.createElement(
               'div',
-              { className: 'flow-nav flexbox' },
+              { className: 'flow-nav d-flex' },
               flowNavOptions.map(function (o, i) {
                 return _react2.default.createElement(
                   'div',
@@ -40099,7 +40125,7 @@ var App = function (_Component) {
             ),
             _react2.default.createElement(
               'div',
-              { style: { padding: '12px', minHeight: '500px' } },
+              { className: 'p16', style: { minHeight: '500px' } },
               _react2.default.createElement(
                 'div',
                 { className: 'd-flex flex-wrap align-items-stretch ' + (addMode !== 'preset' ? 'display-none' : '') },
@@ -40121,24 +40147,19 @@ var App = function (_Component) {
                 'div',
                 { className: 'inspect-flows ' + (addMode !== 'inspect' && 'display-none') },
                 _react2.default.createElement(
-                  'h5',
+                  'label',
                   null,
-                  'Flow'
+                  'Enter a point (x, y)'
                 ),
                 _react2.default.createElement(
                   'div',
-                  { className: 'd-flex' },
+                  { className: 'd-flex mb32' },
                   _react2.default.createElement(
                     'div',
-                    { className: 'flex0', style: { paddingRight: '20px' } },
-                    _react2.default.createElement(
-                      'label',
-                      null,
-                      'Enter a point (x, y)'
-                    ),
+                    { className: 'w50', style: { paddingRight: '2px' } },
                     _react2.default.createElement(
                       'div',
-                      { className: 'input-group', style: { marginBottom: '5px' } },
+                      { className: 'input-group' },
                       _react2.default.createElement(
                         'div',
                         { className: 'input-group-addon' },
@@ -40151,10 +40172,14 @@ var App = function (_Component) {
                           return _this5.setState({ inspectX: e.target.value });
                         },
                         placeholder: 'X position' })
-                    ),
+                    )
+                  ),
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'w50', style: { paddingLeft: '2px' } },
                     _react2.default.createElement(
                       'div',
-                      { className: 'input-group', style: { marginBottom: '5px' } },
+                      { className: 'input-group' },
                       _react2.default.createElement(
                         'div',
                         { className: 'input-group-addon' },
@@ -40168,105 +40193,187 @@ var App = function (_Component) {
                         },
                         placeholder: 'Y position' })
                     )
-                  ),
+                  )
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'optional-container' },
+                  _react2.default.createElement('hr', null),
                   _react2.default.createElement(
                     'div',
-                    { className: 'flex0', style: { paddingRight: '20px' } },
+                    { className: 'optional-text' },
+                    'OPTIONAL'
+                  )
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'd-flex' },
+                  !hasCornerFlow && _react2.default.createElement(
+                    'div',
+                    { className: 'flex1 ' + (farFieldActive ? '' : 'op6') },
                     _react2.default.createElement(
                       'label',
                       null,
-                      'Flow at (',
-                      inspectX,
-                      ', ',
-                      inspectY,
-                      ')'
+                      'Enter far field pressure'
                     ),
                     _react2.default.createElement(
                       'div',
-                      { className: 'flow-eq' },
-                      Object.keys(_flowToTeX2.default).map(function (key, i) {
-                        return _react2.default.createElement(
+                      { className: 'input-group' },
+                      _react2.default.createElement(
+                        'div',
+                        { className: 'input-group-addon' },
+                        _react2.default.createElement(
                           'div',
-                          { key: i, style: { marginBottom: '5px' } },
-                          _react2.default.createElement(_TeX2.default, { value: _flowToTeX2.default[key] + ' = ' + flowFcnMap[key](inspectX, inspectY) })
-                        );
-                      })
+                          null,
+                          'P',
+                          _react2.default.createElement(
+                            'sub',
+                            null,
+                            '\u221E'
+                          )
+                        )
+                      ),
+                      _react2.default.createElement('input', { type: 'number',
+                        className: 'form-control',
+                        value: farFieldPressure,
+                        onChange: function onChange(e) {
+                          return _this5.setState({
+                            farFieldPressure: e.target.value,
+                            farFieldActive: true
+                          });
+                        },
+                        placeholder: 'Far Field Pressure' })
+                    )
+                  ),
+                  !hasCornerFlow && _react2.default.createElement(
+                    'div',
+                    { className: 'flex0 fs14 text-light', style: { padding: '28px 16px' } },
+                    'OR'
+                  ),
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'flex1 ' + (farFieldActive ? 'op6' : '') },
+                    _react2.default.createElement(
+                      'label',
+                      null,
+                      'Enter pressure at a reference point'
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'input-group mb4' },
+                      _react2.default.createElement(
+                        'div',
+                        { className: 'input-group-addon' },
+                        'P'
+                      ),
+                      _react2.default.createElement('input', {
+                        type: 'number',
+                        className: 'form-control',
+                        value: referencePressure,
+                        onChange: function onChange(e) {
+                          return _this5.setState({
+                            referencePressure: e.target.value,
+                            farFieldActive: false
+                          });
+                        },
+                        placeholder: 'Reference Pressure' })
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'input-group mb4' },
+                      _react2.default.createElement(
+                        'div',
+                        { className: 'input-group-addon' },
+                        'x'
+                      ),
+                      _react2.default.createElement('input', {
+                        type: 'number',
+                        className: 'form-control',
+                        value: referencePressureX,
+                        onChange: function onChange(e) {
+                          return _this5.setState({
+                            referencePressureX: e.target.value,
+                            farFieldActive: false
+                          });
+                        },
+                        placeholder: 'X position' })
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'input-group' },
+                      _react2.default.createElement(
+                        'div',
+                        { className: 'input-group-addon' },
+                        'y'
+                      ),
+                      _react2.default.createElement('input', {
+                        type: 'number',
+                        className: 'form-control',
+                        value: referencePressureY,
+                        onChange: function onChange(e) {
+                          return _this5.setState({
+                            referencePressureY: e.target.value,
+                            farFieldActive: false
+                          });
+                        },
+                        placeholder: 'Y position' })
                     )
                   )
                 ),
                 _react2.default.createElement(
-                  'h5',
-                  { style: { marginTop: '20px' } },
-                  'Pressure'
+                  'label',
+                  null,
+                  'Enter density'
                 ),
                 _react2.default.createElement(
                   'div',
-                  null,
-                  _react2.default.createElement(
-                    'label',
-                    null,
-                    'Enter far field pressure'
-                  ),
+                  { className: 'input-group' },
                   _react2.default.createElement(
                     'div',
-                    { className: 'input-group' },
-                    _react2.default.createElement(
+                    { className: 'input-group-addon' },
+                    '\u03C1'
+                  ),
+                  _react2.default.createElement('input', { type: 'number',
+                    className: 'form-control',
+                    value: density,
+                    onChange: function onChange(e) {
+                      return _this5.setState({ density: e.target.value });
+                    },
+                    placeholder: 'Density' })
+                ),
+                _react2.default.createElement(
+                  'h5',
+                  { className: 'mt16' },
+                  'Flow at (',
+                  inspectX,
+                  ', ',
+                  inspectY,
+                  ')'
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'flow-eq' },
+                  Object.keys(_flowToTeX2.default).map(function (key, i) {
+                    return _react2.default.createElement(
                       'div',
-                      { className: 'input-group-addon' },
-                      _react2.default.createElement(
-                        'div',
-                        null,
-                        'P',
-                        _react2.default.createElement(
-                          'sub',
-                          null,
-                          '\u221E'
-                        )
-                      )
-                    ),
-                    _react2.default.createElement('input', { type: 'number',
-                      className: 'form-control',
-                      value: farFieldPressure,
-                      onChange: function onChange(e) {
-                        return _this5.setState({ farFieldPressure: e.target.value });
-                      },
-                      placeholder: 'Far Field Pressure' })
-                  ),
-                  _react2.default.createElement(
-                    'label',
-                    null,
-                    'Enter density'
-                  ),
-                  _react2.default.createElement(
-                    'div',
-                    { className: 'input-group' },
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'input-group-addon' },
-                      '\u03C1'
-                    ),
-                    _react2.default.createElement('input', { type: 'number',
-                      className: 'form-control',
-                      value: density,
-                      onChange: function onChange(e) {
-                        return _this5.setState({ density: e.target.value });
-                      },
-                      placeholder: 'Density' })
-                  ),
-                  _react2.default.createElement(
-                    'label',
-                    null,
-                    'Pressure at (',
-                    inspectX,
-                    ', ',
-                    inspectY,
-                    ')'
-                  ),
-                  _react2.default.createElement(
-                    'div',
-                    { className: 'flow-eq' },
-                    _react2.default.createElement(_TeX2.default, { value: 'P = ' + makePressureFcn(farFieldPressure, density, flowFcnMap, activeFlowIds, activeFlowMap)(inspectX, inspectY) })
-                  )
+                      { key: i, style: { marginBottom: '5px' } },
+                      _react2.default.createElement(_TeX2.default, { value: _flowToTeX2.default[key] + ' = ' + flowFcnMap[key](inspectX, inspectY) })
+                    );
+                  })
+                ),
+                _react2.default.createElement(
+                  'h5',
+                  { className: 'mt16' },
+                  'Pressure at (',
+                  inspectX,
+                  ', ',
+                  inspectY,
+                  ')'
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'flow-eq' },
+                  _react2.default.createElement(_TeX2.default, { value: 'P = ' + makePressureFcn(farFieldPressure, density, flowFcnMap, activeFlowIds, activeFlowMap)(inspectX, inspectY) })
                 )
               )
             )

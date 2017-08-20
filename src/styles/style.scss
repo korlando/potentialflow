@@ -36,6 +36,7 @@ $blue: #69f;
 .flex1 {
   @include flex(1 1 auto);
 }
+.fs14 { font-size: 14px; }
 .text-grey { color: $grey; }
 .text-light { color: $light; }
 .hover-dark {
@@ -45,6 +46,15 @@ $blue: #69f;
     text-decoration: underline;
   }
 }
+.w50 { width: 50%; }
+.mt16 { margin-top: 16px; }
+.mt32 { margin-top: 32px; }
+.mb4 { margin-bottom: 4px; }
+.mb8 { margin-bottom: 8px; }
+.mb16 { margin-bottom: 16px; }
+.mb32 { margin-bottom: 32px; }
+.p16 { padding: 16px; }
+.op6 { opacity: 0.6; }
 
 body {
   font-family: 'Open Sans', sans-serif;
@@ -307,5 +317,19 @@ button {
   label {
     font-size: 12px;
     margin-bottom: 2px;
+  }
+}
+.optional-container {
+  position: relative;
+  .optional-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    background: white;
+    padding: 0 16px;
+    color: $light;
+    font-size: 12px;
+    font-weight: bold;
   }
 }

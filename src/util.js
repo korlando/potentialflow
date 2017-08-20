@@ -98,6 +98,9 @@ export const uniformFcns = {
     };
   },
   vpTeX: (U, V) => {
+    if(V === 1) {
+      V = '';
+    }
     if(U === 0 && V === 0) {
       return '0';
     }
@@ -111,6 +114,9 @@ export const uniformFcns = {
     };
   },
   streamTeX: (U, V) => {
+    if(U === 1) {
+      U = '';
+    }
     if(U === 0 && V === 0) {
       return '0';
     }

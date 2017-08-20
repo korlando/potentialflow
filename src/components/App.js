@@ -42,7 +42,7 @@ const flowNavOptions = [{
   name: 'Add Custom',
   value: 'custom'
 }, {
-  name: 'Inspect Flows',
+  name: 'Inspect Flow',
   value: 'inspect',
 }];
 
@@ -254,6 +254,10 @@ const config = {
   displayModeBar: true,
 };
 
+const hasActiveCornerFlow = (flowIds, flowMap) => (
+  flowIds.find((id) => flowMap[id].type === CORNER) !== undefined
+);
+
 const mapStateToProps = (state) => ({
   activeFlowIds: state.flow.activeFlowIds,
   activeFlowMap: state.flow.activeFlowMap,
@@ -272,7 +276,11 @@ class App extends Component {
       inspectX: 0,
       inspectY: 0,
       farFieldPressure: 0,
-      density: 0
+      farFieldActive: false,
+      referencePressure: 0,
+      referencePressureX: 0,
+      referencePressureY: 0,
+      density: 0,
     };
     this.activeFlowTimer = null;
     this.applyData = this.applyData.bind(this);
@@ -305,6 +313,13 @@ class App extends Component {
       flowView,
       history,
     } = nextProps;
+
+    // disable farFieldPressure if a corner flow was added
+    if(this.state.farFieldActive &&
+      hasActiveCornerFlow(activeFlowIds, activeFlowMap) &&
+      !hasActiveCornerFlow(this.props.activeFlowIds, this.props.activeFlowMap)) {
+      this.setState({ farFieldActive: false });
+    }
     
     if(activeFlowIds !== this.props.activeFlowIds ||
       activeFlowMap !== this.props.activeFlowMap ||
@@ -380,12 +395,17 @@ class App extends Component {
       inspectX,
       inspectY,
       farFieldPressure,
+      farFieldActive,
+      referencePressure,
+      referencePressureX,
+      referencePressureY,
       density,
       graphSize,
     } = this.state;
+    const hasCornerFlow = hasActiveCornerFlow(activeFlowIds, activeFlowMap);
 
     return (
-      <div className="flexbox app-container">
+      <div className="d-flex app-container">
         <div className="flex0 main-panel">
           <Nav/>
           <div className="view-container">
@@ -394,15 +414,15 @@ class App extends Component {
                 width: '700px',
                 maxWidth: '100%',
                 height: graphSize + 'px',
-                margin: 'auto'
+                margin: 'auto',
               }}></div>
 
-            <div className="flexbox justify-content-center" style={{
+            <div className="d-flex justify-content-center" style={{
               minHeight: '60px',
-              padding: '10px'
+              padding: '10px',
             }}>
               { flowStr &&
-                <div className="flow-eq main-flow-eq flexbox align-items-center">
+                <div className="flow-eq main-flow-eq d-flex align-items-center">
                   <TeX value={flowStr}/>
                 </div>
               }
@@ -410,21 +430,19 @@ class App extends Component {
 
             <h4 style={{ padding: '0 12px'}}>Flow Elements</h4>
             
-            <div className="flow-nav flexbox">
-              { flowNavOptions.map((o, i) => {
-                return (
-                  <div key={i}
-                    className={`option ${addMode === o.value ? ' active' : ''}`}
-                    onClick={(e) => {
-                      if(addMode !== o.value) {
-                        this.setState({ addMode: o.value });
-                      }
-                    }}>{o.name}</div>
-                );
-              })}
+            <div className="flow-nav d-flex">
+              { flowNavOptions.map((o, i) => (
+                <div key={i}
+                  className={`option ${addMode === o.value ? ' active' : ''}`}
+                  onClick={(e) => {
+                    if(addMode !== o.value) {
+                      this.setState({ addMode: o.value });
+                    }
+                  }}>{o.name}</div>
+              ))}
             </div>
 
-            <div style={{ padding: '12px', minHeight: '500px' }}>
+            <div className="p16" style={{minHeight: '500px'}}>
               <div className={`d-flex flex-wrap align-items-stretch ${addMode !== 'preset' ? 'display-none' : ''}`}>
                 <RankineHalfbody/>
                 <RankineOval/>
@@ -441,11 +459,10 @@ class App extends Component {
               </div>
 
               <div className={`inspect-flows ${addMode !== 'inspect' && 'display-none'}`}>
-                <h5>Flow</h5>
-                <div className="d-flex">
-                  <div className="flex0" style={{ paddingRight: '20px' }}>
-                    <label>Enter a point (x, y)</label>
-                    <div className="input-group" style={{ marginBottom: '5px' }}>
+                <label>Enter a point (x, y)</label>
+                <div className="d-flex mb32">
+                  <div className="w50" style={{paddingRight: '2px'}}>
+                    <div className="input-group">
                       <div className="input-group-addon">x</div>
                       <input type="number"
                         className="form-control"
@@ -453,8 +470,10 @@ class App extends Component {
                         onChange={e => this.setState({ inspectX: e.target.value })}
                         placeholder="X position"/>
                     </div>
+                  </div>
 
-                    <div className="input-group" style={{ marginBottom: '5px' }}>
+                  <div className="w50" style={{paddingLeft: '2px'}}>
+                    <div className="input-group">
                       <div className="input-group-addon">y</div>
                       <input type="number"
                         className="form-control"
@@ -463,46 +482,98 @@ class App extends Component {
                         placeholder="Y position"/>
                     </div>
                   </div>
-                  <div className="flex0" style={{ paddingRight: '20px' }}>
-                    <label>Flow at ({inspectX}, {inspectY})</label>
-                    <div className="flow-eq">
-                      { Object.keys(flowToTeX).map((key, i) => (
-                        <div key={i} style={{ marginBottom: '5px' }}>
-                          <TeX value={`${flowToTeX[key]} = ${flowFcnMap[key](inspectX, inspectY)}`}/>
+                </div>
+
+                <div className="optional-container">
+                  <hr/>
+                  <div className="optional-text">OPTIONAL</div>
+                </div>
+
+                <div className="d-flex">
+                  { !hasCornerFlow &&
+                    <div className={`flex1 ${farFieldActive ? '' : 'op6'}`}>
+                      <label>Enter far field pressure</label>
+                      <div className="input-group">
+                        <div className="input-group-addon">
+                          <div>P<sub>&infin;</sub></div>
                         </div>
-                      ))}
+                        <input type="number"
+                          className="form-control"
+                          value={farFieldPressure}
+                          onChange={e => this.setState({
+                            farFieldPressure: e.target.value,
+                            farFieldActive: true,
+                          })}
+                          placeholder="Far Field Pressure"/>
+                      </div>
+                    </div>
+                  }
+                  { !hasCornerFlow &&
+                    <div className="flex0 fs14 text-light" style={{padding: '28px 16px'}}>OR</div>
+                  }
+                  <div className={`flex1 ${farFieldActive ? 'op6' : ''}`}>
+                    <label>Enter pressure at a reference point</label>
+                    <div className="input-group mb4">
+                      <div className="input-group-addon">P</div>
+                      <input
+                        type="number"
+                        className="form-control"
+                        value={referencePressure}
+                        onChange={e => this.setState({
+                          referencePressure: e.target.value,
+                          farFieldActive: false,
+                        })}
+                        placeholder="Reference Pressure"/>
+                    </div>
+                    <div className="input-group mb4">
+                      <div className="input-group-addon">x</div>
+                      <input
+                        type="number"
+                        className="form-control"
+                        value={referencePressureX}
+                        onChange={e => this.setState({
+                          referencePressureX: e.target.value,
+                          farFieldActive: false,
+                        })}
+                        placeholder="X position"/>
+                    </div>
+                    <div className="input-group">
+                      <div className="input-group-addon">y</div>
+                      <input
+                        type="number"
+                        className="form-control"
+                        value={referencePressureY}
+                        onChange={e => this.setState({
+                          referencePressureY: e.target.value,
+                          farFieldActive: false,
+                        })}
+                        placeholder="Y position"/>
                     </div>
                   </div>
                 </div>
 
-                <h5 style={{marginTop: '20px'}}>Pressure</h5>
-                <div>
-                  <label>Enter far field pressure</label>
-                  <div className="input-group">
-                    <div className="input-group-addon">
-                      <div>P<sub>&infin;</sub></div>
+                <label>Enter density</label>
+                <div className="input-group">
+                  <div className="input-group-addon">&rho;</div>
+                  <input type="number"
+                    className="form-control"
+                    value={density}
+                    onChange={e => this.setState({ density: e.target.value })}
+                    placeholder="Density"/>
+                </div>
+                
+                <h5 className="mt16">Flow at ({inspectX}, {inspectY})</h5>
+                <div className="flow-eq">
+                  { Object.keys(flowToTeX).map((key, i) => (
+                    <div key={i} style={{ marginBottom: '5px' }}>
+                      <TeX value={`${flowToTeX[key]} = ${flowFcnMap[key](inspectX, inspectY)}`}/>
                     </div>
-                    <input type="number"
-                      className="form-control"
-                      value={farFieldPressure}
-                      onChange={e => this.setState({ farFieldPressure: e.target.value })}
-                      placeholder="Far Field Pressure"/>
-                  </div>
+                  ))}
+                </div>
 
-                  <label>Enter density</label>
-                  <div className="input-group">
-                    <div className="input-group-addon">&rho;</div>
-                    <input type="number"
-                      className="form-control"
-                      value={density}
-                      onChange={e => this.setState({ density: e.target.value })}
-                      placeholder="Density"/>
-                  </div>
-
-                  <label>Pressure at ({inspectX}, {inspectY})</label>
-                  <div className="flow-eq">
-                    <TeX value={`P = ${makePressureFcn(farFieldPressure, density, flowFcnMap, activeFlowIds, activeFlowMap)(inspectX, inspectY)}`}/>
-                  </div>
+                <h5 className="mt16">Pressure at ({inspectX}, {inspectY})</h5>
+                <div className="flow-eq">
+                  <TeX value={`P = ${makePressureFcn(farFieldPressure, density, flowFcnMap, activeFlowIds, activeFlowMap)(inspectX, inspectY)}`}/>
                 </div>
               </div>
             </div>
