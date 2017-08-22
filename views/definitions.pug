@@ -12,7 +12,7 @@ block content
           each item in definitions.slice(block.start, block.end)
             li
               a(href=`#${item.id}`)=item.name
-    .definitions
+    .definitions.italicized-links
       each item in definitions
         .pb20
           h2.fw300(id=item.id)=item.name
