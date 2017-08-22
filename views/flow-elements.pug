@@ -1,18 +1,18 @@
 extends ./layout
 block content
-  .container.pt50.pb50
+  .container.pt50.pb50.italicized-links
     h1.pb30 Flow Elements &amp; Singularities
     h2.fw300 Uniform Stream
     .row.pb30
       .col-sm-8
         p The simplest element of potential flow, the uniform stream represents a uniform velocity field. A uniform stream is defined by constant velocity components (U,V) in 2D in cartesian coordinates:
         .pl50.pb10
-          .mb5 $\Phi(x,y) = Ux + Vy$
-          .mb5 $\Psi(x,y) = -Vx + Uy$
+          .mb5 $\phi(x,y) = Ux + Vy$
+          .mb5 $\psi(x,y) = -Vx + Uy$
           .mb5 $\vec{v}(x,y) = U\hat{x} + V\hat{y}$
         p In 3D cartesian coordinates it is similarly represented by velocity components (U,V,W):
         .pl50.pb10
-          .mb5 $\Phi(x,y,z) = Ux + Vy + Wz$
+          .mb5 $\phi(x,y,z) = Ux + Vy + Wz$
           .mb5 $\vec{v}(x,y,z) = U\hat{x} + V\hat{y} + W\hat{z}$
       .col-sm-4.text-center
         img(src="/images/UNIFORM.svg" width="50%")
@@ -21,44 +21,48 @@ block content
       .col-sm-8
         p This flow singularity represents a constant fluid flux from a point that results in a radial flow centered around the singularity. A point source is defined by its constant magnitude of flux m, which has units of area per time in 2D and volume per time in 3D. The constant m is positive for a point source and negative for a point sink. The central point is a singularity where conservation of mass is violated and velocity goes to infinity. A source/sink located at the origin is defined by a constant magnitude m in 2D polar coordinates:
         .pl50.pb10
-          .mb5 $\Phi(r,\theta) = \frac{m}{2\pi}ln(r)$
-          .mb5 $\Psi(r,\theta) = \frac{m}{2\pi}\theta$
+          .mb5 $\phi(r,\theta) = \frac{m}{2\pi}ln(r)$
+          .mb5 $\psi(r,\theta) = \frac{m}{2\pi}\theta$
           .mb5 $\vec{v}(r,\theta) = \frac{m}{2\pi r}\hat{r}$
         p In 3D spherical coordinates it is similarly represented by a constant magnitude m:
         .pl50.pb10
-          .mb5 $\Phi(r,\theta,\phi) = -\frac{m}{4\pi r}$
+          .mb5 $\phi(r,\theta,\phi) = -\frac{m}{4\pi r}$
           .mb5 $\vec{v}(r,\theta,\phi) = \frac{m}{4\pi r^{2}}\hat{r}$
       .col-sm-4.text-center
         img(src="/images/POINT_SOURCE.svg" width="50%")
     h2.fw300 Vortex
     .row.pb30
       .col-sm-8
-        p This flow singularity has rotating velocity field around its central point. A point vortex is defined by its magnitude $\Gamma$, which has units of circulation. The velocity field has a constant circulation of $\Gamma$ around any path that encloses the singularity. The central point is a singularity where irrotationality is violated and velocity and vorticity go to infinity. There is no vorticity in the flow outside of the central point despite the rotating particle paths, so the velocity field induced by this singularity is also known as an irrotational vortex. A point vortex located at the origin is defined by a constant magnitude $\Gamma$ in 2D polar coordinates:
+        p This flow singularity has a rotating velocity field around its central point. A point vortex is defined by its magnitude $\Gamma$, which has units of circulation. The velocity field has a constant circulation of $\Gamma$ around any path that encloses the central point, which is a singularity where irrotationality is violated and velocity and vorticity go to infinity. There is no vorticity in the flow outside of the central point despite the rotating particle paths, so the velocity field induced by this singularity is also known as an irrotational vortex. A point vortex located at the origin is defined by a constant magnitude $\Gamma$ in 2D polar coordinates:
         .pl50.pb10
-          .mb5 $\Phi(r,\theta) = \frac{\Gamma}{2\pi}\theta$
-          .mb5 $\Psi(r,\theta) = -\frac{\Gamma}{2\pi}ln(r)$
+          .mb5 $\phi(r,\theta) = \frac{\Gamma}{2\pi}\theta$
+          .mb5 $\psi(r,\theta) = -\frac{\Gamma}{2\pi}ln(r)$
           .mb5 $\vec{v}(r,\theta) = \frac{\Gamma}{2\pi r}\hat{\theta}$
       .col-sm-4.text-center
         img(src="/images/POINT_VORTEX.svg" width="50%")
     h2.fw300 Dipole/Doublet
     .row.pb30
       .col-sm-8
-        p This flow singularity occurs as the limit of the combination of a source and sink (proof here). The flow field is asymmetrical, and is defined by its magnitude $\mu$ and direction $\alpha$. The constant $\mu$ has units of length<sup>3</sup> per time. The central point is a singularity with infinite velocity. A dipole located at the origin is defined by a magnitude $\mu$ and direction $\alpha$ in 2D cartesian coordinates:
+        p This flow singularity occurs as the limit of the combination of a source and sink (<a href="/derivations#incompressible-divergence-free">proof here</a>). The flow field is asymmetrical, and is defined by its magnitude $\mu$ and direction $\alpha$. The constant $\mu$ has units of length<sup>3</sup> per time. The central point is a singularity with infinite velocity. A dipole located at the origin is defined by a magnitude $\mu$ and direction $\alpha$ in 2D cartesian coordinates:
         .pl50.pb10
-          .mb5 $\Phi(x,y) = -\frac{\mu}{2\pi}(\frac{xcos\alpha + ysin\alpha}{x^{2} + y^{2}})$
-          .mb5 $\Psi(x,y) = +\frac{\mu}{2\pi}(\frac{xsin\alpha - ycos\alpha}{x^{2} + y^{2}})$
-          .mb5 $\vec{v}(x,y) = \frac{x^{2}cos\alpha - y^{2}sin\alpha + 2xysin\alpha}{(x^{2} + y^{2})^{2}\hat{x}} + \frac{y^{2}sin\alpha - x^{2}cos\alpha + 2xycos\alpha}{(x^{2} + y^{2})^{2}\hat{y}}$
+          .mb5 $\phi(x,y) = -\frac{\mu}{2\pi}(\frac{xcos\alpha + ysin\alpha}{x^{2} + y^{2}})$
+          .mb5 $\psi(x,y) = +\frac{\mu}{2\pi}(\frac{xsin\alpha - ycos\alpha}{x^{2} + y^{2}})$
+          .mb5 $\vec{v}(x,y) = \frac{x^{2}cos\alpha - y^{2}sin\alpha + 2xysin\alpha}{(x^{2} + y^{2})^{2}}\hat{x} + \frac{y^{2}sin\alpha - x^{2}cos\alpha + 2xycos\alpha}{(x^{2} + y^{2})^{2}}\hat{y}$
         p In 3D spherical coordinates it is similarly represented by a constant magnitude m units of length<sup>4</sup> per time. A 3D dipole oriented in the positive $\hat{x}$ direction is represented:
         .pl50.pb10
-          .mb5 $\Phi(x,y,z) = -\frac{\mu}{4\pi}\frac{x}{(x^{2} + y^{2} + z^{2})^{3/2}}$
+          .mb5 $\phi(x,y,z) = -\frac{\mu}{4\pi}\frac{x}{(x^{2} + y^{2} + z^{2})^{3/2}}$
       .col-sm-4.text-center
         img(src="/images/DIPOLE.svg" width="50%" style="transform:translateX(-20%)")
     h2.fw300 Corner Flow
     .row.pb30
       .col-sm-8
         p This flow element mimics the flow around a sharp corner. The angle of the corner is defined by the factor $\alpha$, the orientation is defined by the factor $\theta_0$, and the magnitude by $\beta$. The corner angle in degrees is $\frac{180}{\alpha}$, and the angle $\theta_0$ sets the boundary wall angle relative to the positive x-axis. When alpha is greater than 1, the flow has an exterior corner, when it is greater than 1 the flow has an interior corner. In the case of an exterior corner, the center of the flow is a singularity where the velocity goes to infinity.
+        .pl50.pb10
+          .mb5 $\phi = r^{\alpha}cos(\alpha\theta)$
+          .mb5 $\psi = r^{\alpha}sin(\alpha\theta)$
+          .mb5 $v_r = \frac{\partial\phi}{\partial r} = \alpha r^{\alpha - 1}cos(\alpha\theta)$
+          .mb5 $v_{\theta} = \frac{1}{r}\frac{\partial\phi}{\partial\theta} = -\alpha r^{\alpha - 1}sin(\alpha\theta)$
       .col-sm-4.text-center
         img(src="/images/CORNER.svg" width="50%")
 block scripts
-  script(type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML")
-  script(src="/js/mathjax-config.js")
+  include ./includes/mathjax
