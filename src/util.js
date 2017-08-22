@@ -371,13 +371,16 @@ export const dipoleFcns = {
   },
 };
 
+const calcAtan = (y, x) => x === 0 ? (y === 0 ? 0 : -Math.PI / 2) : Math.atan(y / x);
+
 export const cornerFcns = {
   vp: (x0, y0, theta0, alpha, beta) => {
     return (x, y) => {
       const xDiff = x - x0;
       const yDiff = y - y0;
       const radius = getRadius(xDiff, yDiff);
-      return beta * Math.pow(radius, alpha) * Math.cos(alpha * (Math.atan(yDiff / xDiff) - theta0));
+      const atan = calcAtan(yDiff, xDiff);
+      return beta * Math.pow(radius, alpha) * Math.cos(alpha * (atan - theta0));
     };
   },
   vpTeX: (x0, y0, theta0, alpha, beta) => {
@@ -394,7 +397,8 @@ export const cornerFcns = {
       const xDiff = x - x0;
       const yDiff = y - y0;
       const radius = getRadius(xDiff, yDiff);
-      return beta * Math.pow(radius, alpha) * Math.sin(alpha * (Math.atan(yDiff / xDiff) - theta0));
+      const atan = calcAtan(yDiff, xDiff);
+      return beta * Math.pow(radius, alpha) * Math.sin(alpha * (atan - theta0));
     };
   },
   streamTeX: (x0, y0, theta0, alpha, beta) => {
@@ -409,7 +413,8 @@ export const cornerFcns = {
     return (x, y) => {
       const xDiff = x - x0;
       const yDiff = y - y0;
-      return beta * alpha * Math.pow(getRadiusSq(xDiff, yDiff), (alpha/2) - 1) * (xDiff * Math.cos(alpha * (Math.atan(yDiff/xDiff) - theta0)) + yDiff * Math.sin(alpha * (Math.atan(yDiff, xDiff) - theta0)))
+      const atan = calcAtan(xDiff, yDiff);
+      return beta * alpha * Math.pow(getRadiusSq(xDiff, yDiff), (alpha/2) - 1) * (xDiff * Math.cos(alpha * (atan - theta0)) + yDiff * Math.sin(alpha * (atan - theta0)))
     };
   },
   xVelTeX: (x0, y0, theta0, alpha, beta) => {
@@ -428,7 +433,8 @@ export const cornerFcns = {
     return (x, y) => {
       const xDiff = x - x0;
       const yDiff = y - y0;
-      return beta * alpha * Math.pow(getRadiusSq(xDiff, yDiff), (alpha/2) - 1) * (yDiff * Math.cos(alpha * (Math.atan(yDiff/xDiff) - theta0)) + xDiff * Math.sin(alpha * (Math.atan(yDiff, xDiff) - theta0)))
+      const atan = calcAtan(xDiff, yDiff);
+      return beta * alpha * Math.pow(getRadiusSq(xDiff, yDiff), (alpha/2) - 1) * (yDiff * Math.cos(alpha * (atan - theta0)) + xDiff * Math.sin(alpha * (atan - theta0)))
     };
   },
   yVelTeX: (x0, y0, theta0, alpha, beta) => {
