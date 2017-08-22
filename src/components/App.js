@@ -144,12 +144,12 @@ function makeFlowStr(key, flowIds, flowMap, noLeftSide) {
 };
 
 function makeVelocityMagnitudeFcn(xVelFcn, yVelFcn) {
-  return (x, y) => {
-    return Math.sqrt(
+  return (x, y) => (
+    Math.sqrt(
       Math.pow(xVelFcn(x, y), 2) +
       Math.pow(yVelFcn(x, y), 2)
-    );
-  };
+    )
+  );
 };
 
 function makeUniformVelocityMagnitude(flowIds, flowMap) {
@@ -163,18 +163,6 @@ function makeUniformVelocityMagnitude(flowIds, flowMap) {
     }
   });
   return makeVelocityMagnitudeFcn((x, y) => USum, (x, y) => VSum);
-};
-
-function makePressureFcn(farFieldPressure, density, flowFcnMap, flowIds, flowMap) {
-  const uniformVelMag = makeUniformVelocityMagnitude(flowIds, flowMap);
-  const xVelFcn = flowFcnMap['xVel'];
-  const yVelFcn = flowFcnMap['yVel'];
-  
-  return (x, y) => {
-    return Number(farFieldPressure) + (0.5 * Number(density)) * (
-      uniformVelMag(x, y) - makeVelocityMagnitudeFcn(xVelFcn, yVelFcn)(x, y)
-    );
-  };
 };
 
 /**
@@ -267,7 +255,6 @@ const mapStateToProps = (state) => ({
 class App extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       flowFcnName: 'stream',
       flowStr: makeFlowStr('stream', [], {}),
@@ -285,6 +272,7 @@ class App extends Component {
     this.activeFlowTimer = null;
     this.applyData = this.applyData.bind(this);
     this.handleResize = this.handleResize.bind(this);
+    this.calculatePressure = this.calculatePressure.bind(this);
   };
 
   componentDidMount() {
@@ -354,6 +342,51 @@ class App extends Component {
     setTimeout(() => {
       Plotly.Plots.resize(this.graph);
     });
+  };
+
+  calculatePressure() {
+    const {
+      activeFlowIds,
+      activeFlowMap,
+    } = this.props;
+    const {
+      farFieldPressure,
+      farFieldActive,
+      density,
+      flowFcnMap,
+      inspectX,
+      inspectY,
+      referencePressure,
+      referencePressureX,
+      referencePressureY,
+    } = this.state;
+    const uniformVelMag = makeUniformVelocityMagnitude(activeFlowIds, activeFlowMap);
+    const xVelFcn = flowFcnMap['xVel'];
+    const yVelFcn = flowFcnMap['yVel'];
+    const velocityMagnitudeFcn = makeVelocityMagnitudeFcn(xVelFcn, yVelFcn);
+    const inspectVelocity = velocityMagnitudeFcn(Number(inspectX), Number(inspectY));
+    
+    if(farFieldActive) {
+      if(Number(density) === 0) {
+        return Number(farFieldPressure);
+      }
+      return (
+        Number(farFieldPressure) +
+        0.5 * Number(density) * (
+          uniformVelMag(Number(inspectX), Number(inspectY)) - inspectVelocity
+        )
+      );
+    }
+
+    const term1 = Math.pow(velocityMagnitudeFcn(Number(referencePressureX), Number(referencePressureY)), 2);
+    const term2 = Math.pow(inspectVelocity, 2);
+    // handle Infinity - Infinity edge case
+    const sum = (term1 === Infinity && term2 === Infinity) ? 0 : term1 - term2;
+    // handle 0 * Infinity edge case
+    if(Number(density) === 0) {
+      return Number(referencePressure);
+    }
+    return Number(referencePressure) + 0.5 * Number(density) * sum;
   };
 
   renderNewPlot(node, data, layout) {
@@ -491,7 +524,12 @@ class App extends Component {
 
                 <div className="d-flex">
                   { !hasCornerFlow &&
-                    <div className={`flex1 ${farFieldActive ? '' : 'op6'}`}>
+                    <div className={`flex1 ${farFieldActive ? '' : 'op6'}`}
+                      onClick={() => {
+                        if(!farFieldActive) {
+                          this.setState({ farFieldActive: true });
+                        }
+                      }}>
                       <label>Enter far field pressure</label>
                       <div className="input-group">
                         <div className="input-group-addon">
@@ -511,7 +549,12 @@ class App extends Component {
                   { !hasCornerFlow &&
                     <div className="flex0 fs14 text-light" style={{padding: '28px 16px'}}>OR</div>
                   }
-                  <div className={`flex1 ${farFieldActive ? 'op6' : ''}`}>
+                  <div className={`flex1 ${farFieldActive ? 'op6' : ''}`}
+                    onClick={() => {
+                      if(farFieldActive) {
+                        this.setState({ farFieldActive: false });
+                      }
+                    }}>
                     <label>Enter pressure at a reference point</label>
                     <div className="input-group mb4">
                       <div className="input-group-addon">P</div>
@@ -573,7 +616,7 @@ class App extends Component {
 
                 <h5 className="mt16">Pressure at ({inspectX}, {inspectY})</h5>
                 <div className="flow-eq">
-                  <TeX value={`P = ${makePressureFcn(farFieldPressure, density, flowFcnMap, activeFlowIds, activeFlowMap)(inspectX, inspectY)}`}/>
+                  <TeX value={`P = ${this.calculatePressure()}`}/>
                 </div>
               </div>
             </div>

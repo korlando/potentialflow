@@ -39805,16 +39805,6 @@ function makeUniformVelocityMagnitude(flowIds, flowMap) {
   });
 };
 
-function makePressureFcn(farFieldPressure, density, flowFcnMap, flowIds, flowMap) {
-  var uniformVelMag = makeUniformVelocityMagnitude(flowIds, flowMap);
-  var xVelFcn = flowFcnMap['xVel'];
-  var yVelFcn = flowFcnMap['yVel'];
-
-  return function (x, y) {
-    return Number(farFieldPressure) + 0.5 * Number(density) * (uniformVelMag(x, y) - makeVelocityMagnitudeFcn(xVelFcn, yVelFcn)(x, y));
-  };
-};
-
 /**
  * Generate the z data for a contour plot.
  * @param {function} zFcn a function of (x, y)
@@ -39927,6 +39917,7 @@ var App = function (_Component) {
     _this.activeFlowTimer = null;
     _this.applyData = _this.applyData.bind(_this);
     _this.handleResize = _this.handleResize.bind(_this);
+    _this.calculatePressure = _this.calculatePressure.bind(_this);
     return _this;
   }
 
@@ -40012,6 +40003,46 @@ var App = function (_Component) {
       });
     }
   }, {
+    key: 'calculatePressure',
+    value: function calculatePressure() {
+      var _props2 = this.props,
+          activeFlowIds = _props2.activeFlowIds,
+          activeFlowMap = _props2.activeFlowMap;
+      var _state = this.state,
+          farFieldPressure = _state.farFieldPressure,
+          farFieldActive = _state.farFieldActive,
+          density = _state.density,
+          flowFcnMap = _state.flowFcnMap,
+          inspectX = _state.inspectX,
+          inspectY = _state.inspectY,
+          referencePressure = _state.referencePressure,
+          referencePressureX = _state.referencePressureX,
+          referencePressureY = _state.referencePressureY;
+
+      var uniformVelMag = makeUniformVelocityMagnitude(activeFlowIds, activeFlowMap);
+      var xVelFcn = flowFcnMap['xVel'];
+      var yVelFcn = flowFcnMap['yVel'];
+      var velocityMagnitudeFcn = makeVelocityMagnitudeFcn(xVelFcn, yVelFcn);
+      var inspectVelocity = velocityMagnitudeFcn(Number(inspectX), Number(inspectY));
+
+      if (farFieldActive) {
+        if (Number(density) === 0) {
+          return Number(farFieldPressure);
+        }
+        return Number(farFieldPressure) + 0.5 * Number(density) * (uniformVelMag(Number(inspectX), Number(inspectY)) - inspectVelocity);
+      }
+
+      var term1 = Math.pow(velocityMagnitudeFcn(Number(referencePressureX), Number(referencePressureY)), 2);
+      var term2 = Math.pow(inspectVelocity, 2);
+      // handle Infinity - Infinity edge case
+      var sum = term1 === Infinity && term2 === Infinity ? 0 : term1 - term2;
+      // handle 0 * Infinity edge case
+      if (Number(density) === 0) {
+        return Number(referencePressure);
+      }
+      return Number(referencePressure) + 0.5 * Number(density) * sum;
+    }
+  }, {
     key: 'renderNewPlot',
     value: function renderNewPlot(node, data, layout) {
       var _this4 = this;
@@ -40037,10 +40068,10 @@ var App = function (_Component) {
         coordinates = generateXY(sizeX, sizeY);
         xCoords = coordinates.xCoords;
         yCoords = coordinates.yCoords;
-        var _props2 = _this4.props,
-            flowView = _props2.flowView,
-            activeFlowIds = _props2.activeFlowIds,
-            activeFlowMap = _props2.activeFlowMap;
+        var _props3 = _this4.props,
+            flowView = _props3.flowView,
+            activeFlowIds = _props3.activeFlowIds,
+            activeFlowMap = _props3.activeFlowMap;
 
         _this4.applyData(flowView, activeFlowIds, activeFlowMap);
       });
@@ -40050,23 +40081,23 @@ var App = function (_Component) {
     value: function render() {
       var _this5 = this;
 
-      var _props3 = this.props,
-          activeFlowIds = _props3.activeFlowIds,
-          activeFlowMap = _props3.activeFlowMap,
-          flowView = _props3.flowView;
-      var _state = this.state,
-          flowStr = _state.flowStr,
-          flowFcnMap = _state.flowFcnMap,
-          addMode = _state.addMode,
-          inspectX = _state.inspectX,
-          inspectY = _state.inspectY,
-          farFieldPressure = _state.farFieldPressure,
-          farFieldActive = _state.farFieldActive,
-          referencePressure = _state.referencePressure,
-          referencePressureX = _state.referencePressureX,
-          referencePressureY = _state.referencePressureY,
-          density = _state.density,
-          graphSize = _state.graphSize;
+      var _props4 = this.props,
+          activeFlowIds = _props4.activeFlowIds,
+          activeFlowMap = _props4.activeFlowMap,
+          flowView = _props4.flowView;
+      var _state2 = this.state,
+          flowStr = _state2.flowStr,
+          flowFcnMap = _state2.flowFcnMap,
+          addMode = _state2.addMode,
+          inspectX = _state2.inspectX,
+          inspectY = _state2.inspectY,
+          farFieldPressure = _state2.farFieldPressure,
+          farFieldActive = _state2.farFieldActive,
+          referencePressure = _state2.referencePressure,
+          referencePressureX = _state2.referencePressureX,
+          referencePressureY = _state2.referencePressureY,
+          density = _state2.density,
+          graphSize = _state2.graphSize;
 
       var hasCornerFlow = hasActiveCornerFlow(activeFlowIds, activeFlowMap);
 
@@ -40210,7 +40241,12 @@ var App = function (_Component) {
                   { className: 'd-flex' },
                   !hasCornerFlow && _react2.default.createElement(
                     'div',
-                    { className: 'flex1 ' + (farFieldActive ? '' : 'op6') },
+                    { className: 'flex1 ' + (farFieldActive ? '' : 'op6'),
+                      onClick: function onClick() {
+                        if (!farFieldActive) {
+                          _this5.setState({ farFieldActive: true });
+                        }
+                      } },
                     _react2.default.createElement(
                       'label',
                       null,
@@ -40252,7 +40288,12 @@ var App = function (_Component) {
                   ),
                   _react2.default.createElement(
                     'div',
-                    { className: 'flex1 ' + (farFieldActive ? 'op6' : '') },
+                    { className: 'flex1 ' + (farFieldActive ? 'op6' : ''),
+                      onClick: function onClick() {
+                        if (farFieldActive) {
+                          _this5.setState({ farFieldActive: false });
+                        }
+                      } },
                     _react2.default.createElement(
                       'label',
                       null,
@@ -40373,7 +40414,7 @@ var App = function (_Component) {
                 _react2.default.createElement(
                   'div',
                   { className: 'flow-eq' },
-                  _react2.default.createElement(_TeX2.default, { value: 'P = ' + makePressureFcn(farFieldPressure, density, flowFcnMap, activeFlowIds, activeFlowMap)(inspectX, inspectY) })
+                  _react2.default.createElement(_TeX2.default, { value: 'P = ' + this.calculatePressure() })
                 )
               )
             )
