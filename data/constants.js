@@ -4,19 +4,19 @@ module.exports = {
   DEFINITIONS: [{
     id: 'potential-flow',
     name: 'Potential Flow',
-    value: `Potential flow is an idealized model of fluid flow that occurs in the case of <a href="#incompressible">incompressible</a>, <a href="#inviscid">inviscid</a>, and <a href="#irrotational">irrotational</a> flow. The <a href="#velocity-field">velocity field</a> of a potential flow satisfies <a href="#laplaces-equation">Laplace's equation</a>: $\\nabla^{2} \\vec{v} = 0$ (proof here).`,
+    value: `Potential flow is an idealized model of fluid flow that occurs in the case of <a href="#incompressible">incompressible</a>, <a href="#inviscid">inviscid</a>, and <a href="#irrotational">irrotational</a> flow. The <a href="#velocity-field">velocity field</a> of a potential flow satisfies <a href="#laplaces-equation">Laplace's equation</a>: $\\nabla^{2} \\vec{v} = 0$.`,
   }, {
     id: 'irrotational',
     name: 'Irrotational Flow',
-    value: 'Irrotational flow is defined by having a <a href="#velocity-field">velocity field</a> that satisfies $\\nabla \\times \\vec{v} = 0$ everywhere in the flow except for in some cases singularities may exist, which are single points that violate this statement. An equivalent statement is that the <a href="#velocity-field">velocity field</a> is curl free or has no <a href="#vorticity">vorticity</a>. By definition, all <a href="#potential-flow">potential flows</a> satisfy irrotationality. All irrotational <a href="#velocity-field">velocity fields</a> will have a scalar potential $\\phi$ that satisfy $\\nabla \\phi = \\vec{v}$ (see proof).',
+    value: 'Irrotational flow is defined by having a <a href="#velocity-field">velocity field</a> that satisfies $\\nabla \\times \\vec{v} = 0$ everywhere in the flow. Some exceptions may be made for singularities that violate this statement at single points. An equivalent statement is that the <a href="#velocity-field">velocity field</a> is curl free or has no <a href="#vorticity">vorticity</a>. By definition, all <a href="#potential-flow">potential flows</a> satisfy irrotationality.',
   }, {
     id: 'velocity-potential',
     name: 'Velocity Potential',
-    value: 'The velocity potential is represented as $\\phi$, and exists for a flow when the velocity field is <a href="#irrotational">irrotational</a>. The potential is defined so that $\\nabla \\phi = 0$.',
+    value: 'The velocity potential is represented as $\\phi$, and exists for a flow when the velocity field is <a href="#irrotational">irrotational</a>. The potential is defined so that $\\nabla \\phi = v$.',
   }, {
     id: 'ideal-fluid',
     name: 'Ideal Fluid',
-    value: 'An ideal fluid is one that is both <a href="#incompressible">incompressible</a> and <a href="#inviscid">inviscid</a>. Although in reality, all fluids are <a href="#real-fluid">real</a> and therefore are to some degree compressible and have some <a href="#viscosity">viscosity</a>, fluids like air and water often behave ideal when they flow. <a href="#potential-flow">Potential flow</a> always assumes that the fluid is ideal.',
+    value: 'An ideal fluid is one that is both <a href="#incompressible">incompressible</a> and <a href="#inviscid">inviscid</a>. Although in reality, all fluids are <a href="#real-fluid">real</a> and therefore are to some degree compressible and have some <a href="#viscosity">viscosity</a>, fluids like air and water often behave ideally when they flow. <a href="#potential-flow">Potential flow</a> always assumes that the fluid is ideal.',
   }, {
     id: 'inviscid',
     name: 'Inviscid Flow',
@@ -26,11 +26,16 @@ module.exports = {
     name: 'Viscosity',
     value: `<div>Viscosity is a property of a fluid that relates the shear force that develops in the flow as a result of the shear in velocity, which is also know as the strain rate. The precise definition of dynamic viscosity ($\\mu$) is:</div>
       <div class="pl50 pt10 pb10">$\\tau_{ij} = \\mu \\frac{\\partial v_{i}}{\\partial x_{j}}$</div>
-      <div>Kinematic viscosity is defined: $\\frac{\\mu}{\\rho}$ where $\\rho$ is the density of the fluid. In an inviscid flow it is assumed that $\\mu = 0$. Some typical values of viscosity are listed below: (viscosity of air, water, seawater, …)</div>`,
+      <div>Kinematic viscosity is defined: $\\frac{\\mu}{\\rho}$ where $\\rho$ is the density of the fluid. In an inviscid flow it is assumed that $\\mu = 0$. Some typical values of viscosity are listed below:</div>
+      <div class="pl50 pt10">
+        <div>$\\mu_{\\textrm{water}} = 9 \\times 10^{-4}$</div>
+        <div>$\\mu_{\\textrm{air}} = 2 \\times 10^{-6}$</div>
+        <div>$\\mu_{\\textrm{honey}} = 10$</div>
+      </div>`,
   }, {
     id: 'incompressible',
     name: 'Incompressible Flow',
-    value: 'Incompressible flow is a flow in which any change in density in the fluid is negligible. When considering the flow as a group of many small individual fluid particles, these individual fluid particles do not undergo any volume change in an incompressible flow. Effects of compressibility occur at high speeds in flow, and therefore the Mach number of the flow can be used to estimate if the assumption of incompressibility is valid. At Mach numbers of $\\textrm{Ma} \\lt 0.3$ flows are incompressible (cite source). The fact that sound can propagate through fluids proves they must be compressible in reality because sound is a compression wave. However, all fluids behave as incompressible at speeds that are small relative to the speed of sound.',
+    value: 'Incompressible flow is a flow in which any change in density in the fluid is negligible. When considering the flow as a group of many small individual fluid particles, these individual fluid particles do not undergo any volume change in an incompressible flow. Effects of compressibility occur at high speeds in flow, and therefore the Mach number of the flow can be used to estimate if the assumption of incompressibility is valid. At Mach numbers of $\\textrm{Ma} \\lt 0.3$ flows are incompressible. The fact that sound can propagate through fluids proves they must be compressible because sound is a compression wave. However, all fluids behave as incompressible at speeds that are small relative to the speed of sound.',
   }, {
     id: 'real-fluid',
     name: 'Real Fluid',
@@ -38,11 +43,11 @@ module.exports = {
   }, {
     id: 'continuum-assumption',
     name: 'Continuum Assumption',
-    value: 'The continuum assumption, also known as the continuum hypothesis, is an idealization of fluid mechanics that presumes that the properties of a fluid, like velocity, pressure, and density can be defined at any infinitesimal point. Fluids are actually comprised of individual molecules, each with their own motion, but above the microscopic scale these velocities are averaged and the fluid properties can be defined continuously from point to point. [Insert picture here showing a flow and a zoomed in view of water molecules with erratic motion at scale of mean free path]',
+    value: 'The continuum assumption, also known as the continuum hypothesis, is an idealization of fluid mechanics that presumes that the properties of a fluid, like velocity, pressure, and density can be defined at any infinitesimal point. Fluids are actually comprised of individual molecules, each with their own motion, but above the microscopic scale these velocities are averaged and the fluid properties can be defined continuously from point to point.',
   }, {
     id: 'velocity-field',
     name: 'Velocity Field',
-    value: `The velocity field is a continuous function, $\\vec{v}(x,y,z,t)$ in 3D or $\\vec{v}(x,y,t)$ in 2D, that defines the velocity vector of the flow at every point in the fluid domain in accordance with the continuum assumption. The concept of defining the fluid velocity with a field is fundamental to potential flow theory.  The velocity field must be continuous because it must have a finite derivative, and therefore finite acceleration, if the internal forces are finite in accordance with Newton's 2<sup>nd</sup> law: $\\vec{F} = m\\vec{a}$. [Picture or gif of velocity vector field here]`,
+    value: `The velocity field is a continuous function, $\\vec{v}(x,y,z,t)$ in 3D or $\\vec{v}(x,y,t)$ in 2D, that defines the velocity vector of the flow at every point in the fluid domain in accordance with the continuum assumption. The concept of defining the fluid velocity with a field is fundamental to potential flow theory.  The velocity field must be continuous because it must have a finite derivative, and therefore finite acceleration, if the internal forces are finite in accordance with Newton's 2<sup>nd</sup> law: $\\vec{F} = m\\vec{a}$.`,
   }, {
     id: 'differential-analysis',
     name: 'Differential Analysis',
@@ -54,7 +59,7 @@ module.exports = {
   }, {
     id: 'conservation-of-mass',
     name: 'Conservation of Mass',
-    value: 'A fundamental principle of classical mechanics is that matter can neither be created nor destroyed. When applied using differential analysis conservation of mass takes on the form: $\\frac{d\\rho}{dt} + \\nabla \\cdot \\rho \\vec{v} = 0$. Potential flow assumes an incompressible flow with rho = constant and therefore $\\frac{d\\rho}{dt} = 0$, so conservation of mass simplifies to $\\nabla \\cdot \\vec{v} = 0$, which can also be stated as the divergence of the velocity field is zero or the velocity field is divergence free.',
+    value: 'A fundamental principle of classical mechanics is that matter can neither be created nor destroyed. When applied using differential analysis, conservation of mass takes on the form: $\\frac{d\\rho}{dt} + \\nabla \\cdot \\rho \\vec{v} = 0$. Potential flow assumes an incompressible flow with rho = constant and therefore $\\frac{d\\rho}{dt} = 0$, so conservation of mass simplifies to $\\nabla \\cdot \\vec{v} = 0$, which can also be stated as the divergence of the velocity field is zero or the velocity field is divergence free.',
   }, {
     id: 'laplaces-equation',
     name: `Laplace's Equation`,
@@ -62,8 +67,8 @@ module.exports = {
       <div class="pl50 pt10 pb10">$\\nabla^{2} v = 0$.</div>
       <div>$\\nabla^{2}$ is known as the Laplacian operator which in 2D is:</div>
       <div class="pl50 pt10 pb10">$\\nabla^{2} = \\frac{\\partial}{\\partial x^{2}} + \\frac{\\partial}{\\partial y^{2}}$</div>
-      <div class="pb10">Therefore Laplace's equation can also be written as: $\\frac{\\partial x}{\\partial x^{2}} + \\frac{\\partial y}{\\partial y^{2}}$ in 2D and $\\frac{\\partial x}{\\partial x^{2}} + \\frac{\\partial y}{\\partial y^{2}} + \\frac{\\partial z}{\\partial z^{2}}$ in 3D.</div>
-      <div>Due to the linearity of this equation these solutions exhibit the properties of <a href="#linear-superposition">linear supposition</a>. Therefore, any linear combination of the unique solutions is also a solution.</div>`,
+      <div class="pb10">Therefore Laplace's equation can also be written as: $\\frac{\\partial x}{\\partial x^{2}} + \\frac{\\partial y}{\\partial y^{2}} = 0$ in 2D and $\\frac{\\partial x}{\\partial x^{2}} + \\frac{\\partial y}{\\partial y^{2}} + \\frac{\\partial z}{\\partial z^{2}} = 0$ in 3D.</div>
+      <div>Due to the linearity of this equation these solutions exhibit the properties of <a href="#linear-superposition">linear superposition</a>. Therefore, any linear combination of the unique solutions is also a solution.</div>`,
   }, {
     id: 'vorticity',
     name: 'Vorticity',
@@ -88,20 +93,23 @@ module.exports = {
     id: 'stream-function',
     name: 'Stream Function',
     value: `<div>The stream function, $\\psi(x, y)$, is a scalar field that exists for all <a href="#incompressible">incompressible</a> 2D flows. It is defined so that the velocity field satisfies:</div>
-      <div class="pl50 pt10 pb10">$u = \\frac{\\partial \\psi}{\\partial v} = -\\frac{\\partial \\psi}{\\partial x}$</div>
+      <div class="pl50 pt10 pb10">
+        <div class="mb5">$u = \\frac{\\partial \\psi}{\\partial v}$</div>
+        <div>$u = -\\frac{\\partial \\psi}{\\partial x}$</div>
+      </div>
       <div>The stream function does not exist in 3D <a href="#velocity-field">velocity fields</a>. Lines of constant value of the stream function are <a href="#streamlines">streamlines</a> and are tangent to the velocity field.</div>`,
   }, {
     id: 'conservation-of-momentum',
     name: 'Conservation of Momentum',
-    value: `Momentum is always conserved in fluid dynamics. For <a href="#inviscid">inviscid flow</a> the Euler equations are the governing set of equations that result from the statement of conservation of momentum. In the special case of <a href="#potential-flow">potential flow</a>, the Euler equations are satisfied and result in a more specific expression of conservation of momentum. The result is that any inviscid <a href="#irrotational">irrotational</a> flow will remain irrotational indefinitely (proof here). This is equivalently stated in Kelvin's theorem.`,
+    value: `Momentum is always conserved in fluid dynamics. For <a href="#inviscid">inviscid flow</a> the Euler equations are the governing set of equations that result from the statement of conservation of momentum. In the special case of <a href="#potential-flow">potential flow</a>, the Euler equations are satisfied and result in a more specific expression of conservation of momentum. The result is that any inviscid <a href="#irrotational">irrotational</a> flow will remain irrotational indefinitely. This is equivalently stated in Kelvin's theorem.`,
   }, {
     id: 'linear-superposition',
     name: 'Linear Superposition',
-    value: `A linear differential equation has all linear terms and zero constant term. Linear differential equations have solutions that can be scaled and added together in any combination and remain a solution. This unique property is called linear superposition. <a href="#laplaces-equation">Laplace's equation</a> is linear, so to obtain a solution that meets the boundary conditions, it a linear combination of the known solutions or flow elements can be used.`
+    value: `A linear differential equation has all linear terms and zero constant term. Linear differential equations have solutions that can be scaled and added together in any combination and remain a solution. This unique property is called linear superposition. <a href="#laplaces-equation">Laplace's equation</a> is linear, so to obtain a solution that meets the boundary conditions, a linear combination of the known solutions or flow elements can be used.`
   }, {
     id: 'eulerian',
     name: 'Eulerian Description of Flow',
-    value: 'An Eulerian description of fluid mechanics is a field based description. The fluid is defined at all points by both vector and scalar fields. The <a href="#velocity-field">velocity field</a> is an example of a vector field used in Eulerian descriptions, and it is a vector defined at all points and across time: $v(x,y,z,t)$. Pressure, temperature, and density are example of scalar fields that are also defined throughout the fluid domain in a laboratory fixed frame. This is the most commonly used description in fluid mechanics, and it is named after Leonhard Euler. The competing <a href="#lagrangian">Lagrangian description</a> of fluid mechanics is less commonly used.',
+    value: 'An Eulerian description of fluid mechanics is a field based description. The fluid is defined at all points by both vector and scalar fields. The <a href="#velocity-field">velocity field</a> is an example of a vector field used in Eulerian descriptions, and it is a vector defined at all points and across time: $v(x,y,z,t)$. Pressure, temperature, and density are examples of scalar fields that are also defined throughout the fluid domain in a laboratory fixed frame. This is the most commonly used description in fluid mechanics, and it is named after Leonhard Euler. The competing <a href="#lagrangian">Lagrangian description</a> of fluid mechanics is less commonly used.',
   }, {
     id: 'lagrangian',
     name: 'Lagrangian Description of Flow',
@@ -109,7 +117,7 @@ module.exports = {
   }, {
     id: 'material-derivative',
     name: 'Material Derivative',
-    value: `<div class="pl50 pb10">$\\frac{df}{dt} = \\frac{\\partial f}{\\partial t} + v \\cdot \\nabla f$</div>
+    value: `<div class="pl50 pb10">$\\frac{Df}{Dt} = \\frac{\\partial f}{\\partial t} + v \\cdot \\nabla f$</div>
       <div>The material derivative is a time derivative that computes the rate of change of a quantity for a material element based on the <a href="#velocity-field">velocity field</a>. It is used to compute <a href="#lagrangian">Lagrangian flow</a> properties from an <a href="#eulerian">Eulerian flow</a> description. The second term of the derivative is known as the convective term because it accounts for the change related to the motion of the fluid.</div>`,
   }, {
     id: 'kelvins-theorem',
@@ -120,7 +128,7 @@ module.exports = {
   }, {
     id: 'kutta-joukowski-theorem',
     name: 'Kutta-Joukowski Theorem',
-    value: `<div>Potential flow theory does not predict any drag force on objects in a flow as described by <a href="#dalamberts-paradox">D'Alambert's paradox</a>, but it can accurately predict lift force. The Kutta-Joukowski relates lift force simply to the density, far field velocity, and circulation around an object:</div>
+    value: `<div>Potential flow theory does not predict any drag force on objects in a flow as described by <a href="#dalamberts-paradox">D'Alambert's paradox</a>, but it can accurately predict lift force. The Kutta-Joukowski theorem relates lift force simply to the density, far field velocity, and circulation around an object:</div>
       <div class="pl50 pb10 pt10">$L = \\rho U\\Gamma$</div>
       <div>This theory can be used to determine the lift on an airfoil or rotating cylinder.</div>`,
   }, {
@@ -135,12 +143,12 @@ module.exports = {
     id: 'euler-equations',
     name: 'Euler Equations',
     value: `<div>The Euler equations are a statement of conservation of momentum for inviscid flow. They are the inviscid version of the <a href="#navier-stokes-equations">Navier-Stokes equations</a>:</div>
-      <div class="pl50 pt10">$\\frac{\\partial v}{\\partial t} + v \\cdot \\nabla v = - \\frac{\\nabla p}{\\rho} + \\nu \\nabla^{2}v + g$</div>`,
+      <div class="pl50 pt10">$\\frac{\\partial v}{\\partial t} + v \\cdot \\nabla v = - \\frac{\\nabla p}{\\rho} + g$</div>`,
   }, {
     id: 'navier-stokes-equations',
     name: 'Navier-Stokes Equations',
     value: `<div>The Navier-Stokes equations are conservation of momentum or Newton’s second law applied to fluid flow. The are a set of coupled nonlinear second order partial differential equations:</div>
-      <div class="pl50 pt10">$\\frac{\\partial v}{\\partial t} + v \\cdot \\nabla v = - \\frac{\\nabla p}{\\rho} + g$</div>`,
+      <div class="pl50 pt10">$\\frac{\\partial v}{\\partial t} + v \\cdot \\nabla v = - \\frac{\\nabla p}{\\rho} + \\nu \\nabla^{2}v + g$</div>`,
   }, {
     id: 'bernoullis-equation',
     name: `Bernoulli's Equation`,
