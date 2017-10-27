@@ -3,7 +3,6 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
-const cluster = require('cluster');
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -32,7 +31,7 @@ app.set('view engine', 'pug');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'www'), {
-  index: ''
+  index: '',
 }));
 
 app.use('/api/v1', require('./routes/api-v1')());

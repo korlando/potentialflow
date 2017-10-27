@@ -26,7 +26,7 @@ module.exports = {
     name: 'Viscosity',
     value: `<div>Viscosity is a property of a fluid that relates the shear force that develops in the flow as a result of the shear in velocity, which is also know as the strain rate. The precise definition of dynamic viscosity ($\\mu$) is:</div>
       <div class="pl50 pt10 pb10">$\\tau_{ij} = \\mu \\frac{\\partial v_{i}}{\\partial x_{j}}$</div>
-      <div>Kinematic viscosity is defined: $\\frac{\\mu}{\\rho}$ where $\\rho$ is the density of the fluid. In an inviscid flow it is assumed that $\\mu = 0$. Some typical values of viscosity are listed below:</div>
+      <div>Kinematic viscosity is defined: $\\frac{\\mu}{\\rho}$ where $\\rho$ is the density of the fluid. In an inviscid flow it is assumed that $\\mu = 0$. Some typical values of viscosity are listed below in units of Pa·s:</div>
       <div class="pl50 pt10">
         <div>$\\mu_{\\textrm{water}} = 9 \\times 10^{-4}$</div>
         <div>$\\mu_{\\textrm{air}} = 2 \\times 10^{-6}$</div>
@@ -153,7 +153,7 @@ module.exports = {
     id: 'bernoullis-equation',
     name: `Bernoulli's Equation`,
     value: `<div>The Bernoulli equation is a statement of conservation of energy for an inviscid flow:</div>
-      <div class="pl50 pt10 pb10">$P + \\frac{1}{2}\\rho v^{2} + \\rho gh = \\textrm{constant}$</div>
+      <div class="pl50 pt10 pb10">$p + \\frac{1}{2}\\rho v^{2} + \\rho gh = \\textrm{constant}$</div>
       <div>It is valid for points along a streamline in inviscid flow. In the special case of potential flow, the Bernoulli equation is valid for all points in the flow.</div>`,
   }, {
     id: 'equipotentials',
