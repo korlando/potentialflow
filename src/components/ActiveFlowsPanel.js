@@ -9,7 +9,10 @@ import PointVortex from './FlowElements/PointVortex';
 import Dipole from './FlowElements/Dipole';
 import Corner from './FlowElements/Corner';
 
-import { removeFlow, removeAllFlows } from '../util';
+import {
+  removeFlow,
+  removeAllFlows,
+} from '../util';
 import { addAlert } from '../alert';
 import {
   UNIFORM,

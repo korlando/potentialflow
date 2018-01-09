@@ -7,8 +7,8 @@ block content
         strong A velocity field that is a gradient of a scalar potential field is irrotational
       p It is a direct result from vector calculus that the curl of the gradient of a scalar is always zero, $\nabla \times \nabla \phi = 0$:
       .pl50.pb10
-        div $\nabla \times \nabla \phi = \nabla \times (\frac{\partial \phi}{\partial x} + \frac{\partial \phi}{\partial y} + \frac{\partial \phi}{\partial z})$
-        div $\nabla \times \nabla \phi = (\frac{\partial^{2} \phi}{\partial z \partial y} - \frac{\partial^{2} \phi}{\partial y \partial z})\hat{i} - (\frac{\partial^{2} \phi}{\partial z \partial x} - \frac{\partial^{2} \phi}{\partial x \partial z})\hat{j} + (\frac{\partial^{2} \phi}{\partial y \partial x} - \frac{\partial^{2} \phi}{\partial x \partial y})\hat{k} = 0$
+        div $\nabla \times \nabla \phi = \nabla \times (\frac{\partial \phi}{\partial x}\hat{x} + \frac{\partial \phi}{\partial y}\hat{y} + \frac{\partial \phi}{\partial z}\hat{z})$
+        div $\nabla \times \nabla \phi = (\frac{\partial^{2} \phi}{\partial z \partial y} - \frac{\partial^{2} \phi}{\partial y \partial z})\hat{x} - (\frac{\partial^{2} \phi}{\partial z \partial x} - \frac{\partial^{2} \phi}{\partial x \partial z})\hat{y} + (\frac{\partial^{2} \phi}{\partial y \partial x} - \frac{\partial^{2} \phi}{\partial x \partial y})\hat{z} = 0$
     .pb20#incompressible-divergence-free
       p
         strong Incompressible flow is divergence free

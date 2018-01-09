@@ -4,7 +4,7 @@ const { DOMAIN, SITE_NAME } = require('../data/constants');
 module.exports = {
   'home': {
     title: 'Potential Flow Graphing App',
-    description: '',
+    description: 'Plot the velocity potential, stream function, and velocity field of 2D potential flow fields constructed using discrete flow elements. Build classical examples of 2D potential flow fields like the Rankine halfbody, Rankine oval, and cylinder in a free stream or build completely custom flow fields.',
     url: `${DOMAIN}`
   },
   'contact': {
@@ -19,6 +19,7 @@ module.exports = {
   },
   'flow-elements': {
     title: 'Flow Elements - ' + SITE_NAME,
+    description: '',
     url: DOMAIN + '/flow-elements',
   },
   'definitions': {

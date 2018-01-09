@@ -37,8 +37,8 @@ $blue: #69f;
   @include flex(1 1 auto);
 }
 .fs14 { font-size: 14px; }
-.text-grey { color: $grey; }
-.text-light { color: $light; }
+.text-grey { color: $grey!important; }
+.text-light { color: $light!important; }
 .hover-dark {
   cursor: pointer;
   &:hover {
