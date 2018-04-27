@@ -1,5 +1,8 @@
-const path = require('path');
+const argv = require('minimist')(process.argv.slice(2));
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+
+const production = Boolean(argv.p);
 const htmlConfig = new HtmlWebpackPlugin({
   template: './src/index.html',
   filename: 'index.html',
@@ -7,36 +10,40 @@ const htmlConfig = new HtmlWebpackPlugin({
   minify: {
     collapseWhitespace: true,
     minifyCSS: true,
-    minifyJS: true
-  }
+    minifyJS: true,
+  },
 });
 
 module.exports = {
+  mode: production ? 'production' : 'development',
   entry: {
-    app: './src/index.js'
+    app: './src/index.js',
   },
   output: {
     path: path.resolve(__dirname, './www'),
-    filename: '[name].js'
+    filename: '[name].js',
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        include: path.resolve(__dirname, './src')
+        include: path.resolve(__dirname, './src'),
       },
       {
         test: /\.css$/,
-        use: ['style-loader', {loader: 'css-loader', options: {url: false}}],
-        include: [path.resolve(__dirname, './src/styles')]
+        use: [
+          'style-loader',
+          { loader: 'css-loader', options: { url: false } },
+        ],
+        include: [path.resolve(__dirname, './src/styles')],
       },
       {
         test: /\.scss$/,
         loaders: ['style-loader', 'css-loader', 'sass-loader'],
-        include: path.resolve(__dirname, './src/styles')
-      }
-    ]
+        include: path.resolve(__dirname, './src/styles'),
+      },
+    ],
   },
-  plugins: [htmlConfig]
+  plugins: [htmlConfig],
 };

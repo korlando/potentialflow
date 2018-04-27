@@ -381,12 +381,12 @@ class App extends Component {
     const term1 = Math.pow(velocityMagnitudeFcn(Number(referencePressureX), Number(referencePressureY)), 2);
     const term2 = Math.pow(inspectVelocity, 2);
     // handle Infinity - Infinity edge case
-    const sum = (term1 === Infinity && term2 === Infinity) ? 0 : term1 - term2;
+    const diff = (term1 === Infinity && term2 === Infinity) ? 0 : term1 - term2;
     // handle 0 * Infinity edge case
     if(Number(density) === 0) {
       return Number(referencePressure);
     }
-    return Number(referencePressure) + 0.5 * Number(density) * sum;
+    return Number(referencePressure) + 0.5 * Number(density) * diff;
   };
 
   renderNewPlot(node, data, layout) {
