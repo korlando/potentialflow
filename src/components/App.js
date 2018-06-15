@@ -440,7 +440,7 @@ class App extends Component {
     return (
       <div className="d-flex app-container">
         <div className="flex0 main-panel">
-          <Nav/>
+          <Nav />
           <div className="view-container">
             <div id="graph" ref={node => this.graph = node}
               style={{
@@ -465,43 +465,49 @@ class App extends Component {
             
             <div className="flow-nav d-flex">
               { flowNavOptions.map((o, i) => (
-                <div key={i}
+                <div
+                  key={i}
                   className={`option ${addMode === o.value ? ' active' : ''}`}
                   onClick={(e) => {
-                    if(addMode !== o.value) {
+                    if (addMode !== o.value) {
                       this.setState({ addMode: o.value });
                     }
-                  }}>{o.name}</div>
+                  }}
+                >
+                  {o.name}
+                </div>
               ))}
             </div>
 
-            <div className="p16" style={{minHeight: '500px'}}>
+            <div className="p16" style={{ minHeight: '500px' }}>
               <div className={`d-flex flex-wrap align-items-stretch ${addMode !== 'preset' ? 'display-none' : ''}`}>
-                <RankineHalfbody/>
-                <RankineOval/>
-                <Cylinder/>
-                <RotatingCylinder/>
+                <RankineHalfbody />
+                <RankineOval />
+                <Cylinder />
+                <RotatingCylinder />
               </div>
               
               <div className={`d-flex flex-wrap align-items-stretch ${addMode !== 'custom' ? 'display-none' : ''}`}>
-                <Uniform/>
-                <PointSource/>
-                <PointVortex/>
-                <Dipole/>
-                <Corner/>
+                <Uniform />
+                <PointSource />
+                <PointVortex />
+                <Dipole />
+                <Corner />
               </div>
 
               <div className={`inspect-flows ${addMode !== 'inspect' && 'display-none'}`}>
                 <label>Enter a point (x, y)</label>
                 <div className="d-flex mb32">
-                  <div className="w50" style={{paddingRight: '2px'}}>
+                  <div className="w50" style={{ paddingRight: '2px' }}>
                     <div className="input-group">
                       <div className="input-group-addon">x</div>
-                      <input type="number"
+                      <input
+                        type="number"
                         className="form-control"
                         value={inspectX}
                         onChange={e => this.setState({ inspectX: e.target.value })}
-                        placeholder="X position"/>
+                        placeholder="X position"
+                      />
                     </div>
                   </div>
 

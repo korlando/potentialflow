@@ -14,5 +14,6 @@ export default (props) => (
     type={CORNER}
     makeFlowFcns={makeCornerFlowFcns}
     makeFlowStrs={cornerFlowStrs}
-    eqs={cornerEqs}/>
+    eqs={cornerEqs}
+  />
 );

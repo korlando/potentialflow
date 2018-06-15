@@ -43,25 +43,25 @@ block content
     h2.fw300 Dipole/Doublet
     .row.pb30
       .col-sm-8
-        p This flow singularity occurs as the limit of the combination of a source and sink (<a href="/derivations#incompressible-divergence-free">proof here</a>). The flow field is asymmetrical, and is defined by its magnitude $\mu$ and direction $\alpha$. The constant $\mu$ has units of length<sup>3</sup> per time. The central point is a singularity with infinite velocity. A dipole located at the origin is defined by a magnitude $\mu$ and direction $\alpha$ in 2D cartesian coordinates:
+        p This flow singularity occurs as the limit of the combination of a source and sink (<a href="/derivations#incompressible-divergence-free">proof here</a>). The flow field is asymmetrical, and is defined by its magnitude $\mu$ and direction $\alpha$. The constant $\mu$ has units of length<sup>3</sup> per time. The angle $\alpha$ is defined counterclockwise relative to the positive x-axis. The central point is a singularity with infinite velocity. A dipole located at the origin is defined by a magnitude $\mu$ and direction $\alpha$ in 2D cartesian coordinates:
         .pl50.pb10
           .mb5 $\phi(x,y) = -\frac{\mu}{2\pi}(\frac{xcos\alpha + ysin\alpha}{x^{2} + y^{2}})$
-          .mb5 $\psi(x,y) = +\frac{\mu}{2\pi}(\frac{xsin\alpha - ycos\alpha}{x^{2} + y^{2}})$
-          .mb5 $\vec{v}(x,y) = \frac{x^{2}cos\alpha - y^{2}sin\alpha + 2xysin\alpha}{(x^{2} + y^{2})^{2}}\hat{x} + \frac{y^{2}sin\alpha - x^{2}cos\alpha + 2xycos\alpha}{(x^{2} + y^{2})^{2}}\hat{y}$
+          .mb5 $\psi(x,y) = \frac{\mu}{2\pi}(\frac{xsin\alpha + ycos\alpha}{x^{2} + y^{2}})$
+          .mb5 $\vec{v}(x,y) = \frac{\mu}{2\pi}(\frac{x^{2}cos\alpha - y^{2}sin\alpha + 2xysin\alpha}{(x^{2} + y^{2})^{2}})\hat{x} + \frac{\mu}{2\pi}(\frac{y^{2}sin\alpha - x^{2}sin\alpha + 2xycos\alpha}{(x^{2} + y^{2})^{2}})\hat{y}$
         p In 3D spherical coordinates it is similarly represented by a constant magnitude m units of length<sup>4</sup> per time. A 3D dipole oriented in the positive $\hat{x}$ direction is represented:
         .pl50.pb10
           .mb5 $\phi(x,y,z) = -\frac{\mu}{4\pi}\frac{x}{(x^{2} + y^{2} + z^{2})^{3/2}}$
       .col-sm-4.text-center
-        img(src="/images/DIPOLE.svg" width="50%" style="transform:translateX(-20%)")
+        img(src="/images/DIPOLE-V2.svg" width="50%" style="transform:translateX(-8%)")
     h2.fw300 Corner Flow
     .row.pb30
       .col-sm-8
-        p This flow element mimics the flow around a sharp corner. The angle of the corner is defined by the factor $\alpha$, the orientation is defined by the factor $\theta_0$, and the magnitude by $\beta$. The corner angle in degrees is $\frac{180}{\alpha}$, and the angle $\theta_0$ sets the boundary wall angle relative to the positive x-axis. When alpha is greater than 1, the flow has an exterior corner, when it is greater than 1 the flow has an interior corner. In the case of an exterior corner, the center of the flow is a singularity where the velocity goes to infinity.
+        p This flow element mimics the flow around a sharp corner. The angle of the corner is defined by the factor $\alpha$, the orientation is defined by the factor $\theta_0$, and the magnitude by $\beta$. The corner angle in degrees is $\frac{180}{\alpha}$, and the angle $\theta_0$ sets the boundary wall angle relative to the positive x-axis. When $\alpha$ is less than 1, the flow has an exterior corner, and when it is greater than 1 the flow has an interior corner. In the case of an exterior corner, the center of the flow is a singularity where the velocity goes to infinity.
         .pl50.pb10
-          .mb5 $\phi = r^{\alpha}cos(\alpha\theta)$
-          .mb5 $\psi = r^{\alpha}sin(\alpha\theta)$
-          .mb5 $v_r = \frac{\partial\phi}{\partial r} = \alpha r^{\alpha - 1}cos(\alpha\theta)$
-          .mb5 $v_{\theta} = \frac{1}{r}\frac{\partial\phi}{\partial\theta} = -\alpha r^{\alpha - 1}sin(\alpha\theta)$
+          .mb5 $\phi = \beta r^{\alpha}cos(\alpha(\theta - \theta_o))$
+          .mb5 $\psi = \beta r^{\alpha}sin(\alpha(\theta - \theta_o))$
+          .mb5 $v_r = \frac{\partial\phi}{\partial r} = \beta\alpha r^{\alpha - 1}cos(\alpha(\theta - \theta_o))$
+          .mb5 $v_{\theta} = \frac{1}{r}\frac{\partial\phi}{\partial\theta} = -\beta\alpha r^{\alpha - 1}sin(\alpha(\theta - \theta_o))$
       .col-sm-4.text-center
         img(src="/images/CORNER.svg" width="50%")
 block scripts

@@ -14,5 +14,6 @@ export default (props) => (
     type={POINT_VORTEX}
     makeFlowFcns={makePointVortexFlowFcns}
     makeFlowStrs={pointVortexFlowStrs}
-    eqs={pointVortexEqs}/>
+    eqs={pointVortexEqs}
+  />
 );

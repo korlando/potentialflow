@@ -93,7 +93,11 @@ export default class Flow extends Component {
           style={{ marginBottom: '10px' }}>
           <label className="flex0">{name}</label>
           <div className="flex0">
-            <img src={`images/${type}.svg`} width="40" height="40"/>
+            <img
+              src={`images/${type === 'DIPOLE' ? 'DIPOLE-V2' : type}.svg`}
+              width="40"
+              height="40"
+            />
           </div>
           <div className="flex1"></div>
           { flowId !== undefined &&
@@ -105,8 +109,10 @@ export default class Flow extends Component {
 
         <div className="flow-eq text-center">
           { Object.keys(eqs).map((key) => (
-            <div key={key}
-              className={flowView === key ? '' : 'display-none'}>
+            <div
+              key={key}
+              className={flowView === key ? '' : 'display-none'}
+            >
               <TeX value={flowToTeX[key] + '(x, y) = ' + eqs[key]}/>
             </div>
           ))}
@@ -117,22 +123,30 @@ export default class Flow extends Component {
             const variable = variableMeta[key];
             return (
               <div key={i} className="input-group input-group-sm">
-                <div className="input-group-addon"
-                  title={variable.placeholder}>{variable.name}</div>
-                <input type="number"
+                <div
+                  className="input-group-addon"
+                  title={variable.placeholder}
+                >
+                  {variable.name}
+                </div>
+                <input
+                  type="number"
                   className="form-control"
                   placeholder={variable.placeholder}
                   value={flow.inputs[key]}
-                  onChange={(e) => {
-                    this.handleChange(key, e.target.value);
-                  }}/>
+                  onChange={e => this.handleChange(key, e.target.value)}
+                />
               </div>
             );
           })}
         </div>
         { flowId === undefined &&
-          <button type="submit"
-            className="btn btn-primary btn-block btn-sm">Add</button>
+          <button
+            type="submit"
+            className="btn btn-primary btn-block btn-sm"
+          >
+            Add
+          </button>
         }
       </form>
     );

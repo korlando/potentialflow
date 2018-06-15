@@ -49,7 +49,7 @@ const defaultState = {
         x0: 0,
         y0: 0,
         theta0: 0,
-        alpha: 3.14,
+        alpha: 2,
         beta: 1,
       },
     },

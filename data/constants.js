@@ -94,8 +94,8 @@ module.exports = {
     name: 'Stream Function',
     value: `<div>The stream function, $\\psi(x, y)$, is a scalar field that exists for all <a href="#incompressible">incompressible</a> 2D flows. It is defined so that the velocity field satisfies:</div>
       <div class="pl50 pt10 pb10">
-        <div class="mb5">$u = \\frac{\\partial \\psi}{\\partial v}$</div>
-        <div>$u = -\\frac{\\partial \\psi}{\\partial x}$</div>
+        <div class="mb5">$u = \\frac{\\partial \\psi}{\\partial y}$</div>
+        <div>$v = -\\frac{\\partial \\psi}{\\partial x}$</div>
       </div>
       <div>The stream function does not exist in 3D <a href="#velocity-field">velocity fields</a>. Lines of constant value of the stream function are <a href="#streamlines">streamlines</a> and are tangent to the velocity field.</div>`,
   }, {
