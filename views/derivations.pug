@@ -7,8 +7,8 @@ block content
         strong A velocity field that is a gradient of a scalar potential field is irrotational
       p It is a direct result from vector calculus that the curl of the gradient of a scalar is always zero, $\nabla \times \nabla \phi = 0$:
       .pl50.pb10
-        div $\nabla \times \nabla \phi = \nabla \times (\frac{\partial \phi}{\partial x}\hat{x} + \frac{\partial \phi}{\partial y}\hat{y} + \frac{\partial \phi}{\partial z}\hat{z})$
-        div $\nabla \times \nabla \phi = (\frac{\partial^{2} \phi}{\partial z \partial y} - \frac{\partial^{2} \phi}{\partial y \partial z})\hat{x} - (\frac{\partial^{2} \phi}{\partial z \partial x} - \frac{\partial^{2} \phi}{\partial x \partial z})\hat{y} + (\frac{\partial^{2} \phi}{\partial y \partial x} - \frac{\partial^{2} \phi}{\partial x \partial y})\hat{z} = 0$
+        div $\nabla \times \nabla \phi = \nabla \times \left(\frac{\partial \phi}{\partial x}\hat{x} + \frac{\partial \phi}{\partial y}\hat{y} + \frac{\partial \phi}{\partial z}\hat{z}\right)$
+        div $\nabla \times \nabla \phi = \left(\frac{\partial^{2} \phi}{\partial z \partial y} - \frac{\partial^{2} \phi}{\partial y \partial z}\right)\hat{x} - \left(\frac{\partial^{2} \phi}{\partial z \partial x} - \frac{\partial^{2} \phi}{\partial x \partial z}\right)\hat{y} + \left(\frac{\partial^{2} \phi}{\partial y \partial x} - \frac{\partial^{2} \phi}{\partial x \partial y}\right)\hat{z} = 0$
     .pb20#incompressible-divergence-free
       p
         strong Incompressible flow is divergence free
@@ -27,21 +27,21 @@ block content
       p The Euler equations are a statement of conservation of momentum in an inviscid flow:
       .pl50.pb10 $\rho \frac{\partial \vec{v}}{\partial t} + \rho(\vec{v} \cdot \nabla)\vec{v} + \nabla p + \rho g \nabla z = 0$
       p The second term can be rewritten through a vector identity:
-      .pl50.pb10 $(\vec{v} \cdot \nabla)\vec{v} = -\vec{v} \times \omega + \nabla (\frac{| \vec{v} |^{2} }{2})$
+      .pl50.pb10 $(\vec{v} \cdot \nabla)\vec{v} = -\vec{v} \times \omega + \nabla \left(\frac{| \vec{v} |^{2} }{2}\right)$
       p Vorticity is zero in irrotational flow, so Euler's equation simplifies to:
       .pl50.pb10
-        .mb5 $\rho \frac{\partial \nabla \phi}{\partial t} + \rho \nabla(\frac{| \vec{v} | ^{2}}{2}) + \nabla p + \rho g \nabla z$
-        .mb5 $\nabla(\rho \frac{\partial \phi}{\partial t} + \rho(\frac{| \vec{v} |^{2}}{2}) + p + \rho gz) = 0$
-        div $\rho \frac{\partial \phi}{\partial t} + \rho(\frac{| \vec{v} |^{2}}{2}) + p + \rho gz = constant$
+        .mb5 $\rho \frac{\partial \nabla \phi}{\partial t} + \rho \nabla\left(\frac{| \vec{v} | ^{2}}{2}\right) + \nabla p + \rho g \nabla z$
+        .mb5 $\nabla\left(\rho \frac{\partial \phi}{\partial t} + \rho\left(\frac{| \vec{v} |^{2}}{2}\right) + p + \rho gz\right) = 0$
+        div $\rho \frac{\partial \phi}{\partial t} + \rho\left(\frac{| \vec{v} |^{2}}{2}\right) + p + \rho gz = constant$
       p This is a statement of the unsteady version of Bernoulli's equation, which is valid not just along streamlines, but between points anywhere in the fluid domain.
     .pb20
       p
         strong A dipole flow element is a combination of a point source and sink
       p Combine the potentials of a source and sink, both strength $m$ and located on the x-axis separated by distance $2a$:
-      .pl50.pb10 $\phi = \frac{m}{2\pi}[ln(\sqrt{(x - a)^{2} + y^{2}}) - ln(\sqrt{(x + a)^{2} + y^{2}})]$
+      .pl50.pb10 $\phi = \frac{m}{2\pi}\left[ln\left(\sqrt{(x - a)^{2} + y^{2}}\right) - ln\left(\sqrt{(x + a)^{2} + y^{2}}\right)\right]$
       p Let the dipole strength, $\mu$, be equal to a combination of the sink/source strengths and the distance: $\mu = 2ma$. Take the limit as the source and sink get closer together and $\mu$ remains constant:
       .pl50.pb10
-        .mb5 $\phi = \textrm{lim}_{a\rightarrow 0} \frac{\mu}{4\pi a}[ln(\sqrt{(x - a)^{2} + y^{2}}) - ln(\sqrt{(x + a)^{2} + y^{2}})]$
+        .mb5 $\phi = \lim\limits_{a\to 0} \frac{\mu}{4\pi a}\left[ln\left(\sqrt{(x - a)^{2} + y^{2}}\right) - ln\left(\sqrt{(x + a)^{2} + y^{2}}\right)\right]$
         div $\phi = \frac{\mu}{2\pi} \frac{x}{x^{2} + y^{2}}$
       p This same methodology can be used to prove a more general case of a dipole at any angle.
 block scripts

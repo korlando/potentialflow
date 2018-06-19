@@ -6,7 +6,7 @@ import TeX from '../../TeX';
 import flowToTeX from '../../../constants/flowToTeX';
 import variableMeta from '../../../constants/variableMeta';
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   flowView: state.flow.flowView,
 });
 
@@ -35,8 +35,11 @@ export default class PresetFlow extends Component {
           onClick={() => {
             addBulkFlows(flows, name);
             addAlert(`Added "${name}" Flow`, true, 10 * 1000);
-          }}>Add</button>
+          }}
+        >
+          Add
+        </button>
       </div>
     );
-  };
-};
+  }
+}

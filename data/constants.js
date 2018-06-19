@@ -4,7 +4,7 @@ module.exports = {
   DEFINITIONS: [{
     id: 'potential-flow',
     name: 'Potential Flow',
-    value: `Potential flow is an idealized model of fluid flow that occurs in the case of <a href="#incompressible">incompressible</a>, <a href="#inviscid">inviscid</a>, and <a href="#irrotational">irrotational</a> flow. The <a href="#velocity-field">velocity field</a> of a potential flow satisfies <a href="#laplaces-equation">Laplace's equation</a>: $\\nabla^{2} \\vec{v} = 0$.`,
+    value: `Potential flow is an idealized model of fluid flow that occurs in the case of <a href="#incompressible">incompressible</a>, <a href="#inviscid">inviscid</a>, and <a href="#irrotational">irrotational</a> flow. The <a href="#velocity-potential">velocity potential</a> of a potential flow satisfies <a href="#laplaces-equation">Laplace's equation</a>: $\\nabla^{2} \\vec{\\phi} = 0$.`,
   }, {
     id: 'irrotational',
     name: 'Irrotational Flow',
@@ -59,15 +59,15 @@ module.exports = {
   }, {
     id: 'conservation-of-mass',
     name: 'Conservation of Mass',
-    value: 'A fundamental principle of classical mechanics is that matter can neither be created nor destroyed. When applied using differential analysis, conservation of mass takes on the form: $\\frac{d\\rho}{dt} + \\nabla \\cdot \\rho \\vec{v} = 0$. Potential flow assumes an incompressible flow with rho = constant and therefore $\\frac{d\\rho}{dt} = 0$, so conservation of mass simplifies to $\\nabla \\cdot \\vec{v} = 0$, which can also be stated as the divergence of the velocity field is zero or the velocity field is divergence free.',
+    value: 'A fundamental principle of classical mechanics is that matter can neither be created nor destroyed. When applied using differential analysis, conservation of mass takes on the form: $\\frac{d\\rho}{dt} + \\nabla \\cdot \\rho \\vec{v} = 0$. Potential flow assumes an incompressible flow with $\\rho$ = constant and therefore $\\frac{d\\rho}{dt} = 0$, so conservation of mass simplifies to $\\nabla \\cdot \\vec{v} = 0$, which can also be stated as the divergence of the velocity field is zero or the velocity field is divergence free.',
   }, {
     id: 'laplaces-equation',
     name: `Laplace's Equation`,
     value: `<div>Laplace's equation is a second order linear partial differential equation:</div>
-      <div class="pl50 pt10 pb10">$\\nabla^{2} v = 0$.</div>
+      <div class="pl50 pt10 pb10">$\\nabla^{2} \\phi = 0$.</div>
       <div>$\\nabla^{2}$ is known as the Laplacian operator which in 2D is:</div>
       <div class="pl50 pt10 pb10">$\\nabla^{2} = \\frac{\\partial}{\\partial x^{2}} + \\frac{\\partial}{\\partial y^{2}}$</div>
-      <div class="pb10">Therefore Laplace's equation can also be written as: $\\frac{\\partial x}{\\partial x^{2}} + \\frac{\\partial y}{\\partial y^{2}} = 0$ in 2D and $\\frac{\\partial x}{\\partial x^{2}} + \\frac{\\partial y}{\\partial y^{2}} + \\frac{\\partial z}{\\partial z^{2}} = 0$ in 3D.</div>
+      <div class="pb10">Therefore Laplace's equation can also be written as: $\\frac{\\partial \\phi}{\\partial x^{2}} + \\frac{\\partial \\phi}{\\partial y^{2}} = 0$ in 2D and $\\frac{\\partial \\phi}{\\partial x^{2}} + \\frac{\\partial \\phi}{\\partial y^{2}} + \\frac{\\partial \\phi}{\\partial z^{2}} = 0$ in 3D.</div>
       <div>Due to the linearity of this equation these solutions exhibit the properties of <a href="#linear-superposition">linear superposition</a>. Therefore, any linear combination of the unique solutions is also a solution.</div>`,
   }, {
     id: 'vorticity',
@@ -88,7 +88,7 @@ module.exports = {
   }, {
     id: 'streamlines',
     name: 'Streamlines',
-    value: 'A streamline is a theoretical line that is instantaneously tangent to the velocity of the flow everywhere. Each streamline only exist for one snapshot in time, and may change completely in the next instant, unless the flow is <a href="#steady-flow">steady</a> in which case the streamlines remain the same over time. Streamlines are an <a href="#eulerian">Eulerian</a> concept because they are based on the velocity field.',
+    value: 'A streamline is a theoretical line that is instantaneously tangent to the velocity of the flow everywhere. Each streamline only exists for one snapshot in time, and may change completely in the next instant, unless the flow is <a href="#steady-flow">steady</a> in which case the streamlines remain the same over time. Streamlines are an <a href="#eulerian">Eulerian</a> concept because they are based on the velocity field.',
   }, {
     id: 'stream-function',
     name: 'Stream Function',
@@ -147,7 +147,7 @@ module.exports = {
   }, {
     id: 'navier-stokes-equations',
     name: 'Navier-Stokes Equations',
-    value: `<div>The Navier-Stokes equations are conservation of momentum or Newton’s second law applied to fluid flow. The are a set of coupled nonlinear second order partial differential equations:</div>
+    value: `<div>The Navier-Stokes equations are <a href="#conservation-of-momentum">conservation of momentum</a> or Newton’s second law applied to fluid flow. They are a set of coupled nonlinear second order partial differential equations:</div>
       <div class="pl50 pt10">$\\frac{\\partial v}{\\partial t} + v \\cdot \\nabla v = - \\frac{\\nabla p}{\\rho} + \\nu \\nabla^{2}v + g$</div>`,
   }, {
     id: 'bernoullis-equation',

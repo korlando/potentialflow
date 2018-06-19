@@ -25,7 +25,7 @@ block content
     .pb20
       p
         strong Bernoulli's Equation
-      .pl50 $\rho \frac{\partial \phi}{\partial t} + \rho(\frac{| \vec{v} |^{2}}{2}) + p + \rho gz = constant$
+      .pl50 $\rho \frac{\partial \phi}{\partial t} + \rho\left(\frac{| \vec{v} |^{2}}{2}\right) + p + \rho gz = constant$
     .pb20
       p
         strong Incompressible Flow
@@ -51,22 +51,22 @@ block content
       .pl50
         .mb5 $\phi = \frac{\Gamma}{2\pi}\theta$
         .mb5 $\psi = -\frac{\Gamma}{2\pi}ln(r)$
-        .mb5 $v_{x} = \frac{\Gamma}{2\pi r}\hat{\theta}$
+        .mb5 $\vec{v} = \frac{\Gamma}{2\pi r}\hat{\theta}$
     .pb20
       p
         strong Dipole
       .pl50
-        .mb5 $\phi = \frac{-\mu}{2\pi} \frac{x - x_{0}cos(\alpha) + y - y_{0}sin(\alpha)}{(x - x_{0})^{2} + (y - y_{0})^{2}}$
-        .mb5 $\psi = \frac{\mu}{2\pi} \frac{x - x_{0}sin(\alpha) + y - y_{0}cos(\alpha)}{(x - x_{0})^{2} + (y - y_{0})^{2}}$
-        .mb5 $v_{x} = \frac{((x - x_{0})^{2} + (y - y_{0})^{2})cos(\alpha) - 2(x - x_{0})((x - x_{0})cos(\alpha) + (y - y_{0})sin(\alpha))}{((x - x_{0})^{2} + (y - y_{0})^{2})^{2}}$
-        .mb5 $v_{x} = \frac{((x - x_{0})^{2} + (y - y_{0})^{2})sin(\alpha) - 2(y - y_{0})((x - x_{0})cos(\alpha) + (y - y_{0})sin(\alpha))}{((x - x_{0})^{2} + (y - y_{0})^{2})^{2}}$
+        .mb5 $\phi = -\frac{\mu}{2\pi} \frac{(x - x_{0})cos(\alpha) + (y - y_{0})sin(\alpha)}{(x - x_{0})^{2} + (y - y_{0})^{2}}$
+        .mb5 $\psi = \frac{\mu}{2\pi} \frac{(x - x_{0})sin(\alpha) + (y - y_{0})cos(\alpha)}{(x - x_{0})^{2} + (y - y_{0})^{2}}$
+        .mb5 $v_{x} = -\frac{\mu}{2\pi}\frac{((x - x_{0})^{2} + (y - y_{0})^{2})cos(\alpha) - 2(x - x_{0})((x - x_{0})cos(\alpha) + (y - y_{0})sin(\alpha))}{((x - x_{0})^{2} + (y - y_{0})^{2})^{2}}$
+        .mb5 $v_{x} = -\frac{\mu}{2\pi}\frac{((x - x_{0})^{2} + (y - y_{0})^{2})sin(\alpha) - 2(y - y_{0})((x - x_{0})cos(\alpha) + (y - y_{0})sin(\alpha))}{((x - x_{0})^{2} + (y - y_{0})^{2})^{2}}$
     .pb20
       p
         strong Corner Flow
       .pl50
-        .mb5 $\phi = r^{\alpha}cos(\alpha \theta)$
-        .mb5 $\psi = r^{\alpha}sin(\alpha \theta)$
-        .mb5 $u_{r} = \frac{\partial \phi}{\partial r} = \alpha r^{\alpha - 1}cos(\alpha \theta)$
-        .mb5 $u_{\theta} = \frac{1}{r}\frac{\partial \phi}{\partial \theta} = -\alpha r^{\alpha - 1}sin(\alpha \theta)$
+        .mb5 $\phi = \beta r^{\alpha}cos(\alpha \theta)$
+        .mb5 $\psi = \beta r^{\alpha}sin(\alpha \theta)$
+        .mb5 $v_{r} = \frac{\partial \phi}{\partial r} = \beta\alpha r^{\alpha - 1}cos(\alpha \theta)$
+        .mb5 $v_{\theta} = \frac{1}{r}\frac{\partial \phi}{\partial \theta} = -\beta\alpha r^{\alpha - 1}sin(\alpha \theta)$
 block scripts
   include ./includes/mathjax
