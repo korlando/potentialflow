@@ -12,7 +12,7 @@ module.exports = {
   }, {
     id: 'velocity-potential',
     name: 'Velocity Potential',
-    value: 'The velocity potential is represented as $\\phi$, and exists for a flow when the velocity field is <a href="#irrotational">irrotational</a>. The potential is defined so that $\\nabla \\phi = v$.',
+    value: 'The velocity potential is a scalar field represented as $\\phi$, and exists for a flow when the <a href="#velocity-field">velocity field</a> is <a href="#irrotational">irrotational</a>. The potential is defined so that $\\nabla \\phi = \\vec{v}$.',
   }, {
     id: 'ideal-fluid',
     name: 'Ideal Fluid',
@@ -39,15 +39,15 @@ module.exports = {
   }, {
     id: 'real-fluid',
     name: 'Real Fluid',
-    value: 'A real fluid is a fluid that is compressible and has nonzero viscosity. All fluids are real, however, there are many cases when they can be modeled as ideal fluids with negligible error.',
+    value: 'A real fluid is a fluid that is compressible and has nonzero <a href="#viscosity">viscosity</a>. All fluids are real, however, there are many cases when they can be modeled as <a href="#ideal-fluid">ideal fluids</a> with negligible error.',
   }, {
     id: 'continuum-assumption',
     name: 'Continuum Assumption',
-    value: 'The continuum assumption, also known as the continuum hypothesis, is an idealization of fluid mechanics that presumes that the properties of a fluid, like velocity, pressure, and density can be defined at any infinitesimal point. Fluids are actually comprised of individual molecules, each with their own motion, but above the microscopic scale these velocities are averaged and the fluid properties can be defined continuously from point to point.',
+    value: 'The continuum assumption, also known as the continuum hypothesis, is an idealization of fluid mechanics that presumes that the properties of a <a href="#fluid">fluid</a>, like velocity, pressure, and density can be defined at any infinitesimal point. <a href="#fluid">Fluids</a> are actually comprised of individual molecules, each with their own motion, but above the microscopic scale these velocities are averaged and the fluid properties can be defined continuously from point to point.',
   }, {
     id: 'velocity-field',
     name: 'Velocity Field',
-    value: `The velocity field is a continuous function, $\\vec{v}(x,y,z,t)$ in 3D or $\\vec{v}(x,y,t)$ in 2D, that defines the velocity vector of the flow at every point in the fluid domain in accordance with the continuum assumption. The concept of defining the fluid velocity with a field is fundamental to potential flow theory.  The velocity field must be continuous because it must have a finite derivative, and therefore finite acceleration, if the internal forces are finite in accordance with Newton's 2<sup>nd</sup> law: $\\vec{F} = m\\vec{a}$.`,
+    value: `The velocity field is a continuous function, $\\vec{v}(x,y,z,t)$ in 3D or $\\vec{v}(x,y,t)$ in 2D, that defines the velocity vector of the flow at every point in the fluid domain in accordance with the <a href="#continuum-assumption">continuum assumption</a>. The concept of defining the fluid velocity with a field is fundamental to potential flow theory.  The velocity field must be continuous because it must have a finite derivative, and therefore finite acceleration, if the internal forces are finite in accordance with Newton's 2<sup>nd</sup> law: $\\vec{F} = m\\vec{a}$.`,
   }, {
     id: 'differential-analysis',
     name: 'Differential Analysis',
@@ -55,11 +55,11 @@ module.exports = {
   }, {
     id: 'control-volume-analysis',
     name: 'Control Volume Analysis',
-    value: 'As opposed to differential analysis, control volume analysis is concerned with the application of conservation laws within and across the boundaries of a closed surface. In this case the fluid is not defined from point to point, but is instead defined macroscopically.',
+    value: 'As opposed to <a href="#differential-analysis">differential analysis</a>, control volume analysis is concerned with the application of conservation laws within and across the boundaries of a closed surface. In this case the <a href="#fluid">fluid</a> is not defined from point to point, but is instead defined macroscopically.',
   }, {
     id: 'conservation-of-mass',
     name: 'Conservation of Mass',
-    value: 'A fundamental principle of classical mechanics is that matter can neither be created nor destroyed. When applied using differential analysis, conservation of mass takes on the form: $\\frac{d\\rho}{dt} + \\nabla \\cdot \\rho \\vec{v} = 0$. Potential flow assumes an incompressible flow with $\\rho$ = constant and therefore $\\frac{d\\rho}{dt} = 0$, so conservation of mass simplifies to $\\nabla \\cdot \\vec{v} = 0$, which can also be stated as the divergence of the velocity field is zero or the velocity field is divergence free.',
+    value: 'A fundamental principle of classical mechanics is that matter can neither be created nor destroyed. When applied using <a href="#differential-analysis">differential analysis</a>, conservation of mass takes on the form: $\\frac{d\\rho}{dt} + \\nabla \\cdot \\rho \\vec{v} = 0$. <a href="#potential-flow">Potential flow</a> assumes an <a href="#incompressible">incompressible flow</a> with $\\rho$ = constant and therefore $\\frac{d\\rho}{dt} = 0$, so conservation of mass simplifies to $\\nabla \\cdot \\vec{v} = 0$, which can also be stated as the divergence of the <a href="#velocity-field">velocity field</a> is zero or the <a href="#velocity-field">velocity field</a> is divergence free.',
   }, {
     id: 'laplaces-equation',
     name: `Laplace's Equation`,
@@ -72,11 +72,11 @@ module.exports = {
   }, {
     id: 'vorticity',
     name: 'Vorticity',
-    value: `Vorticity ($\\vec{\\omega}$) is defined as the curl of a velocity field: $\\vec{\\omega} = \\nabla \\times \\vec{v}$. It is a vector defined at every point in the velocity field, and in a 2D flow, it's vector direction is always into or out of the page. Intuitively this is related to <a href="#rotation">rotation</a> in the flow, and if you dropped an object into the flow vorticity would cause the object to spin. The precise definition for rotation is half of the vorticity.`,
+    value: `Vorticity ($\\vec{\\omega}$) is defined as the curl of a <a href="#velocity-field">velocity field</a>: $\\vec{\\omega} = \\nabla \\times \\vec{v}$. It is a vector defined at every point in the <a href="#velocity-field">velocity field</a>, and in a 2D flow, it's vector direction is always into or out of the page. Intuitively this is related to <a href="#rotation">rotation</a> in the flow, and if you dropped an object into the flow vorticity would cause the object to spin. The precise definition for <a href="#rotation">rotation</a> is half of the vorticity.`,
   }, {
     id: 'rotation',
     name: 'Rotation',
-    value: 'Rotation in a fluid flow is defined as $\\frac{1}{2}\\nabla \\times \\vec{v}$ or half of the <a href="#vorticity">vorticity</a>. Just like vorticity, it is a vector defined at every point in the flow.',
+    value: 'Rotation in a fluid flow is defined as $\\frac{1}{2}\\nabla \\times \\vec{v}$ or half of the <a href="#vorticity">vorticity</a>. Just like <a href="#vorticity">vorticity</a>, it is a vector defined at every point in the flow.',
   }, {
     id: 'fluid',
     name: 'Fluid',
@@ -88,20 +88,20 @@ module.exports = {
   }, {
     id: 'streamlines',
     name: 'Streamlines',
-    value: 'A streamline is a theoretical line that is instantaneously tangent to the velocity of the flow everywhere. Each streamline only exists for one snapshot in time, and may change completely in the next instant, unless the flow is <a href="#steady-flow">steady</a> in which case the streamlines remain the same over time. Streamlines are an <a href="#eulerian">Eulerian</a> concept because they are based on the velocity field.',
+    value: 'A streamline is a theoretical line that is instantaneously tangent to the velocity of the flow everywhere. Each streamline only exists for one snapshot in time, and may change completely in the next instant, unless the flow is <a href="#steady-flow">steady</a> in which case the streamlines remain the same over time. Streamlines are an <a href="#eulerian">Eulerian</a> concept because they are based on the <a href="#velocity-field">velocity field</a>.',
   }, {
     id: 'stream-function',
     name: 'Stream Function',
-    value: `<div>The stream function, $\\psi(x, y)$, is a scalar field that exists for all <a href="#incompressible">incompressible</a> 2D flows. It is defined so that the velocity field satisfies:</div>
+    value: `<div>The stream function, $\\psi(x, y)$, is a scalar field that exists for all <a href="#incompressible">incompressible</a> 2D flows. It is defined so that the <a href="#velocity-field">velocity field</a> satisfies:</div>
       <div class="pl50 pt10 pb10">
         <div class="mb5">$u = \\frac{\\partial \\psi}{\\partial y}$</div>
         <div>$v = -\\frac{\\partial \\psi}{\\partial x}$</div>
       </div>
-      <div>The stream function does not exist in 3D <a href="#velocity-field">velocity fields</a>. Lines of constant value of the stream function are <a href="#streamlines">streamlines</a> and are tangent to the velocity field.</div>`,
+      <div>The stream function does not exist in 3D <a href="#velocity-field">velocity fields</a>. Lines of constant value of the stream function are <a href="#streamlines">streamlines</a> and are tangent to the <a href="#velocity-field">velocity field</a>.</div>`,
   }, {
     id: 'conservation-of-momentum',
     name: 'Conservation of Momentum',
-    value: `Momentum is always conserved in fluid dynamics. For <a href="#inviscid">inviscid flow</a> the Euler equations are the governing set of equations that result from the statement of conservation of momentum. In the special case of <a href="#potential-flow">potential flow</a>, the Euler equations are satisfied and result in a more specific expression of conservation of momentum. The result is that any inviscid <a href="#irrotational">irrotational</a> flow will remain irrotational indefinitely. This is equivalently stated in Kelvin's theorem.`,
+    value: `Momentum is always conserved in fluid dynamics. For <a href="#inviscid">inviscid flow</a> the <a href="#euler-equations">Euler equations</a> are the governing set of equations that result from the statement of conservation of momentum. In the special case of <a href="#potential-flow">potential flow</a>, the <a href="#euler-equations">Euler equations</a> are satisfied and result in a more specific expression of conservation of momentum. The result is that any <a href="#inviscid">inviscid</a> <a href="#irrotational">irrotational</a> flow will remain <a href="#irrotational">irrotational</a> indefinitely. This is equivalently stated in <a href="kelvins-theorem">Kelvin's theorem</a>.`,
   }, {
     id: 'linear-superposition',
     name: 'Linear Superposition',
@@ -109,11 +109,11 @@ module.exports = {
   }, {
     id: 'eulerian',
     name: 'Eulerian Description of Flow',
-    value: 'An Eulerian description of fluid mechanics is a field based description. The fluid is defined at all points by both vector and scalar fields. The <a href="#velocity-field">velocity field</a> is an example of a vector field used in Eulerian descriptions, and it is a vector defined at all points and across time: $v(x,y,z,t)$. Pressure, temperature, and density are examples of scalar fields that are also defined throughout the fluid domain in a laboratory fixed frame. This is the most commonly used description in fluid mechanics, and it is named after Leonhard Euler. The competing <a href="#lagrangian">Lagrangian description</a> of fluid mechanics is less commonly used.',
+    value: 'An Eulerian description of fluid mechanics is a field based description. The <a href="#fluid">fluid</a> is defined at all points by both vector and scalar fields. The <a href="#velocity-field">velocity field</a> is an example of a vector field used in Eulerian descriptions, and it is a vector defined at all points and across time: $v(x,y,z,t)$. Pressure, temperature, and density are examples of scalar fields that are also defined throughout the fluid domain in a laboratory fixed frame. This is the most commonly used description in fluid mechanics, and it is named after Leonhard Euler. The competing <a href="#lagrangian">Lagrangian description</a> of fluid mechanics is less commonly used.',
   }, {
     id: 'lagrangian',
     name: 'Lagrangian Description of Flow',
-    value: 'A Lagrangian description of fluid mechanics is a particle following description. The properties of individual fluid particles or elements are tracked through time and space. The Lagrangian description of fluid mechanics is less common than the Eulerian description.',
+    value: 'A Lagrangian description of fluid mechanics is a particle following description. The properties of individual fluid particles or elements are tracked through time and space. The Lagrangian description of fluid mechanics is less common than the <a href="#eulerian">Eulerian description</a>.',
   }, {
     id: 'material-derivative',
     name: 'Material Derivative',
@@ -122,19 +122,19 @@ module.exports = {
   }, {
     id: 'kelvins-theorem',
     name: `Kelvin's Theorem`,
-    value: `<div>Kelvin's circulation theorem states that for an ideal flow with conservative body forces, there is no change in circulation for any material contour.</div>
+    value: `<div>Kelvin's circulation theorem states that for an ideal flow with conservative body forces, there is no change in <a href="#circulation">circulation</a> for any material contour.</div>
       <div class="pl50 pt10 pb10">$\\frac{d\\Gamma}{dt} = 0$</div>
-      <div>The important result of Kelvin's theorem is that an <a href="#irrotational">irrotational flow</a> will remain irrotational in the absence of viscous forces.</div>`,
+      <div>The important result of Kelvin's theorem is that an <a href="#irrotational">irrotational flow</a> will remain <a href="#irrotational">irrotational</a> in the absence of viscous forces.</div>`,
   }, {
     id: 'kutta-joukowski-theorem',
     name: 'Kutta-Joukowski Theorem',
-    value: `<div>Potential flow theory does not predict any drag force on objects in a flow as described by <a href="#dalamberts-paradox">D'Alambert's paradox</a>, but it can accurately predict lift force. The Kutta-Joukowski theorem relates lift force simply to the density, far field velocity, and circulation around an object:</div>
+    value: `<div><a href="#potential-flow">Potential flow</a> theory does not predict any drag force on objects in a flow as described by <a href="#dalamberts-paradox">D'Alambert's paradox</a>, but it can accurately predict lift force. The Kutta-Joukowski theorem relates lift force simply to the density, far field velocity, and <a href="#circulation">circulation</a> around an object:</div>
       <div class="pl50 pb10 pt10">$L = \\rho U\\Gamma$</div>
       <div>This theory can be used to determine the lift on an airfoil or rotating cylinder.</div>`,
   }, {
     id: 'dalamberts-paradox',
     name: `D'Alambert's Paradox`,
-    value: `A contradictory result of potential flow theory is that there is no drag force on a body moving steadily through an unbounded fluid. This conflicts with real world experiences that show that there is significant drag force on objects moving through a fluid. Jean le Rond d'Alembert stated this contradiction in 1752. The disagreement between the mathematical theory focused hydrodynamicists and the experimental hydraulics engineers divided the field until the contradiction was reconciled when Prandtl introduced boundary layer theory in 1904.`,
+    value: `A contradictory result of <a href="#potential-flow">potential flow</a> theory is that there is no drag force on a body moving steadily through an unbounded <a href="#fluid">fluid</a>. This conflicts with real world experiences that show that there is significant drag force on objects moving through a <a href="#fluid">fluid</a>. Jean le Rond d'Alembert stated this contradiction in 1752. The disagreement between the mathematical theory focused hydrodynamicists and the experimental hydraulics engineers divided the field until the contradiction was reconciled when Prandtl introduced boundary layer theory in 1904.`,
   }, {
     id: 'magnus-force',
     name: 'Magnus Force',
@@ -152,12 +152,16 @@ module.exports = {
   }, {
     id: 'bernoullis-equation',
     name: `Bernoulli's Equation`,
-    value: `<div>The Bernoulli equation is a statement of conservation of energy for an inviscid flow:</div>
+    value: `<div>The Bernoulli equation is a statement of conservation of energy for an <a href="#inviscid">inviscid flow</a>:</div>
       <div class="pl50 pt10 pb10">$p + \\frac{1}{2}\\rho v^{2} + \\rho gh = \\textrm{constant}$</div>
-      <div>It is valid for points along a streamline in inviscid flow. In the special case of potential flow, the Bernoulli equation is valid for all points in the flow.</div>`,
+      <div>It is valid for points along a <a href="#streamlines">streamline</a> in <a href="#inviscid">inviscid flow</a>. In the special case of <a href="potential-flow">potential flow</a>, the Bernoulli equation is valid for all points in the flow.</div>`,
   }, {
     id: 'equipotentials',
     name: 'Equipotentials',
-    value: 'Lines of constant potential $\\phi$ are equipotentials. In <a href="potential-flow">potential flow</a>, equipotentials are always perpendicular to streamlines.'
+    value: 'Lines of constant potential $\\phi$ are equipotentials. In <a href="potential-flow">potential flow</a>, equipotentials are always perpendicular to <a href="#streamlines">streamlines</a>.'
+  }, {
+    id: 'circulation',
+    name: 'Circulation',
+    value: 'Circulation is the line integral of the <a href="#velocity-field">velocity field</a> around a closed contour. It measures how much the fluid is rotating within a region enclosed by a contour line by summing the velocity components along the contour path. Circulation is closely related to <a href="#vorticity">vorticity</a> by Stokes\' theorem. The flux of <a href="#vorticity">vorticity</a> through a closed contour is equal to the circulation, and <a href="#vorticity">vorticity</a> is a localized measurement of circulation per unit area. In <a href="#potential-flow">potential flow</a>, Stokes\' theorem can be used to calculate circulation by summing the magnitudes of all the point vortex elements within a closed contour.',
   }],
 };

@@ -147,7 +147,7 @@ export const pointSourceFcns = {
     if (m === 0) {
       return '0';
     }
-    return `${over2PiTeX(m)}ln\\left(${radiusTeX(x0, y0)}\\right)`;
+    return `${over2PiTeX(m)}\\ln\\!\\left(${radiusTeX(x0, y0)}\\right)`;
   },
   stream: (m, x0, y0) =>
     (x, y) => over2Pi(m) * Math.atan2(y - y0, x - x0),
@@ -155,7 +155,7 @@ export const pointSourceFcns = {
     if (m === 0) {
       return '0';
     }
-    return `${over2PiTeX(m)}tan^{-1}\\left(${fracTeX(diffTeX('y', y0), diffTeX('x', x0))}\\right)`;
+    return `${over2PiTeX(m)}\\tan^{-1}\\!\\left(${fracTeX(diffTeX('y', y0), diffTeX('x', x0))}\\right)`;
   },
   xVel: (m, x0, y0) =>
     (x, y) => {
@@ -199,7 +199,7 @@ export const pointVortexFcns = {
     if (gamma === 0) {
       return '0';
     }
-    return `${over2PiTeX(gamma)}tan^{-1}\\left(${fracTeX(diffTeX('y', y0), diffTeX('x', x0))}\\right)`;
+    return `${over2PiTeX(gamma)}\\tan^{-1}\\!\\left(${fracTeX(diffTeX('y', y0), diffTeX('x', x0))}\\right)`;
   },
   stream: (gamma, x0, y0) =>
     (x, y) => -over2Pi(gamma) * Math.log(getRadius(x - x0, y - y0)),
@@ -207,7 +207,7 @@ export const pointVortexFcns = {
     if (gamma === 0) {
       return '0';
     }
-    return `-${over2PiTeX(gamma)}ln\\left(${radiusTeX(x0, y0)}\\right)`
+    return `-${over2PiTeX(gamma)}\\ln\\!\\left(${radiusTeX(x0, y0)}\\right)`
   },
   xVel: (gamma, x0, y0) => {
     return (x, y) => {
@@ -246,8 +246,8 @@ export const pointVortexFcns = {
 };
 
 export const dipoleFcns = {
-  vp: (mu, x0, y0, alpha) => {
-    return (x, y) => {
+  vp: (mu, x0, y0, alpha) =>
+    (x, y) => {
       const xDiff = x - x0;
       const yDiff = y - y0;
       const radiusSq = getRadiusSq(xDiff, yDiff);
@@ -259,8 +259,7 @@ export const dipoleFcns = {
         xDiff * Math.cos(alpha) +
         yDiff * Math.sin(alpha)
       ) / radiusSq;
-    };
-  },
+    },
   vpTeX: (mu, x0, y0, alpha) => {
     if (mu === 0) {
       return '0';
@@ -272,23 +271,21 @@ export const dipoleFcns = {
     const muStr = (typeof mu === 'string') ? `-${mu}` : -mu;
     const cos = Math.cos(Number(alpha));
     const sin = Math.sin(Number(alpha));
-    return over2PiTeX(muStr) + fracTeX(`${cos === 0 ? '' : `${xTerm}cos(${alpha})`}${sin === 0 ? '' : `${cos === 0 ? '' : '+'} ${yTerm}sin(${alpha})`}`, radiusSqTeX(x0, y0));
+    return over2PiTeX(muStr) + fracTeX(`${cos === 0 ? '' : `${xTerm}\\cos(${alpha})`}${sin === 0 ? '' : `${cos === 0 ? '' : '+'} ${yTerm}\\sin(${alpha})`}`, radiusSqTeX(x0, y0));
   },
-  stream: (mu, x0, y0, alpha) => {
-    return (x, y) => {
+  stream: (mu, x0, y0, alpha) =>
+    (x, y) => {
       const xDiff = x - x0;
       const yDiff = y - y0;
       const radiusSq = getRadiusSq(xDiff, yDiff);
       if (radiusSq === 0) {
         return Infinity;
       }
-
       return over2Pi(mu) * (
         xDiff * Math.sin(alpha) +
         yDiff * Math.cos(alpha)
       ) / radiusSq;
-    };
-  },
+    },
   streamTeX: (mu, x0, y0, alpha) => {
     if (mu === 0) {
       return '0';
@@ -299,7 +296,7 @@ export const dipoleFcns = {
     const yTerm = Number(y0) === 0 ? 'y' : `(${yDiff})`;
     const cos = Math.cos(Number(alpha));
     const sin = Math.sin(Number(alpha));
-    return over2PiTeX(mu) + fracTeX(`${sin === 0 ? '' : `${xTerm}sin(${alpha})`} ${cos === 0 ? '' : `${sin === 0 ? '' : '+'} ${yTerm}cos(${alpha})`}`, radiusSqTeX(x0, y0));
+    return over2PiTeX(mu) + fracTeX(`${sin === 0 ? '' : `${xTerm}\\sin(${alpha})`} ${cos === 0 ? '' : `${sin === 0 ? '' : '+'} ${yTerm}\\cos(${alpha})`}`, radiusSqTeX(x0, y0));
   },
   xVel: (mu, x0, y0, alpha) => {
     return (x, y) => {
@@ -324,9 +321,9 @@ export const dipoleFcns = {
     const xTerm = Number(x0) === 0 ? 'x' : `(${xDiff})`;
     const yTerm = Number(y0) === 0 ? 'y' : `(${yDiff})`;
     const radiusSq = radiusSqTeX(x0, y0);
-    const sin = `sin(${alpha})`;
-    const cos = `cos(${alpha})`;
-    return muTerm + fracTeX(`(${radiusSq})${cos} - 2${xTerm}(${xTerm}${cos} + ${yTerm}${sin})`, `(${radiusSq})^2`);
+    const sin = `\\sin(${alpha})`;
+    const cos = `\\cos(${alpha})`;
+    return muTerm + fracTeX(`\\left(${radiusSq}\\right)${cos} - 2${xTerm}\\left(${xTerm}${cos} + ${yTerm}${sin}\\right)`, `\\left(${radiusSq}\\right)^2`);
   },
   yVel: (mu, x0, y0, alpha) => {
     return (x, y) => {
@@ -351,9 +348,9 @@ export const dipoleFcns = {
     const xTerm = Number(x0) === 0 ? 'x' : `(${xDiff})`;
     const yTerm = Number(y0) === 0 ? 'y' : `(${yDiff})`;
     const radiusSq = radiusSqTeX(x0, y0);
-    const sin = `sin(${alpha})`;
-    const cos = `cos(${alpha})`;
-    return muTerm + fracTeX(`(${radiusSq})${sin} - 2${yTerm}(${xTerm}${cos} + ${yTerm}${sin})`, `(${radiusSq})^2`);
+    const sin = `\\sin(${alpha})`;
+    const cos = `\\cos(${alpha})`;
+    return muTerm + fracTeX(`\\left(${radiusSq}\\right)${sin} - 2${yTerm}\\left(${xTerm}${cos} + ${yTerm}${sin}\\right)`, `\\left(${radiusSq}\\right)^2`);
   },
 };
 
@@ -375,7 +372,7 @@ export const cornerFcns = {
     const xDiff = diffTeX('x', x0);
     const yDiff = diffTeX('y', y0);
     const radius = radiusTeX(x0, y0);
-    return `${beta === 1 ? '' : beta}\\left(${radius}\\right)^{${alpha}}cos\\left(${alpha === 1 ? '' : alpha}\\left(tan^{-1}\\left(${fracTeX(yDiff, xDiff)}\\right) ${Number(theta0) === 0 ? '' : `- ${theta0}`}\\right)\\right)`;
+    return `${beta === 1 ? '' : beta}\\left(${radius}\\right)^{${alpha}}\\cos\\!\\left(${alpha === 1 ? '' : alpha}\\!\\left(\\tan^{-1}\\!\\left(${fracTeX(yDiff, xDiff)}\\right) ${Number(theta0) === 0 ? '' : `- ${theta0}`}\\right)\\right)`;
   },
   stream: (x0, y0, theta0, alpha, beta) =>
     (x, y) => {
@@ -391,7 +388,7 @@ export const cornerFcns = {
     }
     const xDiff = diffTeX('x', x0);
     const yDiff = diffTeX('y', y0);
-    return `${beta === 1 ? '' : beta}\\left(${radiusTeX(x0, y0)}\\right)^{${alpha}}sin\\left(${alpha === 1 ? '' : alpha}\\left(tan^{-1}\\left(${fracTeX(yDiff, xDiff)}\\right) ${Number(theta0) === 0 ? '' : `- ${theta0}`}\\right)\\right)`;
+    return `${beta === 1 ? '' : beta}\\left(${radiusTeX(x0, y0)}\\right)^{${alpha}}\\sin\\!\\left(${alpha === 1 ? '' : alpha}\\!\\left(\\tan^{-1}\\!\\left(${fracTeX(yDiff, xDiff)}\\right) ${Number(theta0) === 0 ? '' : `- ${theta0}`}\\right)\\right)`;
   },
   xVel: (x0, y0, theta0, alpha, beta) =>
     (x, y) => {
@@ -408,16 +405,16 @@ export const cornerFcns = {
     const yDiff = diffTeX('y', y0);
     const xTerm = x0 === 0 ? 'x' : `(${xDiff})`;
     const yTerm = y0 === 0 ? 'y' : `(${yDiff})`;
-    const alphaBeta = typeof alpha === 'string' ? `${beta} ${alpha}` : Number(alpha) * Number(beta);
-    const inner = `${alphaBeta === 1 ? '' : alphaBeta + '\\left('}tan^{-1}\\left(${fracTeX(yDiff, xDiff)}\\right) ${theta0 === 0 ? '' : `- ${theta0}`}${alphaBeta === 1 ? '' : '\\right)'}`;
-    return `${alpha === 1 ? '' : alpha}(${radiusSqTeX(x0, y0)})^{${fracTeX(alpha, 2)} - 1}\\left[${xTerm}cos\\left(${inner}\\right) + ${yTerm}sin\\left(${inner}\\right)\\right]`;
+    const alphaBeta = typeof alpha === 'string' ? `${alpha} ${beta}` : Number(alpha) * Number(beta);
+    const inner = `${alpha === 1 ? '' : alpha + '\\!\\left('}\\tan^{-1}\\!\\left(${fracTeX(yDiff, xDiff)}\\right) ${theta0 === 0 ? '' : `- ${theta0}`}${alpha === 1 ? '' : '\\right)'}`;
+    return `${alphaBeta === 1 ? '' : alphaBeta}\\left(${radiusSqTeX(x0, y0)}\\right)^{\\!\\left(${fracTeX(alpha, 2)} - 1\\right)}\\!\\left[${xTerm}\\cos\\!\\left(${inner}\\right) + ${yTerm}\\sin\\!\\left(${inner}\\right)\\right]`;
   },
   yVel: (x0, y0, theta0, alpha, beta) =>
     (x, y) => {
       const xDiff = x - x0;
       const yDiff = y - y0;
       const atan = calcAtan(xDiff, yDiff);
-      return beta * alpha * Math.pow(getRadiusSq(xDiff, yDiff), (alpha/2) - 1) * (yDiff * Math.cos(alpha * (atan - theta0)) + xDiff * Math.sin(alpha * (atan - theta0)))
+      return beta * alpha * Math.pow(getRadiusSq(xDiff, yDiff), (alpha/2) - 1) * (yDiff * Math.cos(alpha * (atan - theta0)) - xDiff * Math.sin(alpha * (atan - theta0)))
     },
   yVelTeX: (x0, y0, theta0, alpha, beta) => {
     if (alpha === 0) {
@@ -427,9 +424,9 @@ export const cornerFcns = {
     const yDiff = diffTeX('y', y0);
     const xTerm = x0 === 0 ? 'x' : `(${xDiff})`;
     const yTerm = y0 === 0 ? 'y' : `(${yDiff})`;
-    const alphaBeta = typeof alpha === 'string' ? `${beta} \\cdot ${alpha}` : Number(alpha) * Number(beta);
-    const inner = `${alphaBeta === 1 ? '' : alphaBeta + '\\left('}tan^{-1}\\left(${fracTeX(yDiff, xDiff)}\\right) ${theta0 === 0 ? '' : `- ${theta0}`}${alphaBeta === 1 ? '' : '\\right)'}`;
-    return `${alpha === 1 ? '' : alpha}(${radiusSqTeX(x0, y0)})^{${fracTeX(alpha, 2)} - 1}\\left[${yTerm}cos\\left(${inner}\\right) + ${xTerm}sin\\left(${inner}\\right)\\right]`;
+    const alphaBeta = typeof alpha === 'string' ? `${alpha}${beta}` : Number(alpha) * Number(beta);
+    const inner = `${alpha === 1 ? '' : alpha + '\\!\\left('}\\tan^{-1}\\!\\left(${fracTeX(yDiff, xDiff)}\\right) ${theta0 === 0 ? '' : `- ${theta0}`}${alphaBeta === 1 ? '' : '\\right)'}`;
+    return `${alphaBeta === 1 ? '' : alphaBeta}\\left(${radiusSqTeX(x0, y0)}\\right)^{\\!\\left(${fracTeX(alpha, 2)} - 1\\right)}\\!\\left[${yTerm}\\cos\\left(${inner}\\right) - ${xTerm}\\sin\\left(${inner}\\right)\\right]`;
   },
 };
 
@@ -441,31 +438,31 @@ export const uniformEqs = {
 };
 
 export const pointSourceEqs = {
-  vp: pointSourceFcns.vpTeX('m', 'x_0', 'y_0'),
-  stream: pointSourceFcns.streamTeX('m', 'x_0', 'y_0'),
-  xVel: pointSourceFcns.xVelTeX('m', 'x_0', 'y_0'),
-  yVel: pointSourceFcns.yVelTeX('m', 'x_0', 'y_0'),
+  vp: pointSourceFcns.vpTeX('m', 'x_o', 'y_o'),
+  stream: pointSourceFcns.streamTeX('m', 'x_o', 'y_o'),
+  xVel: pointSourceFcns.xVelTeX('m', 'x_o', 'y_o'),
+  yVel: pointSourceFcns.yVelTeX('m', 'x_o', 'y_o'),
 };
 
 export const pointVortexEqs = {
-  vp: pointVortexFcns.vpTeX('\\Gamma', 'x_0', 'y_0'),
-  stream: pointVortexFcns.streamTeX('\\Gamma', 'x_0', 'y_0'),
-  xVel: pointVortexFcns.xVelTeX('\\Gamma', 'x_0', 'y_0'),
-  yVel: pointVortexFcns.yVelTeX('\\Gamma', 'x_0', 'y_0'),
+  vp: pointVortexFcns.vpTeX('\\Gamma', 'x_o', 'y_o'),
+  stream: pointVortexFcns.streamTeX('\\Gamma', 'x_o', 'y_o'),
+  xVel: pointVortexFcns.xVelTeX('\\Gamma', 'x_o', 'y_o'),
+  yVel: pointVortexFcns.yVelTeX('\\Gamma', 'x_o', 'y_o'),
 };
 
 export const dipoleEqs = {
-  vp: dipoleFcns.vpTeX('\\mu', 'x_0', 'y_0', '\\alpha'),
-  stream: dipoleFcns.streamTeX('\\mu', 'x_0', 'y_0', '\\alpha'),
-  xVel: dipoleFcns.xVelTeX('\\mu', 'x_0', 'y_0', '\\alpha'),
-  yVel: dipoleFcns.yVelTeX('\\mu', 'x_0', 'y_0', '\\alpha'),
+  vp: dipoleFcns.vpTeX('\\mu', 'x_o', 'y_o', '\\alpha'),
+  stream: dipoleFcns.streamTeX('\\mu', 'x_o', 'y_o', '\\alpha'),
+  xVel: dipoleFcns.xVelTeX('\\mu', 'x_o', 'y_o', '\\alpha'),
+  yVel: dipoleFcns.yVelTeX('\\mu', 'x_o', 'y_o', '\\alpha'),
 };
 
 export const cornerEqs = {
-  vp: cornerFcns.vpTeX('x_0', 'y_0', '\\theta_0', '\\alpha', '\\beta'),
-  stream: cornerFcns.streamTeX('x_0', 'y_0', '\\theta_0', '\\alpha', '\\beta'),
-  xVel: cornerFcns.xVelTeX('x_0', 'y_0', '\\theta_0', '\\alpha', '\\beta'),
-  yVel: cornerFcns.yVelTeX('x_0', 'y_0', '\\theta_0', '\\alpha', '\\beta'),
+  vp: cornerFcns.vpTeX('x_o', 'y_o', '\\theta_o', '\\alpha', '\\beta'),
+  stream: cornerFcns.streamTeX('x_o', 'y_o', '\\theta_o', '\\alpha', '\\beta'),
+  xVel: cornerFcns.xVelTeX('x_o', 'y_o', '\\theta_o', '\\alpha', '\\beta'),
+  yVel: cornerFcns.yVelTeX('x_o', 'y_o', '\\theta_o', '\\alpha', '\\beta'),
 };
 
 export const makeUniformFlowFcns = (inputs) => {

@@ -1,6 +1,6 @@
 extends ./layout
 block content
-  .container.pt50.pb50
+  .container.pt50.pb50.italicized-links
     h1.pb20 Derivations
     .pb20#velocity-field-irrotational
       p
@@ -12,36 +12,36 @@ block content
     .pb20#incompressible-divergence-free
       p
         strong Incompressible flow is divergence free
-      p By definition, small fluid elements in an incompressible flow do not change in density. Therefore the <em>material derivative</em> of density is zero in an incompressible flow: $\frac{D \rho}{Dt} = 0$.
-      p The differential statement of conservation of mass is:
+      p By definition, small fluid elements in an <a href="/definitions#incompressible">incompressible flow</a> do not change in density. Therefore the <a href="/definitions#material-derivative">material derivative</a> of density is zero in an incompressible flow: $\frac{D \rho}{Dt} = 0$.
+      p The differential statement of <a href="/definitions#conservation-of-mass">conservation of mass</a> is:
       .pl50.pb10 $\frac{D \rho}{Dt} + \nabla \cdot \rho \vec{v} = 0$
-      p The first term is zero for an incompressible flow, which leads to:
+      p The first term is zero for an <a href="/definitions#incompressible">incompressible flow</a>, which leads to:
       .pl50.pb10
         .mb5 $\nabla \cdot \rho \vec{v} = 0$
         .mb5 $\rho(\nabla \cdot \vec{v}) = 0$
         div $\nabla \cdot \vec{v} = 0$
-      p A divergence free velocity field is an equivalent statement of conservation of mass for an incompressible flow.
+      p A divergence free velocity field is an equivalent statement of <a href="/definitions#conservation-of-mass">conservation of mass</a> for an <a href="/definitions#incompressible">incompressible flow</a>.
     .pb20
       p
         strong Bernoulli's equation is valid in the full fluid domain in potential flow
-      p The Euler equations are a statement of conservation of momentum in an inviscid flow:
+      p The <a href="/definitions#euler-equations">Euler equations</a> are a statement of <a href="/definitions#conservation-of-momentum">conservation of momentum</a> in an <a href="/definitions#inviscid">inviscid flow</a>:
       .pl50.pb10 $\rho \frac{\partial \vec{v}}{\partial t} + \rho(\vec{v} \cdot \nabla)\vec{v} + \nabla p + \rho g \nabla z = 0$
       p The second term can be rewritten through a vector identity:
-      .pl50.pb10 $(\vec{v} \cdot \nabla)\vec{v} = -\vec{v} \times \omega + \nabla \left(\frac{| \vec{v} |^{2} }{2}\right)$
-      p Vorticity is zero in irrotational flow, so Euler's equation simplifies to:
+      .pl50.pb10 $(\vec{v} \cdot \nabla)\vec{v} = -\vec{v} \times \omega + \nabla\!\left(\frac{| \vec{v} |^{2} }{2}\right)$
+      p <a href="/definitions#vorticity">Vorticity</a> is zero in <a href="/definitions#irrotational">irrotational flow</a>, so <a href="/definitions#euler-equations">Euler's equation</a> simplifies to:
       .pl50.pb10
-        .mb5 $\rho \frac{\partial \nabla \phi}{\partial t} + \rho \nabla\left(\frac{| \vec{v} | ^{2}}{2}\right) + \nabla p + \rho g \nabla z$
-        .mb5 $\nabla\left(\rho \frac{\partial \phi}{\partial t} + \rho\left(\frac{| \vec{v} |^{2}}{2}\right) + p + \rho gz\right) = 0$
-        div $\rho \frac{\partial \phi}{\partial t} + \rho\left(\frac{| \vec{v} |^{2}}{2}\right) + p + \rho gz = constant$
-      p This is a statement of the unsteady version of Bernoulli's equation, which is valid not just along streamlines, but between points anywhere in the fluid domain.
+        .mb5 $\rho \frac{\partial \nabla \phi}{\partial t} + \rho\nabla\!\left(\frac{| \vec{v} | ^{2}}{2}\right) + \nabla p + \rho g \nabla z$
+        .mb5 $\nabla\!\left(\rho \frac{\partial \phi}{\partial t} + \rho\!\left(\frac{| \vec{v} |^{2}}{2}\right) + p + \rho gz\right) = 0$
+        div $\rho \frac{\partial \phi}{\partial t} + \rho\!\left(\frac{| \vec{v} |^{2}}{2}\right) + p + \rho gz = constant$
+      p This is a statement of the unsteady version of <a href="/definitions#bernoullis-equation">Bernoulli's equation</a>, which is valid not just along <a href="/definitions#streamlines">streamlines</a>, but between points anywhere in the fluid domain.
     .pb20
       p
         strong A dipole flow element is a combination of a point source and sink
       p Combine the potentials of a source and sink, both strength $m$ and located on the x-axis separated by distance $2a$:
-      .pl50.pb10 $\phi = \frac{m}{2\pi}\left[ln\left(\sqrt{(x - a)^{2} + y^{2}}\right) - ln\left(\sqrt{(x + a)^{2} + y^{2}}\right)\right]$
+      .pl50.pb10 $\phi = \frac{m}{2\pi}\left[\ln\!\left(\sqrt{(x - a)^{2} + y^{2}}\right) - \ln\!\left(\sqrt{(x + a)^{2} + y^{2}}\right)\right]$
       p Let the dipole strength, $\mu$, be equal to a combination of the sink/source strengths and the distance: $\mu = 2ma$. Take the limit as the source and sink get closer together and $\mu$ remains constant:
       .pl50.pb10
-        .mb5 $\phi = \lim\limits_{a\to 0} \frac{\mu}{4\pi a}\left[ln\left(\sqrt{(x - a)^{2} + y^{2}}\right) - ln\left(\sqrt{(x + a)^{2} + y^{2}}\right)\right]$
+        .mb5 $\phi = \lim\limits_{a\to 0} \frac{\mu}{4\pi a}\left[\ln\!\left(\sqrt{(x - a)^{2} + y^{2}}\right) - \ln\!\left(\sqrt{(x + a)^{2} + y^{2}}\right)\right]$
         div $\phi = \frac{\mu}{2\pi} \frac{x}{x^{2} + y^{2}}$
       p This same methodology can be used to prove a more general case of a dipole at any angle.
 block scripts

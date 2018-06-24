@@ -25,7 +25,7 @@ block content
     .pb20
       p
         strong Bernoulli's Equation
-      .pl50 $\rho \frac{\partial \phi}{\partial t} + \rho\left(\frac{| \vec{v} |^{2}}{2}\right) + p + \rho gz = constant$
+      .pl50 $\rho \frac{\partial \phi}{\partial t} + \rho\!\left(\frac{| \vec{v} |^{2}}{2}\right) + p + \rho gz = constant$
     .pb20
       p
         strong Incompressible Flow
@@ -42,7 +42,7 @@ block content
       p
         strong Point Source/Sink
       .pl50
-        .mb5 $\phi = \frac{m}{2\pi}ln(r)$
+        .mb5 $\phi = \frac{m}{2\pi}\ln(r)$
         .mb5 $\psi = \frac{m}{2\pi}\theta$
         .mb5 $\vec{v} = \frac{m}{2\pi r}\hat{r}$
     .pb20
@@ -50,23 +50,23 @@ block content
         strong Point Vortex
       .pl50
         .mb5 $\phi = \frac{\Gamma}{2\pi}\theta$
-        .mb5 $\psi = -\frac{\Gamma}{2\pi}ln(r)$
+        .mb5 $\psi = -\frac{\Gamma}{2\pi}\ln(r)$
         .mb5 $\vec{v} = \frac{\Gamma}{2\pi r}\hat{\theta}$
     .pb20
       p
         strong Dipole
       .pl50
-        .mb5 $\phi = -\frac{\mu}{2\pi} \frac{(x - x_{0})cos(\alpha) + (y - y_{0})sin(\alpha)}{(x - x_{0})^{2} + (y - y_{0})^{2}}$
-        .mb5 $\psi = \frac{\mu}{2\pi} \frac{(x - x_{0})sin(\alpha) + (y - y_{0})cos(\alpha)}{(x - x_{0})^{2} + (y - y_{0})^{2}}$
-        .mb5 $v_{x} = -\frac{\mu}{2\pi}\frac{((x - x_{0})^{2} + (y - y_{0})^{2})cos(\alpha) - 2(x - x_{0})((x - x_{0})cos(\alpha) + (y - y_{0})sin(\alpha))}{((x - x_{0})^{2} + (y - y_{0})^{2})^{2}}$
-        .mb5 $v_{x} = -\frac{\mu}{2\pi}\frac{((x - x_{0})^{2} + (y - y_{0})^{2})sin(\alpha) - 2(y - y_{0})((x - x_{0})cos(\alpha) + (y - y_{0})sin(\alpha))}{((x - x_{0})^{2} + (y - y_{0})^{2})^{2}}$
+        .mb5 $\phi = -\frac{\mu}{2\pi} \frac{(x - x_o)\cos(\alpha)\ +\ (y - y_o)\sin(\alpha)}{(x - x_o)^{2}\ +\ (y - y_o)^{2}}$
+        .mb5 $\psi = \frac{\mu}{2\pi} \frac{(x - x_o)\sin(\alpha)\ +\ (y - y_o)\cos(\alpha)}{(x - x_o)^{2}\ +\ (y - y_o)^{2}}$
+        .mb5 $v_x = -\frac{\mu}{2\pi}\frac{\left((x - x_o)^{2}\ +\ (y - y_o)^{2}\right)\!\cos(\alpha)\ -\ 2(x - x_o)\left((x - x_o)\cos(\alpha)\ +\ (y - y_o)\sin(\alpha)\right)}{\left((x - x_o)^{2}\ +\ (y - y_o)^{2}\right)^{2}}$
+        .mb5 $v_y = -\frac{\mu}{2\pi}\frac{\left((x - x_o)^{2}\ +\ (y - y_o)^{2}\right)\!\sin(\alpha)\ -\ 2(y - y_o)\left((x - x_o)\cos(\alpha)\ +\ (y - y_o)\sin(\alpha)\right)}{\left((x - x_o)^{2}\ +\ (y - y_o)^{2}\right)^{2}}$
     .pb20
       p
         strong Corner Flow
       .pl50
-        .mb5 $\phi = \beta r^{\alpha}cos(\alpha \theta)$
-        .mb5 $\psi = \beta r^{\alpha}sin(\alpha \theta)$
-        .mb5 $v_{r} = \frac{\partial \phi}{\partial r} = \beta\alpha r^{\alpha - 1}cos(\alpha \theta)$
-        .mb5 $v_{\theta} = \frac{1}{r}\frac{\partial \phi}{\partial \theta} = -\beta\alpha r^{\alpha - 1}sin(\alpha \theta)$
+        .mb5 $\phi = \beta r^{\alpha}\cos(\alpha(\theta - \theta_o))$
+        .mb5 $\psi = \beta r^{\alpha}\sin(\alpha(\theta - \theta_o))$
+        .mb5 $v_{r} = \frac{\partial \phi}{\partial r} = \beta\alpha r^{\alpha - 1}\cos(\alpha(\theta - \theta_o))$
+        .mb5 $v_{\theta} = \frac{1}{r}\frac{\partial \phi}{\partial\theta} = -\beta\alpha r^{\alpha - 1}\sin(\alpha(\theta - \theta_o))$
 block scripts
   include ./includes/mathjax

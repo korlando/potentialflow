@@ -1,30 +1,30 @@
 extends ./layout
 block content
-  .container.pt50.pb50
+  .container.pt50.pb50.italicized-links
     h1.pb20 Common Questions
     .pb10
       p
         strong Why is potential flow a relevant model of fluid flow?
-      p Potential flow is an accurate model in any flow where the effects of viscosity are negligible. This applies outside of boundary layers in aerodynamic and hydrodynamic flows. In most cases boundary layers are thin and attached to the solid surfaces, so potential flow is a widely applicable approximation.
+      p <a href="/definitions#potential-flow">Potential flow</a> is an accurate model in any flow where the effects of <a href="/definitions#viscosity">viscosity</a> are negligible. This applies outside of boundary layers in aerodynamic and hydrodynamic flows. In most cases boundary layers are thin and attached to the solid surfaces, so <a href="/definitions#potential-flow">potential flow</a> is a widely applicable approximation.
     .pb10
       p
         strong What is the difference between potential flow and irrotational flow?
-      p Potential flow occurs by definition when a flow is irrotational, inviscid, and incompressible. Irrotationality is a necessary but not sufficient condition for potential flow.
+      p <a href="/definitions#potential-flow">Potential flow</a> occurs by definition when a flow is <a href="/definitions#irrotational">irrotational</a>, <a href="/definitions#inviscid">inviscid</a>, and <a href="/definitions#incompressible">incompressible</a>. Irrotationality is a necessary but not sufficient condition for <a href="/definitions#potential-flow">potential flow</a>.
     .pb10
       p
         strong Is potential flow necessarily inviscid and vice versa?
-      p Inviscid flow is a necessary condition for potential flow, but not all cases of inviscid flow satisfy potential flow. Inviscid flow can be rotational and therefore not satisfy the conditions for potential flow. Laplace’s equation is the governing equation for potential flow, but the Euler equations give the more general description of inviscid flow, that may be rotational or irrotational.
+      p <a href="/definitions#inviscid">Inviscid flow</a> is a necessary condition for <a href="/definitions#potential-flow">potential flow</a>, but not all cases of <a href="/definitions#inviscid">inviscid flow</a> satisfy <a href="/definitions#potential-flow">potential flow</a>. <a href="/definitions#inviscid">Inviscid flow</a> can be rotational and therefore not satisfy the conditions for <a href="/definitions#potential-flow">potential flow</a>. <a href="/definitions#laplaces-equation">Laplace’s equation</a> is the governing equation for <a href="/definitions#potential-flow">potential flow</a>, but the <a href="/definitions#euler-equations">Euler equations</a> give the more general description of <a href="/definitions#inviscid">inviscid flow</a>, that may be rotational or <a href="/definitions#irrotational">irrotational</a>.
     .pb10
       p
         strong How can a vortex be irrotational?
-      p A vortex with a velocity distribution that is inversely proportional to the radius is a free or irrotational vortex. The velocity field is curl free ($\nabla \times \vec{v} = 0$), which satisfies irrotationality. This point vortex does have a central point where vorticity goes to infinity, but everywhere else in the domain it is irrotational.
+      p A vortex with a velocity distribution that is inversely proportional to the radius is a free or <a href="/definitions#irrotational">irrotational</a> vortex. The <a href="/definitions#velocity-field">velocity field</a> is curl free ($\nabla \times \vec{v} = 0$), which satisfies irrotationality. This point vortex does have a central point where <a href="/definitions#vorticity">vorticity</a> goes to infinity, but everywhere else in the domain it is <a href="/definitions#irrotational">irrotational</a>.
     .pb10
       p
         strong How is a velocity field derived from a potential function?
-      p In potential flow, the velocity field can be determined by taking the gradient of the scalar potential: $\vec{v} = \nabla \phi$.
+      p In <a href="/definitions#potential-flow">potential flow</a>, the <a href="/definitions#velocity-field">velocity field</a> can be determined by taking the gradient of the scalar potential: $\vec{v} = \nabla \phi$.
     .pb10
       p
         strong How to find a potential from a velocity field?
-      p The scalar potential can be derived from the velocity field by integrating the velocity components in accordance with the Cauchy-Riemann equations.
+      p The scalar potential can be derived from the <a href="/definitions#velocity-field">velocity field</a> by integrating the velocity components in accordance with the Cauchy-Riemann equations.
 block scripts
   include ./includes/mathjax

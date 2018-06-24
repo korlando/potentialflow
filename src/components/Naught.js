@@ -1,5 +1,3 @@
 import React from 'react';
 
-export default (props) => {
-  return <span>{props.symbol}<sub>0</sub></span>;
-};
+export default props => <span>{props.symbol}<sub>o</sub></span>;
