@@ -21,14 +21,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 @connect(mapStateToProps)
 export default class Flow extends Component {
-  constructor(props) {
-    super(props);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleRemove = this.handleRemove.bind(this);
-  };
-
-  handleChange(key, value) {
+  handleChange = (key, value) => {
     const {
       flowId,
       flow,
@@ -37,10 +30,10 @@ export default class Flow extends Component {
       makeFlowStrs,
     } = this.props;
     const inputChanges = {
-      [key]: value === '' ? value : Number.parseFloat(value)
+      [key]: value === '' ? value : Number.parseFloat(value),
     };
 
-    if(flowId !== undefined) {
+    if (flowId !== undefined) {
       const newInputs = Object.assign({}, flow.inputs, inputChanges);
       editFlow(flowId, inputChanges, makeFlowFcns(newInputs), makeFlowStrs(newInputs));
     } else {
@@ -48,9 +41,8 @@ export default class Flow extends Component {
     }
   };
 
-  handleSubmit(e) {
+  handleSubmit = (e) => {
     e.preventDefault();
-
     const {
       flowId,
       flow,
@@ -60,13 +52,13 @@ export default class Flow extends Component {
       name,
     } = this.props;
     const { inputs } = flow;
-    if(flowId === undefined) {
+    if (flowId === undefined) {
       addFlow(type, inputs, makeFlowFcns(inputs), makeFlowStrs(inputs));
       addAlert(`Added "${name}" Flow`, true, 10 * 1000);
     }
   };
 
-  handleRemove(flowId) {
+  handleRemove = (flowId) => {
     removeFlow(flowId);
     const { name } = this.props;
     addAlert(`Removed "${name}" Flow`, true, 10 * 1000);
@@ -88,9 +80,12 @@ export default class Flow extends Component {
       <form
         onSubmit={this.handleSubmit}
         className={`d-flex flex-column flow-element ${className || ''}`}
-        style={style || {}}>
-        <div className="flexbox align-items-center"
-          style={{ marginBottom: '10px' }}>
+        style={style || {}}
+      >
+        <div
+          className="flexbox align-items-center"
+          style={{ marginBottom: '10px' }}
+        >
           <label className="flex0">{name}</label>
           <div className="flex0">
             <img
@@ -99,11 +94,12 @@ export default class Flow extends Component {
               height="40"
             />
           </div>
-          <div className="flex1"></div>
+          <div className="flex1" />
           { flowId !== undefined &&
             <CloseButton
               className="flex0"
-              onClick={() => this.handleRemove(flowId)}/>
+              onClick={() => this.handleRemove(flowId)}
+            />
           }
         </div>
 
@@ -124,10 +120,10 @@ export default class Flow extends Component {
             return (
               <div key={i} className="input-group input-group-sm">
                 <div
-                  className="input-group-addon"
+                  className="input-group-prepend"
                   title={variable.placeholder}
                 >
-                  {variable.name}
+                  <span className="input-group-text">{variable.name}</span>
                 </div>
                 <input
                   type="number"
