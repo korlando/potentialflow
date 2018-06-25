@@ -13,9 +13,11 @@ const definitionsData = Object.assign({}, pages.definitions, {
   }),
 });
 
+const homeData = Object.assign({}, pages.home, { isApp: true });
+
 module.exports = (production) => {
   router.get('/', (req, res, next) => {
-    res.render('home', pages.home);
+    res.render('home', homeData);
   });
 
   router.get('/logout', (req, res, next) => {

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PresetFlow from './PresetFlow';
 import { UNIFORM, POINT_SOURCE } from '../../../constants/flowTypes';
-
 import {
   makeUniformFlowFcns,
   uniformFlowStrs,
@@ -13,7 +12,7 @@ const uniformInputs = {
   U: 1, V: 0,
 };
 const pointSourceInputs = {
-  m: 100, x0: 0, y0: 0,
+  m: 24, x0: 0, y0: 0,
 };
 const flows = [{
   type: UNIFORM,

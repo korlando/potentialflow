@@ -57,13 +57,11 @@ export const diffTeX = (first, second) => {
   return `${first} - ${second}`;
 };
 
-export const fracTeX = (numerator, denominator) => (
-  `\\frac{${numerator}}{${denominator}}`
-);
+export const fracTeX = (numerator, denominator) =>
+  `\\frac{${numerator}}{${denominator}}`;
 
-export const sqrtTeX = (x) => (
-  `\\sqrt[]{${x}}`
-);
+export const sqrtTeX = x =>
+  `\\sqrt[]{${x}}`;
 
 export const radiusSqTeX = (x0, y0) => {
   const xTerm = x0 === 0 ? 'x' : `(${diffTeX('x', x0)})`;
@@ -71,66 +69,49 @@ export const radiusSqTeX = (x0, y0) => {
   return `${xTerm}^2 + ${yTerm}^2`
 };
 
-export const radiusTeX = (x0, y0) => (
-  sqrtTeX(radiusSqTeX(x0, y0))
-);
+export const radiusTeX = (x0, y0) =>
+  sqrtTeX(radiusSqTeX(x0, y0));
 
-export const over2PiTeX = (x) => (
-  fracTeX(x, '2\\pi')
-);
+export const over2PiTeX = x =>
+  fracTeX(x, '2\\pi');
 
-export const getRadiusSq = (xDiff, yDiff) => (
-  Math.pow(xDiff, 2) + Math.pow(yDiff, 2)
-);
+export const getRadiusSq = (xDiff, yDiff) =>
+  Math.pow(xDiff, 2) + Math.pow(yDiff, 2);
 
-export const getRadius = (xDiff, yDiff) => (
-  Math.sqrt(getRadiusSq(xDiff, yDiff))
-);
+export const getRadius = (xDiff, yDiff) =>
+  Math.sqrt(getRadiusSq(xDiff, yDiff));
 
-export const over2Pi = (x) => (
-  x / (2 * Math.PI)
-);
+export const over2Pi = x =>
+  x / (2 * Math.PI);
 
 export const uniformFcns = {
-  vp: (U, V) => {
-    return (x, y) => {
-      return U * x + V * y;
-    };
-  },
+  vp: (U, V) => (x, y) => U * x + V * y,
   vpTeX: (U, V) => {
-    if(V === 1) {
+    if (V === 1) {
       V = '';
     }
-    if(U === 0 && V === 0) {
+    if( U === 0 && V === 0) {
       return '0';
     }
     const UStr = U === 1 ? 'x' : (U === -1 ? '-x' : (U === 0 ? '' : `${U}x`));
     const VStr = V < 0 ? (V === -1 ? '-y' : `${V}y`) : (V === 0 ? '' : `${U === 0 ? '' : '+'} ${V}y`);
     return `${UStr} ${VStr}`;
   },
-  stream: (U, V) => {
-    return (x, y) => {
-      return -V * x + U * y;
-    };
-  },
+  stream: (U, V) => (x, y) => -V * x + U * y,
   streamTeX: (U, V) => {
-    if(U === 1) {
+    if (U === 1) {
       U = '';
     }
-    if(U === 0 && V === 0) {
+    if (U === 0 && V === 0) {
       return '0';
     }
     const VStr = V === 1 ? '-x' : (V === -1 ? 'x' : (V === 0 ? '' : `-${V}x`));
     const UStr = U < 0 ? (U === -1 ? '-y' : `${U}y`) : (U === 0 ? '' : `${V === 0 ? '' : '+'} ${U}y`);
     return `${VStr} ${UStr}`;
   },
-  xVel: (U, V) => {
-    return (x, y) => U;
-  },
+  xVel: (U, V) => (x, y) => U,
   xVelTeX: (U, V) => U,
-  yVel: (U, V) => {
-    return (x, y) => V;
-  },
+  yVel: (U, V) => (x, y) => V,
   yVelTeX: (U, V) => V,
 };
 
@@ -609,7 +590,7 @@ function getFlowComponents(flow, parentId) {
     `i=${flow.flowId}`,
     `t=${mapFlowsLongToShort[flow.type]}`,
   ];
-  if(parentId !== undefined) {
+  if (parentId !== undefined) {
     components.push(`p=${parentId}`);
   }
   Object.keys(flow.inputs).forEach((key) => {
@@ -624,7 +605,7 @@ export const encodeSearchString = (flowIds, flowMap) => {
   flowIds.forEach((id) => {
     const flow = flowMap[id];
     let components;
-    if(flow.group) {
+    if (flow.group) {
       flow.flowIds.forEach((subId) => {
         searchData.push(
           getFlowComponents(flowMap[subId], id).join('&')
@@ -646,8 +627,8 @@ export const encodeSearchString = (flowIds, flowMap) => {
 
 function resolveId(id, index, usedIndexes) {
   let flowId = Number(id);
-  if(Number.isNaN(flowId)) {
-    while(usedIndexes.includes(index)) {
+  if (Number.isNaN(flowId)) {
+    while (usedIndexes.includes(index)) {
       index += 1;
     }
     flowId = index;
@@ -669,7 +650,7 @@ export const decodeSearchString = (str) => {
     const components = flowStr.split('&');
     const map = components.reduce((m, c) => {
       const pieces = c.split('=');
-      if(pieces.length !== 2) return m;
+      if (pieces.length !== 2) return m;
       m[pieces[0]] = pieces[1];
       return m;
     }, {});
@@ -679,7 +660,7 @@ export const decodeSearchString = (str) => {
     usedIndexes.push(flow.flowId);
     let addToMain = true;
     
-    if(map.c) {
+    if (map.c) {
       // flow group
       flow.group = true;
       flow.name = mapGroupsShortToLong[map.n];
@@ -688,12 +669,12 @@ export const decodeSearchString = (str) => {
         arr.push(subResolved.flowId);
         return arr;
       }, []);
-      if(flow.flowIds.length === 0) {
+      if (flow.flowIds.length === 0) {
         return;
       }
-    } else if(map.t) {
+    } else if (map.t) {
       flow.type = mapFlowsShortToLong[map.t];
-      if(map.p !== undefined) {
+      if (map.p !== undefined) {
         addToMain = false;
         const parentResolved = resolveId(map.p);
         flow.parentId = parentResolved.flowId;
@@ -706,7 +687,7 @@ export const decodeSearchString = (str) => {
         return newMap;
       }, {});
       flow.inputs = inputs;
-      switch(flow.type) {
+      switch (flow.type) {
         case UNIFORM:
           flow.flowFcns = makeUniformFlowFcns(inputs);
           flow.flowStrs = uniformFlowStrs(inputs);
@@ -731,7 +712,7 @@ export const decodeSearchString = (str) => {
       return;
     }
     flowMap[flow.flowId] = flow;
-    if(addToMain) {
+    if (addToMain) {
       flowIds.push(flow.flowId);
     }
 

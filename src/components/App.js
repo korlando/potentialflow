@@ -30,7 +30,7 @@ import {
 } from '../constants/flowTypes';
 import flowToTeX from '../constants/flowToTeX';
 
-const SIZE = 100;
+const SIZE = 20;
 const flowViewColorScales = {
   vp: 'YIOrRd',
   stream: 'YIGnBu',
@@ -55,18 +55,16 @@ const flowNavOptions = [{
  *         to their respective coordinate arrays
  */
 const generateXY = (xSize, ySize) => {
-  const x = [],
-        y = [];
-  const xOffset = Math.round(xSize / 2),
-        yOffset = Math.round(ySize / 2);
-
-  for(let i = 0; i < xSize; i++) {
+  const x = [];
+  const y = [];
+  const xOffset = Math.round(xSize / 2);
+  const yOffset = Math.round(ySize / 2);
+  for (let i = 0; i < xSize; i++) {
     x.push(i - xOffset);
   }
-  for(let i = 0; i < ySize; i++) {
+  for (let i = 0; i < ySize; i++) {
     y.push(i - yOffset);
   }
-
   return {
     xCoords: x,
     yCoords: y
@@ -88,14 +86,14 @@ let { xCoords, yCoords } = coordinates;
  * @return {Function} function on (x, y) corresponding to 
  *         the provided key
  */
-function makeFlowFcn(key, flowIds, flowMap) {
+const makeFlowFcn = (key, flowIds, flowMap) => {
   let fcn = (x, y) => 0;
   flowIds.forEach((id) => {
     const currentFcn = fcn;
     const flow = flowMap[id];
     fcn = (x, y) => {
       let additional;
-      if(flow.group) {
+      if (flow.group) {
         additional = makeFlowFcn(key, flow.flowIds, flowMap)(x, y);
       } else {
         additional = flow.flowFcns[key](x, y);
@@ -118,46 +116,41 @@ function makeFlowFcn(key, flowIds, flowMap) {
  *        the function name followed by '='
  * @return {String} TeX formatted equation
  */
-function makeFlowStr(key, flowIds, flowMap, noLeftSide) {
+const makeFlowStr = (key, flowIds, flowMap, noLeftSide) => {
   let str = noLeftSide ? '' : `${flowToTeX[key]}(x, y) = `;
-  if(flowIds.length === 0) {
+  if (flowIds.length === 0) {
     return str + '0';
   }
 
   const strs = [];
   flowIds.forEach((id, i) => {
     const flow = flowMap[id];
-    if(flow.group) {
+    if (flow.group) {
       strs.push(makeFlowStr(key, flow.flowIds, flowMap, true));
     } else {
       strs.push(flow.flowStrs[key]);
     }
   });
 
-  for(let i = 0; i < strs.length; i++) {
+  for (let i = 0; i < strs.length; i++) {
     str += strs[i];
-    if(i !== strs.length - 1) {
+    if (i !== strs.length - 1) {
       str += (strs[i + 1][0] === '-') ? ' ' : ' + ';
     }
   }
   return str;
 };
 
-function makeVelocityMagnitudeFcn(xVelFcn, yVelFcn) {
-  return (x, y) => (
-    Math.sqrt(
-      Math.pow(xVelFcn(x, y), 2) +
-      Math.pow(yVelFcn(x, y), 2)
-    )
-  );
-};
+const makeVelocityMagnitudeFcn = (xVelFcn, yVelFcn) =>
+  (x, y) =>
+    Math.sqrt(Math.pow(xVelFcn(x, y), 2) + Math.pow(yVelFcn(x, y), 2));
 
-function makeUniformVelocityMagnitude(flowIds, flowMap) {
+const makeUniformVelocityMagnitude = (flowIds, flowMap) => {
   let USum = 0;
   let VSum = 0;
   flowIds.forEach((id) => {
     const flow = flowMap[id];
-    if(flow.type === UNIFORM) {
+    if (flow.type === UNIFORM) {
       USum += flow.inputs.U;
       VSum += flow.inputs.V;
     }
@@ -175,12 +168,10 @@ function makeUniformVelocityMagnitude(flowIds, flowMap) {
  *         where zData[j][i] corresponds to the z
  *         value of (xCoords[i], yCoords[j])
  */
-function makeZData(zFcn, xCoords, yCoords) {
+const makeZData = (zFcn, xCoords, yCoords) => {
   const zData = [];
-  
   yCoords.forEach((y, j) => {
     zData.push([]);
-    
     xCoords.forEach((x, i) => {
       zData[j][i] = zFcn(x, y);
     });
@@ -188,7 +179,7 @@ function makeZData(zFcn, xCoords, yCoords) {
   return zData;
 };
 
-function makeFlowFcnMap(activeFlowIds, activeFlowMap) {
+const makeFlowFcnMap = (activeFlowIds, activeFlowMap) => {
   const flowFcnMap = {};
   Object.keys(flowToTeX).forEach((key) => {
     flowFcnMap[key] = makeFlowFcn(key, activeFlowIds, activeFlowMap);
@@ -204,8 +195,8 @@ function makeFlowFcnMap(activeFlowIds, activeFlowMap) {
  *        affects colorscale of the plot
  * @return Plotly data, fit for a contour plot
  */
-const makeData = (zData, flowView) => {
-  return [{
+const makeData = (zData, flowView) =>
+  [{
     z: zData,
     x: xCoords,
     y: yCoords,
@@ -213,15 +204,14 @@ const makeData = (zData, flowView) => {
     contours: {
       coloring: 'lines',
     },
-    ncontours: 80,
+    ncontours: 50,
     colorscale: flowViewColorScales[flowView],
     line: {
       smoothing: 1.3,
       width: 1.5,
     },
     connectgaps: true,
-  }]
-};
+  }];
 
 const layout = {
   margin: {
@@ -242,11 +232,10 @@ const config = {
   displayModeBar: true,
 };
 
-const hasActiveCornerFlow = (flowIds, flowMap) => (
-  flowIds.find((id) => flowMap[id].type === CORNER) !== undefined
-);
+const hasActiveCornerFlow = (flowIds, flowMap) =>
+  flowIds.find(id => flowMap[id].type === CORNER) !== undefined;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   activeFlowIds: state.flow.activeFlowIds,
   activeFlowMap: state.flow.activeFlowMap,
   flowView: state.flow.flowView,
@@ -270,14 +259,11 @@ class App extends Component {
       density: 0,
     };
     this.activeFlowTimer = null;
-    this.applyData = this.applyData.bind(this);
-    this.handleResize = this.handleResize.bind(this);
-    this.calculatePressure = this.calculatePressure.bind(this);
-  };
+  }
 
   componentDidMount() {
     const { location, flowView } = this.props;
-    if(location.search) {
+    if (location.search) {
       const decoded = decodeSearchString(location.search.replace('?', ''));
       const { flowIds, flowMap, maxIndex } = decoded;
       bootstrapFlows(flowIds, flowMap, maxIndex);
@@ -286,13 +272,15 @@ class App extends Component {
       const data = makeData(zData, this.props.flowView);
       this.renderNewPlot(this.graph, data, layout);
     }
+    this.$mainNav = $('.main-nav');
+    this.$appContainer = $('.app-container');
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
-  };
+  }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize);
-  };
+  }
 
   componentWillReceiveProps(nextProps) {
     const {
@@ -303,30 +291,31 @@ class App extends Component {
     } = nextProps;
 
     // disable farFieldPressure if a corner flow was added
-    if(this.state.farFieldActive &&
+    if (this.state.farFieldActive &&
       hasActiveCornerFlow(activeFlowIds, activeFlowMap) &&
-      !hasActiveCornerFlow(this.props.activeFlowIds, this.props.activeFlowMap)) {
+      !hasActiveCornerFlow(this.props.activeFlowIds, this.props.activeFlowMap)
+    ) {
       this.setState({ farFieldActive: false });
     }
     
-    if(activeFlowIds !== this.props.activeFlowIds ||
+    if (
+      activeFlowIds !== this.props.activeFlowIds ||
       activeFlowMap !== this.props.activeFlowMap ||
-      flowView !== this.props.flowView) {
+      flowView !== this.props.flowView
+    ) {
       clearTimeout(this.activeFlowTimer);
-      
       this.activeFlowTimer = setTimeout(() => {
         this.applyData(flowView, activeFlowIds, activeFlowMap);
-
-        if(activeFlowIds.length === 0) {
+        if (activeFlowIds.length === 0) {
           history.push('/');
         } else {
           history.push(`/?${encodeSearchString(activeFlowIds, activeFlowMap)}`);
         }
       }, 300);
     }
-  };
+  }
 
-  applyData(flowView, flowIds, flowMap) {
+  applyData = (flowView, flowIds, flowMap) => {
     const flowFcnMap = makeFlowFcnMap(flowIds, flowMap);
     const flowFcn = flowFcnMap[flowView];
     const zData = makeZData(flowFcn, xCoords, yCoords);
@@ -337,14 +326,15 @@ class App extends Component {
     this.setState({ flowStr, flowFcnMap });
   };
 
-  handleResize() {
+  handleResize = () => {
+    this.$appContainer.height($(window).height() - this.$mainNav.height());
     this.setState({ graphSize: this.graph.clientWidth - 80 });
     setTimeout(() => {
       Plotly.Plots.resize(this.graph);
     });
   };
 
-  calculatePressure() {
+  calculatePressure = () => {
     const {
       activeFlowIds,
       activeFlowMap,
@@ -366,14 +356,14 @@ class App extends Component {
     const velocityMagnitudeFcn = makeVelocityMagnitudeFcn(xVelFcn, yVelFcn);
     const inspectVelocity = velocityMagnitudeFcn(Number(inspectX), Number(inspectY));
     
-    if(farFieldActive) {
-      if(Number(density) === 0) {
+    if (farFieldActive) {
+      if (Number(density) === 0) {
         return Number(farFieldPressure);
       }
       return (
         Number(farFieldPressure) +
         0.5 * Number(density) * (
-          uniformVelMag(Number(inspectX), Number(inspectY)) - inspectVelocity
+          Math.pow(uniformVelMag(Number(inspectX), Number(inspectY)), 2) - Math.pow(inspectVelocity, 2)
         )
       );
     }
@@ -383,17 +373,18 @@ class App extends Component {
     // handle Infinity - Infinity edge case
     const diff = (term1 === Infinity && term2 === Infinity) ? 0 : term1 - term2;
     // handle 0 * Infinity edge case
-    if(Number(density) === 0) {
+    if (Number(density) === 0) {
       return Number(referencePressure);
     }
     return Number(referencePressure) + 0.5 * Number(density) * diff;
   };
 
-  renderNewPlot(node, data, layout) {
+  renderNewPlot = (node, data, layout) => {
     Plotly.newPlot(node, data, layout, config);
     node.on('plotly_relayout', (e) => {
-      let sizeX, sizeY;
-      if(e['xaxis.autorange'] && e['yaxis.autorange']) {
+      let sizeX;
+      let sizeY;
+      if (e['xaxis.autorange'] && e['yaxis.autorange']) {
         sizeX = SIZE;
         sizeY = SIZE;
       } else {
@@ -401,12 +392,15 @@ class App extends Component {
         const x0 = e['xaxis.range[0]'];
         const y1 = e['yaxis.range[1]'];
         const y0 = e['yaxis.range[0]'];
-        if(Math.abs(Math.abs(x1) - Math.abs(x0)) <= 2 && Math.abs(Math.abs(y1) - Math.abs(y0)) <= 2) {
+        if (
+          Math.abs(Math.abs(x1) - Math.abs(x0)) <= 2 &&
+          Math.abs(Math.abs(y1) - Math.abs(y0)) <= 2
+        ) {
           sizeX = x1 - x0;
           sizeY = y1 - y0;
         }
       }
-      if(!sizeX && !sizeY) return;
+      if (!sizeX && !sizeY) return;
       coordinates = generateXY(sizeX, sizeY);
       xCoords = coordinates.xCoords;
       yCoords = coordinates.yCoords;
@@ -530,37 +524,43 @@ class App extends Component {
 
                 <div className="d-flex">
                   { !hasCornerFlow &&
-                    <div className={`flex1 ${farFieldActive ? '' : 'op6'}`}
+                    <div
+                      className={`flex1 ${farFieldActive ? '' : 'op6'}`}
                       onClick={() => {
-                        if(!farFieldActive) {
+                        if (!farFieldActive) {
                           this.setState({ farFieldActive: true });
                         }
-                      }}>
+                      }}
+                    >
                       <label>Enter far field pressure</label>
                       <div className="input-group">
                         <div className="input-group-addon">
                           <div>P<sub>&infin;</sub></div>
                         </div>
-                        <input type="number"
+                        <input
+                          type="number"
                           className="form-control"
                           value={farFieldPressure}
                           onChange={e => this.setState({
                             farFieldPressure: e.target.value,
                             farFieldActive: true,
                           })}
-                          placeholder="Far Field Pressure"/>
+                          placeholder="Far Field Pressure"
+                        />
                       </div>
                     </div>
                   }
                   { !hasCornerFlow &&
-                    <div className="flex0 fs14 text-light" style={{padding: '28px 16px'}}>OR</div>
+                    <div className="flex0 fs14 text-light" style={{ padding: '28px 16px' }}>OR</div>
                   }
-                  <div className={`flex1 ${farFieldActive ? 'op6' : ''}`}
+                  <div
+                    className={`flex1 ${farFieldActive ? 'op6' : ''}`}
                     onClick={() => {
                       if(farFieldActive) {
                         this.setState({ farFieldActive: false });
                       }
-                    }}>
+                    }}
+                  >
                     <label>Enter pressure at a reference point</label>
                     <div className="input-group mb4">
                       <div className="input-group-addon">P</div>
@@ -572,7 +572,8 @@ class App extends Component {
                           referencePressure: e.target.value,
                           farFieldActive: false,
                         })}
-                        placeholder="Reference Pressure"/>
+                        placeholder="Reference Pressure"
+                      />
                     </div>
                     <div className="input-group mb4">
                       <div className="input-group-addon">x</div>
@@ -584,7 +585,8 @@ class App extends Component {
                           referencePressureX: e.target.value,
                           farFieldActive: false,
                         })}
-                        placeholder="X position"/>
+                        placeholder="X position"
+                      />
                     </div>
                     <div className="input-group">
                       <div className="input-group-addon">y</div>
@@ -596,7 +598,8 @@ class App extends Component {
                           referencePressureY: e.target.value,
                           farFieldActive: false,
                         })}
-                        placeholder="Y position"/>
+                        placeholder="Y position"
+                      />
                     </div>
                   </div>
                 </div>
@@ -604,35 +607,42 @@ class App extends Component {
                 <label>Enter density</label>
                 <div className="input-group">
                   <div className="input-group-addon">&rho;</div>
-                  <input type="number"
+                  <input
+                    type="number"
                     className="form-control"
                     value={density}
                     onChange={e => this.setState({ density: e.target.value })}
-                    placeholder="Density"/>
+                    placeholder="Density"
+                  />
                 </div>
                 
-                <h5 className="mt16">Flow at ({inspectX}, {inspectY})</h5>
-                <div className="flow-eq">
-                  { Object.keys(flowToTeX).map((key, i) => (
-                    <div key={i} style={{ marginBottom: '5px' }}>
-                      <TeX value={`${flowToTeX[key]} = ${flowFcnMap[key](inspectX, inspectY)}`}/>
+                <div className="row">
+                  <div className="col-sm-6">
+                    <h5 className="mt16">Flow at ({inspectX}, {inspectY})</h5>
+                    <div className="flow-eq">
+                      { Object.keys(flowToTeX).map((key, i) => (
+                        <div key={i} style={{ marginBottom: '5px' }}>
+                          <TeX value={`${flowToTeX[key]} = ${Math.round(flowFcnMap[key](inspectX, inspectY) * 10000) / 10000}`} />
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-
-                <h5 className="mt16">Pressure at ({inspectX}, {inspectY})</h5>
-                <div className="flow-eq">
-                  <TeX value={`P = ${this.calculatePressure()}`}/>
+                  </div>
+                  <div className="col-sm-6">
+                    <h5 className="mt16">Pressure at ({inspectX}, {inspectY})</h5>
+                    <div className="flow-eq">
+                      <TeX value={`P = ${Math.round(this.calculatePressure() * 10000) / 10000}`} />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
         
-        <ActiveFlowsPanel/>
+        <ActiveFlowsPanel />
       </div>
     );
-  };
-};
+  }
+}
 
 export default withRouter(connect(mapStateToProps)(App));

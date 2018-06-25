@@ -257,7 +257,7 @@ button {
 }
 
 .view-container {
-  height: 100vh;
+  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   padding-top: 50px;
@@ -271,7 +271,7 @@ button {
 .active-flows {
   padding: 12px 15px;
   width: 30%;
-  height: 100vh;
+  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   border-left: 2px solid darken($lightest, 2%);

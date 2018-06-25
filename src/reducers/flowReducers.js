@@ -65,14 +65,14 @@ const flowTypeToName = {
 };
 
 const getHistoryName = (flow, prefix) => {
-  if(flow.group) {
+  if (flow.group) {
     return prefix + flow.name;
   }
-  switch(flow.type) {
+  switch (flow.type) {
     case UNIFORM:
       return prefix + 'Uniform Flow';
     case POINT_SOURCE:
-      if(flow.m >= 0) {
+      if (flow.m >= 0) {
         return prefix + 'Point Souce Flow';
       }
       return prefix + 'Point Sink Flow';
@@ -88,7 +88,7 @@ const getHistoryName = (flow, prefix) => {
 export default (state = defaultState, action) => {
   let flow, index, history, historyEntry, historyIndex;
 
-  switch(action.type) {
+  switch (action.type) {
     case 'BOOTSTRAP_FLOWS':
       return Object.assign({}, state, {
         activeFlowIds: action.flowIds,

@@ -12,14 +12,16 @@ html(lang="en")
     link(rel="canonical" href=url)
     link(rel="icon" href="/images/pf-logo.png" type="image/x-icon")
     link(href="//fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet")
-    link(rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous")
+    link(rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous")
     link(rel="stylesheet" href="/css/style.css?v=1")
     block head
-  body.flexbox.flex-column
-    include ./includes/nav
-    .flex1
-      block content
-    include ./includes/footer
+  body
+    .d-flex.flex-column(style=`${isApp ? 'height:100vh' : ''}`)
+      include ./includes/nav
+      .flex1
+        block content
+      if !isApp
+        include ./includes/footer
     script(src="//code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous")
     script.
       $(function() {
