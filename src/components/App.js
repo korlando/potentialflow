@@ -54,24 +54,22 @@ const flowNavOptions = [{
  * @return {Object} map from xCoords and yCoords 
  *         to their respective coordinate arrays
  */
-const generateXY = (xSize, ySize) => {
+const generateXY = (xSize, xStart, ySize, yStart) => {
   const x = [];
   const y = [];
-  const xOffset = Math.round(xSize / 2);
-  const yOffset = Math.round(ySize / 2);
   for (let i = 0; i < xSize; i++) {
-    x.push(i - xOffset);
+    x.push(i + xStart);
   }
   for (let i = 0; i < ySize; i++) {
-    y.push(i - yOffset);
+    y.push(i + yStart);
   }
   return {
     xCoords: x,
-    yCoords: y
+    yCoords: y,
   };
 };
 
-let coordinates = generateXY(SIZE, SIZE);
+let coordinates = generateXY(SIZE, -SIZE / 2, SIZE, -SIZE / 2);
 let { xCoords, yCoords } = coordinates;
 
 /**
@@ -207,7 +205,7 @@ const makeData = (zData, flowView) =>
     ncontours: 50,
     colorscale: flowViewColorScales[flowView],
     line: {
-      smoothing: 1.3,
+      smoothing: 0.6,
       width: 1.5,
     },
     connectgaps: true,
@@ -259,6 +257,10 @@ class App extends Component {
       density: 0,
     };
     this.activeFlowTimer = null;
+    this.prevXSize = SIZE;
+    this.prevYSize = SIZE;
+    this.prevXStart = -SIZE / 2;
+    this.prevYStart = -SIZE / 2;
   }
 
   componentDidMount() {
@@ -291,7 +293,8 @@ class App extends Component {
     } = nextProps;
 
     // disable farFieldPressure if a corner flow was added
-    if (this.state.farFieldActive &&
+    if (
+      this.state.farFieldActive &&
       hasActiveCornerFlow(activeFlowIds, activeFlowMap) &&
       !hasActiveCornerFlow(this.props.activeFlowIds, this.props.activeFlowMap)
     ) {
@@ -382,26 +385,40 @@ class App extends Component {
   renderNewPlot = (node, data, layout) => {
     Plotly.newPlot(node, data, layout, config);
     node.on('plotly_relayout', (e) => {
-      let sizeX;
-      let sizeY;
+      let xSize;
+      let ySize;
+      let xStart;
+      let yStart;
       if (e['xaxis.autorange'] && e['yaxis.autorange']) {
-        sizeX = SIZE;
-        sizeY = SIZE;
+        xSize = SIZE;
+        ySize = SIZE;
+        xStart = -SIZE / 2;
+        yStart = -SIZE / 2;
       } else {
         const x1 = e['xaxis.range[1]'];
         const x0 = e['xaxis.range[0]'];
         const y1 = e['yaxis.range[1]'];
         const y0 = e['yaxis.range[0]'];
-        if (
-          Math.abs(Math.abs(x1) - Math.abs(x0)) <= 2 &&
-          Math.abs(Math.abs(y1) - Math.abs(y0)) <= 2
-        ) {
-          sizeX = x1 - x0;
-          sizeY = y1 - y0;
+        if (x1 === undefined || x0 === undefined) {
+          xSize = this.prevXSize;
+          xStart = this.prevXStart;
+        } else {
+          xSize = x1 - x0 + 2;
+          xStart = Math.floor(x0);
+        }
+        if (y1 === undefined || y0 === undefined) {
+          ySize = this.prevYSize;
+          yStart = this.prevYStart;
+        } else {
+          ySize = y1 - y0 + 2;
+          yStart = Math.floor(y0);
         }
       }
-      if (!sizeX && !sizeY) return;
-      coordinates = generateXY(sizeX, sizeY);
+      this.prevXSize = xSize;
+      this.prevYSize = ySize;
+      this.prevXStart = xStart;
+      this.prevYStart = yStart;
+      coordinates = generateXY(xSize, xStart, ySize, yStart);
       xCoords = coordinates.xCoords;
       yCoords = coordinates.yCoords;
       const { flowView, activeFlowIds, activeFlowMap } = this.props;
@@ -494,7 +511,9 @@ class App extends Component {
                 <div className="d-flex mb32">
                   <div className="w50" style={{ paddingRight: '2px' }}>
                     <div className="input-group">
-                      <div className="input-group-addon">x</div>
+                      <div className="input-group-prepend">
+                        <span className="input-group-text">x</span>
+                      </div>
                       <input
                         type="number"
                         className="form-control"
@@ -507,7 +526,9 @@ class App extends Component {
 
                   <div className="w50" style={{paddingLeft: '2px'}}>
                     <div className="input-group">
-                      <div className="input-group-addon">y</div>
+                      <div className="input-group-prepend">
+                        <span className="input-group-text">y</span>
+                      </div>
                       <input type="number"
                         className="form-control"
                         value={inspectY}
@@ -534,8 +555,8 @@ class App extends Component {
                     >
                       <label>Enter far field pressure</label>
                       <div className="input-group">
-                        <div className="input-group-addon">
-                          <div>P<sub>&infin;</sub></div>
+                        <div className="input-group-prepend">
+                          <span className="input-group-text">P<sub>&infin;</sub></span>
                         </div>
                         <input
                           type="number"
@@ -563,7 +584,9 @@ class App extends Component {
                   >
                     <label>Enter pressure at a reference point</label>
                     <div className="input-group mb4">
-                      <div className="input-group-addon">P</div>
+                      <div className="input-group-prepend">
+                        <span className="input-group-text">P</span>
+                      </div>
                       <input
                         type="number"
                         className="form-control"
@@ -576,7 +599,9 @@ class App extends Component {
                       />
                     </div>
                     <div className="input-group mb4">
-                      <div className="input-group-addon">x</div>
+                      <div className="input-group-prepend">
+                        <span className="input-group-text">x</span>
+                      </div>
                       <input
                         type="number"
                         className="form-control"
@@ -589,7 +614,9 @@ class App extends Component {
                       />
                     </div>
                     <div className="input-group">
-                      <div className="input-group-addon">y</div>
+                      <div className="input-group-prepend">
+                        <span className="input-group-text">y</span>
+                      </div>
                       <input
                         type="number"
                         className="form-control"
@@ -604,9 +631,11 @@ class App extends Component {
                   </div>
                 </div>
 
-                <label>Enter density</label>
+                <label>Enter density for pressure calculation</label>
                 <div className="input-group">
-                  <div className="input-group-addon">&rho;</div>
+                  <div className="input-group-prepend">
+                    <span className="input-group-text">&rho;</span>
+                  </div>
                   <input
                     type="number"
                     className="form-control"
@@ -619,7 +648,7 @@ class App extends Component {
                 <div className="row">
                   <div className="col-sm-6">
                     <h5 className="mt16">Flow at ({inspectX}, {inspectY})</h5>
-                    <div className="flow-eq">
+                    <div className="flow-eq" style={{ height: '115px' }}>
                       { Object.keys(flowToTeX).map((key, i) => (
                         <div key={i} style={{ marginBottom: '5px' }}>
                           <TeX value={`${flowToTeX[key]} = ${Math.round(flowFcnMap[key](inspectX, inspectY) * 10000) / 10000}`} />
@@ -629,7 +658,7 @@ class App extends Component {
                   </div>
                   <div className="col-sm-6">
                     <h5 className="mt16">Pressure at ({inspectX}, {inspectY})</h5>
-                    <div className="flow-eq">
+                    <div className="flow-eq" style={{ height: '115px' }}>
                       <TeX value={`P = ${Math.round(this.calculatePressure() * 10000) / 10000}`} />
                     </div>
                   </div>

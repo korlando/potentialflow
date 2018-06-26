@@ -11,7 +11,7 @@ const defaultState = {
   activeFlowMap: {},
   history: [{
     activeFlowIds: [],
-    activeFlowMap: {}
+    activeFlowMap: {},
   }],
   historyIndex: 0,
   flowView: 'stream',
@@ -54,7 +54,7 @@ const defaultState = {
       },
     },
   },
-  index: 0
+  index: 0,
 };
 
 const flowTypeToName = {
