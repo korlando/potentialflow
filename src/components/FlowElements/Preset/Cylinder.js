@@ -9,10 +9,10 @@ import {
 } from '../../../util';
 
 const uniformInputs = {
-  U: -1, V: 0
+  U: -8, V: 0
 };
 const dipoleInputs = {
-  mu: 250, x0: 0, y0: 0, alpha: 0,
+  mu: 500, x0: 0, y0: 0, alpha: 0,
 };
 const flows = [{
   type: UNIFORM,

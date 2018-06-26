@@ -57,10 +57,10 @@ const flowNavOptions = [{
 const generateXY = (xSize, xStart, ySize, yStart) => {
   const x = [];
   const y = [];
-  for (let i = 0; i < xSize; i++) {
+  for (let i = 0; i < xSize; i += 0.25) {
     x.push(i + xStart);
   }
-  for (let i = 0; i < ySize; i++) {
+  for (let i = 0; i < ySize; i += 0.25) {
     y.push(i + yStart);
   }
   return {

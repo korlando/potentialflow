@@ -38,7 +38,7 @@ const defaultState = {
     },
     [DIPOLE]: {
       inputs: {
-        mu: 2,
+        mu: 50,
         x0: 0,
         y0: 0,
         alpha: 0,
