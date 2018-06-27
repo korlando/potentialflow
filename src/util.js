@@ -375,7 +375,7 @@ export const cornerFcns = {
     (x, y) => {
       const xDiff = x - x0;
       const yDiff = y - y0;
-      const atan = calcAtan(xDiff, yDiff);
+      const atan = calcAtan(yDiff, xDiff);
       return beta * alpha * Math.pow(getRadiusSq(xDiff, yDiff), (alpha/2) - 1) * (xDiff * Math.cos(alpha * (atan - theta0)) + yDiff * Math.sin(alpha * (atan - theta0)))
     },
   xVelTeX: (x0, y0, theta0, alpha, beta) => {
@@ -394,7 +394,7 @@ export const cornerFcns = {
     (x, y) => {
       const xDiff = x - x0;
       const yDiff = y - y0;
-      const atan = calcAtan(xDiff, yDiff);
+      const atan = calcAtan(yDiff, xDiff);
       return beta * alpha * Math.pow(getRadiusSq(xDiff, yDiff), (alpha/2) - 1) * (yDiff * Math.cos(alpha * (atan - theta0)) - xDiff * Math.sin(alpha * (atan - theta0)))
     },
   yVelTeX: (x0, y0, theta0, alpha, beta) => {
