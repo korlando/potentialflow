@@ -7,7 +7,7 @@ import {
   pointVortexEqs,
 } from '../../util';
 
-export default (props) => (
+export default props => (
   <Flow
     {...props}
     name="Point Vortex"

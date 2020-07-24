@@ -7,12 +7,13 @@ import {
   uniformEqs,
 } from '../../util';
 
-export default (props) => (
+export default props => (
   <Flow
     {...props}
     name="Uniform"
     type={UNIFORM}
     makeFlowFcns={makeUniformFlowFcns}
     makeFlowStrs={uniformFlowStrs}
-    eqs={uniformEqs}/>
+    eqs={uniformEqs}
+  />
 );

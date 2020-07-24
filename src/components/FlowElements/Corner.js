@@ -7,7 +7,7 @@ import {
   cornerEqs,
 } from '../../util';
 
-export default (props) => (
+export default props => (
   <Flow
     {...props}
     name="Corner"

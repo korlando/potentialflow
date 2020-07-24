@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
 
 export default class TeX extends Component {
-  constructor(props) {
-    super(props);
-  };
-
   componentDidMount() {
     MathJax.Hub.Queue(['Typeset', MathJax.Hub, this.node]);
-  };
+  }
 
   componentDidUpdate() {
     MathJax.Hub.Queue(['Typeset', MathJax.Hub, this.node]);
-  };
+  }
 
   render() {
     return (
@@ -22,5 +18,5 @@ export default class TeX extends Component {
         {`$${this.props.value}$`}
       </div>
     );
-  };
-};
+  }
+}

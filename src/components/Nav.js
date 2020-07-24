@@ -16,8 +16,7 @@ const mapStateToProps = (state) => ({
   flowView: state.flow.flowView,
 });
 
-@connect(mapStateToProps)
-export default class Nav extends Component {
+class Nav extends Component {
   render() {
     const {
       historyIndex,
@@ -81,5 +80,7 @@ export default class Nav extends Component {
         </button>
       </div>
     );
-  };
-};
+  }
+}
+
+export default connect(mapStateToProps)(Nav);

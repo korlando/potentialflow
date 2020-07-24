@@ -7,12 +7,13 @@ import {
   dipoleEqs,
 } from '../../util';
 
-export default (props) => (
+export default props => (
   <Flow
     {...props}
     name="Dipole"
     type={DIPOLE}
     makeFlowFcns={makeDipoleFlowFcns}
     makeFlowStrs={dipoleFlowStrs}
-    eqs={dipoleEqs}/>
+    eqs={dipoleEqs}
+  />
 );

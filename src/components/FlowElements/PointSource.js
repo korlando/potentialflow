@@ -7,12 +7,13 @@ import {
   pointSourceEqs,
 } from '../../util';
 
-export default (props) => (
+export default props => (
   <Flow
     {...props}
     name="Point Source/Sink"
     type={POINT_SOURCE}
     makeFlowFcns={makePointSourceFlowFcns}
     makeFlowStrs={pointSourceFlowStrs}
-    eqs={pointSourceEqs}/>
+    eqs={pointSourceEqs}
+  />
 );

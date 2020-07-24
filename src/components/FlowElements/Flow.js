@@ -19,8 +19,7 @@ const mapStateToProps = (state, ownProps) => ({
   flowView: state.flow.flowView,
 });
 
-@connect(mapStateToProps)
-export default class Flow extends Component {
+class Flow extends Component {
   handleChange = (key, value) => {
     const {
       flowId,
@@ -146,5 +145,7 @@ export default class Flow extends Component {
         }
       </form>
     );
-  };
-};
+  }
+}
+
+export default connect(mapStateToProps)(Flow);

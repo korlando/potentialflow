@@ -10,8 +10,7 @@ const mapStateToProps = state => ({
   flowView: state.flow.flowView,
 });
 
-@connect(mapStateToProps)
-export default class PresetFlow extends Component {
+class PresetFlow extends Component {
   render() {
     const { name, flows, flowView } = this.props;
     return (
@@ -43,3 +42,5 @@ export default class PresetFlow extends Component {
     );
   }
 }
+
+export default connect(mapStateToProps)(PresetFlow);

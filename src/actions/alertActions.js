@@ -1,13 +1,9 @@
-export const addAlert = (alert) => {
-  return {
-    type: 'ADD_ALERT',
-    alert
-  };
-};
+export const addAlert = alert => ({
+  type: 'ADD_ALERT',
+  alert,
+});
 
-export const removeAlert = (id) => {
-  return {
-    type: 'REMOVE_ALERT',
-    id
-  };
-};
+export const removeAlert = id => ({
+	type: 'REMOVE_ALERT',
+	id,
+});

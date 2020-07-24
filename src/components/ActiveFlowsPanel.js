@@ -44,8 +44,7 @@ const mapStateToProps = (state) => ({
   activeFlowMap: state.flow.activeFlowMap,
 });
 
-@connect(mapStateToProps)
-export default class ActiveFlowsPanel extends Component {
+class ActiveFlowsPanel extends Component {
   render() {
     const { activeFlowIds, activeFlowMap } = this.props;
     const hasFlows = activeFlowIds.length > 0;
@@ -104,5 +103,7 @@ export default class ActiveFlowsPanel extends Component {
         </FlipMove>
       </div>
     );
-  };
-};
+  }
+}
+
+export default connect(mapStateToProps)(ActiveFlowsPanel);
