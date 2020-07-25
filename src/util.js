@@ -276,7 +276,7 @@ export const dipoleFcns = {
     const yTerm = Number(y0) === 0 ? 'y' : `(${yDiff})`;
     const cos = Math.cos(Number(alpha));
     const sin = Math.sin(Number(alpha));
-    return over2PiTeX(mu) + fracTeX(`${cos === 0 ? '' : `${yTerm}\\cos(${alpha})`} ${sin === 0 ? '' : `${cos === 0 ? '' : '-'} ${xTerm}\\sin(${alpha})`}`, radiusSqTeX(x0, y0))
+    return over2PiTeX(mu) + fracTeX(`${cos === 0 ? '' : `${yTerm}\\cos(${alpha})`} ${sin === 0 ? '' : `${cos === 0 ? '' : '-'} ${xTerm}\\sin(${alpha})`}`, radiusSqTeX(x0, y0));
   },
   xVel: (mu, x0, y0, alpha) => {
     return (x, y) => {
