@@ -16,7 +16,7 @@ const PORT = Number(argv.p) || Number(argv.port) || 3000;
 const production = Boolean(argv.production);
 app.set('port', PORT);
 
-if(!production) {
+if (!production) {
   app.use(require('morgan')('dev'));
 }
 
@@ -55,11 +55,11 @@ app.use((err, req, res, next) => {
 const server = http.createServer(app);
 server.listen(PORT);
 server.on('error', (err) => {
-  if(err.syscall !== 'listen') {
+  if (err.syscall !== 'listen') {
     throw err;
   }
 
-  switch(err.code) {
+  switch (err.code) {
     case 'EACCES':
       console.error(`Port ${PORT} requires elevated privileges`);
       process.exit(1);
