@@ -81,8 +81,7 @@ export const getRadiusSq = (xDiff, yDiff) =>
 export const getRadius = (xDiff, yDiff) =>
   Math.sqrt(getRadiusSq(xDiff, yDiff));
 
-export const over2Pi = x =>
-  x / (2 * Math.PI);
+export const over2Pi = x => x / (2 * Math.PI);
 
 export const uniformFcns = {
   vp: (U, V) => (x, y) => U * x + V * y,
@@ -90,7 +89,7 @@ export const uniformFcns = {
     if (V === 1) {
       V = '';
     }
-    if( U === 0 && V === 0) {
+    if ( U === 0 && V === 0) {
       return '0';
     }
     const UStr = U === 1 ? 'x' : (U === -1 ? '-x' : (U === 0 ? '' : `${U}x`));
@@ -263,8 +262,8 @@ export const dipoleFcns = {
         return Infinity;
       }
       return over2Pi(mu) * (
-        xDiff * Math.sin(alpha) +
-        yDiff * Math.cos(alpha)
+        yDiff * Math.cos(alpha) -
+        xDiff * Math.sin(alpha)
       ) / radiusSq;
     },
   streamTeX: (mu, x0, y0, alpha) => {
@@ -277,7 +276,7 @@ export const dipoleFcns = {
     const yTerm = Number(y0) === 0 ? 'y' : `(${yDiff})`;
     const cos = Math.cos(Number(alpha));
     const sin = Math.sin(Number(alpha));
-    return over2PiTeX(mu) + fracTeX(`${sin === 0 ? '' : `${xTerm}\\sin(${alpha})`} ${cos === 0 ? '' : `${sin === 0 ? '' : '+'} ${yTerm}\\cos(${alpha})`}`, radiusSqTeX(x0, y0));
+    return over2PiTeX(mu) + fracTeX(`${cos === 0 ? '' : `${yTerm}\\cos(${alpha})`} ${sin === 0 ? '' : `${cos === 0 ? '' : '-'} ${xTerm}\\sin(${alpha})`}`, radiusSqTeX(x0, y0))
   },
   xVel: (mu, x0, y0, alpha) => {
     return (x, y) => {
